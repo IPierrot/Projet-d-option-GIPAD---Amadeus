@@ -1,0 +1,90 @@
+CVO-00: DUS 
+CVO-01: 2012/12/01-19:00,2012/12/02-02:50
+CVO-02: 04:55,21:15
+
+CVE0
+CVE-00: MUC
+CVE-01: non implemented 
+CVE-02: 2012/12/01-07:15,2012/12/05-14:30
+CVE-03: 40,48
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE1
+CVE-00: MUC
+CVE-01: non implemented 
+CVE-02: 2012/12/01-05:10,2012/12/06-01:05
+CVE-03: 106,108
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE2
+CVE-00: CPH
+CVE-01: non implemented 
+CVE-02: 2012/12/02-03:05,2012/12/03-06:10
+CVE-03: 19,20
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE3
+CVE-00: LYS
+CVE-01: non implemented 
+CVE-02: 2012/12/01-17:20,2012/12/06-16:45
+CVE-03: 112,115
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE4
+CVE-00: LIS
+CVE-01: non implemented 
+CVE-02: 2012/12/02-14:20,2012/12/03-06:20
+CVE-03: 15,15
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE5
+CVE-00: PAR
+CVE-01: non implemented 
+CVE-02: 2012/12/01-20:55,2012/12/06-17:25
+CVE-03: 101,104
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE6
+CVE-00: AMS
+CVE-01: non implemented 
+CVE-02: 2012/12/02-08:50,2012/12/05-15:00
+CVE-03: 75,77
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE7
+CVE-00: BRU
+CVE-01: non implemented 
+CVE-02: 2012/12/02-03:40,2012/12/04-17:20
+CVE-03: 15,45
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE8
+CVE-00: LYS
+CVE-01: non implemented 
+CVE-02: 2012/12/01-20:10,2012/12/06-14:40
+CVE-03: 18,88
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE9
+CVE-00: DUB
+CVE-01: non implemented 
+CVE-02: 2012/12/02-02:45,2012/12/06-15:00
+CVE-03: 10,89
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVF-00:BCN
+CVF-01: 2012/12/02-14:55,2012/12/07-13:20
+CVF-02: 00:20,16:20
+
+CG-00: non implemented
+CG-01: non implemented

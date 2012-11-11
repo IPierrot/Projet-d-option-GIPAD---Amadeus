@@ -1,0 +1,42 @@
+CVO-00: SXB 
+CVO-01: 2012/12/01-23:35,2012/12/03-12:30
+CVO-02: 02:05,13:15
+
+CVE0
+CVE-00: DUB
+CVE-01: non implemented 
+CVE-02: 2012/12/08-23:30,2012/12/09-22:45
+CVE-03: 20,22
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE1
+CVE-00: BCN
+CVE-01: non implemented 
+CVE-02: 2012/12/15-04:50,2012/12/16-22:15
+CVE-03: 7,17
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE2
+CVE-00: TLS
+CVE-01: non implemented 
+CVE-02: 2012/12/12-14:30,2012/12/15-00:20
+CVE-03: 13,33
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE3
+CVE-00: BCN
+CVE-01: non implemented 
+CVE-02: 2012/12/11-01:35,2012/12/15-06:35
+CVE-03: 47,59
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVF-00:HEL
+CVF-01: 2012/12/17-11:15,2012/12/18-19:30
+CVF-02: 11:40,16:10
+
+CG-00: non implemented
+CG-01: non implemented
