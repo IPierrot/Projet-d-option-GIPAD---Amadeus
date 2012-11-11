@@ -1,122 +1,114 @@
-CVO-00: VCE 
-CVO-01: 2012/12/01-20:15,2012/12/06-10:30
-CVO-02: 18:20,21:45
+CVO-00: TLS 
+CVO-01: 2012/12/01-03:10,2012/12/03-01:50
+CVO-02: 07:40,08:00
 
 CVE0
-CVE-00: ROM
-CVE-01: non implemented 
-CVE-02: 2012/12/13-03:20,2012/12/17-16:05
-CVE-03: 74,99
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVE1
 CVE-00: ZRH
 CVE-01: non implemented 
-CVE-02: 2012/12/06-22:40,2012/12/07-23:15
-CVE-03: 20,24
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVE2
-CVE-00: LIS
-CVE-01: non implemented 
-CVE-02: 2012/12/06-23:15,2012/12/07-21:50
-CVE-03: 16,16
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVE3
-CVE-00: PRG
-CVE-01: non implemented 
-CVE-02: 2012/12/08-15:50,2012/12/13-07:00
-CVE-03: 38,66
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVE4
-CVE-00: OSL
-CVE-01: non implemented 
-CVE-02: 2012/12/07-14:25,2012/12/10-08:40
-CVE-03: 33,64
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVE5
-CVE-00: SXB
-CVE-01: non implemented 
-CVE-02: 2012/12/02-11:55,2012/12/03-01:35
-CVE-03: 6,11
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVE6
-CVE-00: CPH
-CVE-01: non implemented 
-CVE-02: 2012/12/09-05:20,2012/12/10-21:45
-CVE-03: 0,22
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVE7
-CVE-00: AMS
-CVE-01: non implemented 
-CVE-02: 2012/12/05-17:45,2012/12/06-13:40
-CVE-03: 4,9
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVE8
-CVE-00: ZRH
-CVE-01: non implemented 
-CVE-02: 2012/12/11-04:45,2012/12/11-07:05
+CVE-02: 2012/12/01-16:50,2012/12/01-21:10
 CVE-03: 1,1
 CVE-04: non implemented
 CVE-05: non implemented
 
-CVE9
-CVE-00: GVA
+CVE1
+CVE-00: BRU
 CVE-01: non implemented 
-CVE-02: 2012/12/02-14:55,2012/12/07-07:55
-CVE-03: 105,111
+CVE-02: 2012/12/01-21:05,2012/12/02-19:15
+CVE-03: 21,21
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE2
+CVE-00: ROM
+CVE-01: non implemented 
+CVE-02: 2012/12/08-00:15,2012/12/08-12:00
+CVE-03: 6,9
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE3
+CVE-00: BRU
+CVE-01: non implemented 
+CVE-02: 2012/12/01-03:45,2012/12/04-14:50
+CVE-03: 21,46
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE4
+CVE-00: VIE
+CVE-01: non implemented 
+CVE-02: 2012/12/04-17:35,2012/12/07-02:40
+CVE-03: 11,16
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE5
+CVE-00: BRU
+CVE-01: non implemented 
+CVE-02: 2012/12/05-09:15,2012/12/07-02:30
+CVE-03: 14,21
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE6
+CVE-00: AMS
+CVE-01: non implemented 
+CVE-02: 2012/12/01-16:50,2012/12/03-21:30
+CVE-03: 40,45
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE7
+CVE-00: MAD
+CVE-01: non implemented 
+CVE-02: 2012/12/03-15:25,2012/12/06-23:50
+CVE-03: 14,72
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE8
+CVE-00: HEL
+CVE-01: non implemented 
+CVE-02: 2012/12/07-20:15,2012/12/09-02:30
+CVE-03: 5,21
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE9
+CVE-00: PAR
+CVE-01: non implemented 
+CVE-02: 2012/12/06-20:25,2012/12/11-03:20
+CVE-03: 69,72
 CVE-04: non implemented
 CVE-05: non implemented
 
 CVE10
-CVE-00: OSL
+CVE-00: DUB
 CVE-01: non implemented 
-CVE-02: 2012/12/06-12:10,2012/12/09-22:45
-CVE-03: 1,5
+CVE-02: 2012/12/01-23:05,2012/12/02-18:05
+CVE-03: 17,18
 CVE-04: non implemented
 CVE-05: non implemented
 
 CVE11
-CVE-00: LYS
+CVE-00: LON
 CVE-01: non implemented 
-CVE-02: 2012/12/01-19:40,2012/12/05-21:20
-CVE-03: 8,61
+CVE-02: 2012/12/05-20:55,2012/12/07-21:15
+CVE-03: 42,46
 CVE-04: non implemented
 CVE-05: non implemented
 
 CVE12
-CVE-00: NTE
+CVE-00: MUC
 CVE-01: non implemented 
-CVE-02: 2012/12/12-13:00,2012/12/16-01:15
-CVE-03: 45,76
+CVE-02: 2012/12/01-16:45,2012/12/05-11:55
+CVE-03: 29,88
 CVE-04: non implemented
 CVE-05: non implemented
 
-CVE13
-CVE-00: NCE
-CVE-01: non implemented 
-CVE-02: 2012/12/01-19:05,2012/12/04-14:25
-CVE-03: 63,64
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVF-00:BCN
-CVF-01: 2012/12/14-01:10,2012/12/14-18:40
-CVF-02: 22:00,23:05
+CVF-00:BRU
+CVF-01: 2012/12/09-01:25,2012/12/13-17:05
+CVF-02: 05:55,06:20
 
 CG-00: non implemented
 CG-01: non implemented

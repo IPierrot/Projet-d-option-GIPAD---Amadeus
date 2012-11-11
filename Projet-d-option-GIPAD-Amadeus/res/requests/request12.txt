@@ -1,82 +1,66 @@
-CVO-00: HAM 
-CVO-01: 2012/12/01-17:00,2012/12/06-00:35
-CVO-02: 04:00,08:30
+CVO-00: DUS 
+CVO-01: 2012/12/01-03:40,2012/12/03-12:10
+CVO-02: 22:20,23:10
 
 CVE0
-CVE-00: BRU
+CVE-00: NTE
 CVE-01: non implemented 
-CVE-02: 2012/12/02-04:45,2012/12/04-09:50
-CVE-03: 8,41
+CVE-02: 2012/12/10-08:25,2012/12/12-00:30
+CVE-03: 39,39
 CVE-04: non implemented
 CVE-05: non implemented
 
 CVE1
-CVE-00: NTE
+CVE-00: NCE
 CVE-01: non implemented 
-CVE-02: 2012/12/01-14:15,2012/12/02-16:05
-CVE-03: 25,25
+CVE-02: 2012/12/06-04:00,2012/12/09-10:50
+CVE-03: 58,58
 CVE-04: non implemented
 CVE-05: non implemented
 
 CVE2
-CVE-00: NCE
+CVE-00: MIL
 CVE-01: non implemented 
-CVE-02: 2012/12/01-20:55,2012/12/04-08:35
-CVE-03: 26,30
+CVE-02: 2012/12/09-07:45,2012/12/12-07:45
+CVE-03: 48,64
 CVE-04: non implemented
 CVE-05: non implemented
 
 CVE3
-CVE-00: STO
+CVE-00: GVA
 CVE-01: non implemented 
-CVE-02: 2012/12/02-12:05,2012/12/07-08:00
-CVE-03: 3,3
+CVE-02: 2012/12/05-23:55,2012/12/10-15:00
+CVE-03: 48,53
 CVE-04: non implemented
 CVE-05: non implemented
 
 CVE4
-CVE-00: MUC
+CVE-00: HEL
 CVE-01: non implemented 
-CVE-02: 2012/12/02-05:40,2012/12/05-05:35
-CVE-03: 11,21
+CVE-02: 2012/12/10-04:00,2012/12/11-16:50
+CVE-03: 16,26
 CVE-04: non implemented
 CVE-05: non implemented
 
 CVE5
-CVE-00: FRA
+CVE-00: MIL
 CVE-01: non implemented 
-CVE-02: 2012/12/02-17:55,2012/12/05-22:05
-CVE-03: 26,59
+CVE-02: 2012/12/04-15:55,2012/12/09-12:45
+CVE-03: 63,89
 CVE-04: non implemented
 CVE-05: non implemented
 
 CVE6
-CVE-00: PAR
+CVE-00: TLS
 CVE-01: non implemented 
-CVE-02: 2012/12/02-02:50,2012/12/04-18:15
-CVE-03: 45,62
+CVE-02: 2012/12/02-04:10,2012/12/03-10:55
+CVE-03: 10,11
 CVE-04: non implemented
 CVE-05: non implemented
 
-CVE7
-CVE-00: HEL
-CVE-01: non implemented 
-CVE-02: 2012/12/02-09:40,2012/12/06-02:10
-CVE-03: 30,61
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVE8
-CVE-00: OSL
-CVE-01: non implemented 
-CVE-02: 2012/12/02-03:10,2012/12/03-07:55
-CVE-03: 2,11
-CVE-04: non implemented
-CVE-05: non implemented
-
-CVF-00:PRG
-CVF-01: 2012/12/02-22:20,2012/12/07-02:45
-CVF-02: 17:25,21:10
+CVF-00:CPH
+CVF-01: 2012/12/12-14:35,2012/12/16-01:15
+CVF-02: 08:20,09:20
 
 CG-00: non implemented
 CG-01: non implemented

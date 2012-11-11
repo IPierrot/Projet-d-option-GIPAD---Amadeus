@@ -13,28 +13,76 @@ import java.util.List;
 
 import model.Airport;
 
-public class Generate {
+/**
+ * Classe générant des fichiers types de requêtes
+ * @author Pierre Chouin
+ *
+ */
+public final class Generate {
 
-    public final static int NUMBER_OF_FILES = 100;
-
-    public final static int NB_HOURS = 24;
-
-    public final static int NB_MIN = 60;
-
-    public final static int GRANULARITE = 5;
-
-    public final static int JOURS_D_INTERVALLE = 5;
-
-    public final static int JOURS_VOYAGE=20;
-
-    public final static int GR_HOUR = (NB_MIN/GRANULARITE);
-
-    public final static int GR_JOUR = NB_HOURS*(NB_MIN/GRANULARITE);
     
-    public final static int NB_MAX_ETAPES=15;
+    /**
+     * la base dans laquelle on est.
+     */
+    public static final int BASE=10;
+    
+    /**
+     * Nombre de fichiers que l'on veut créer
+     */
+    public static final int NUMBER_OF_FILES = 100;
+    
+    /**
+     * Nombre maximal d'étapes possibles
+     */
+    public static final int NB_MAX_ETAPES=15;
+    
+    /**
+     * Nombre de jours d'intervalle maximal d'arrêt dans une ville étape,
+     *  ou pour le départ, ou pour l'arrivée
+     */
+    public static final int JOURS_D_INTERVALLE = 5;
 
+    /**
+     * Nombre maximal de jours du voyage
+     */
+    public static final int JOURS_VOYAGE=20;
 
-    private static void createFile(Path myDir, int i){
+    /**
+     * Nombre d'heures dans une journée
+     */
+    public static final int NB_HOURS = 24;
+
+    /**
+     * Nombre de minutes dans une heure
+     */
+    public static final int NB_MIN = 60;
+
+    /**
+     * granularité en minutes
+     */
+    public static final int GRANULARITE = 5;
+
+    /**
+     * Nombre de grains dans une heure
+     */
+    public static final int GR_HOUR = (NB_MIN/GRANULARITE);
+
+    /**
+     * Nombre de grains dans une journée
+     */
+    public static final int GR_JOUR = NB_HOURS*GR_HOUR;
+    
+    /**
+     * Constructeur privé vide
+     */
+    private Generate(){}
+
+    /**
+     * Créer un fichier de requête
+     * @param myDir : Path du dossier dans lequel on veut créer le fichier
+     * @param i : numéro de la requête
+     */
+    private static void createFile(final Path myDir, final int i){
         
         Path createFile = myDir.resolve("request"+i+".txt");
 
@@ -43,9 +91,12 @@ public class Generate {
 
         try {
 
-            OpenOption[] options = {StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING};
+            OpenOption[] options = {StandardOpenOption.WRITE, 
+                    StandardOpenOption.CREATE, 
+                    StandardOpenOption.TRUNCATE_EXISTING};
 
-            BufferedWriter br = Files.newBufferedWriter(createFile, Charset.forName("UTF-8"), options);
+            BufferedWriter br = Files.newBufferedWriter(createFile, 
+                    Charset.forName("UTF-8"), options);
 
 
 
@@ -55,17 +106,18 @@ public class Generate {
 
             alreadyTaken.add(departAirport);
 
-            br.write("CVO-01: "+getIntervalleDateString(GR_JOUR)+"\n"); //on part du principe qu'on part toujours le 01 décembre, pour l'instant
+            br.write("CVO-01: "+getInterDateString(GR_JOUR)+"\n"); 
+            //on part du principe qu'on part toujours le 01 décembre
 
             br.write("CVO-02: "+getPlageHoraire()+"\n");
 
-            int[] intervalleArrivee = getIntervalleDateTime(JOURS_VOYAGE*GR_JOUR);
+            int[] intArrivee = getInterDateTime(JOURS_VOYAGE*GR_JOUR);
 
             br.write("\n");
 
             int nbEtapes = (int) (Math.random()*NB_MAX_ETAPES);
             
-            for(int j=0;j<nbEtapes;j++){
+            for(int j=0; j<nbEtapes; j++){
                 br.write("CVE"+j+"\n");
                 
                 Airport etapAirport=pickAirport(alreadyTaken);
@@ -76,9 +128,10 @@ public class Generate {
                 
                 br.write("CVE-01: non implemented \n");
                 
-                int[] intEtape=getIntervalleDateTime(intervalleArrivee[0]);
+                int[] intEtape=getInterDateTime(intArrivee[0]);
                 
-                br.write("CVE-02: "+getIntervalleDateString(intEtape[0],intEtape[1])+"\n");
+                br.write("CVE-02: "
+               + getInterDateString(intEtape[0], intEtape[1])+"\n");
                 
                 int dmin= getRandomTime(intEtape[1]);
                 int dmax = getRandomTime(intEtape[1]-dmin)+dmin;
@@ -98,7 +151,8 @@ public class Generate {
             
             alreadyTaken.add(arrivalAirport);
 
-            br.write("CVF-01: "+getIntervalleDateString(intervalleArrivee[0],intervalleArrivee[1])+"\n");
+            br.write("CVF-01: "
+            +getInterDateString(intArrivee[0], intArrivee[1])+"\n");
             br.write("CVF-02: "+getPlageHoraire()+"\n");
 
 
@@ -116,14 +170,31 @@ public class Generate {
     }
     
     
-    private static int[] getIntervalleDateTime(int time){
+    /**
+     * obtenir un intervalle dont le début est inférieur 
+     * au temps passé en paramètre
+     * @param time temps en grains à l'intérieur duquel 
+     * on veut que le début de l'intervalle soit
+     * @return tableau de deux entiers, dont 
+     * le premier représente le début de l'intervalle en grains, 
+     * et le second la durée de l'intervalle
+     */
+    private static int[] getInterDateTime(final int time){
         int time1 = getRandomTime(time);
         int time2 = getRandomTime(JOURS_D_INTERVALLE*GR_JOUR);
-        int[] toReturn ={time1,time2};
+        int[] toReturn ={time1, time2};
         return toReturn;
     }
     
-    private static String getIntervalleDateString(int time1, int time2){
+    /**
+     * obtenir sous la forme d'une String l'intervalle correspondant 
+     * aux deux temps passés en paramètres
+     * @param time1 premier temps, correspondant 
+     * au point de départ de l'intervalle
+     * @param time2 deuxième temps correspondant à la durée de l'intervalle
+     * @return String représentant l'intervalle
+     */
+    private static String getInterDateString(final int time1, final int time2){
         String day1=getDay(time1);
         String sh1 = getHour(time1);
 
@@ -133,53 +204,91 @@ public class Generate {
         return "2012/12/"+day1+"-"+sh1+",2012/12/"+day2+"-"+sh2;
     }
     
-    private static String getIntervalleDateString(int time){
+    /**
+     * obtenir un intervalle dont le début est inférieur 
+     * au temps passé en paramètre
+     * @param time time temps en grains à l'intérieur duquel 
+     * on veut que le début de l'intervalle soit
+     * @return String représentant l'intervalle
+     */
+    private static String getInterDateString(final int time){
         
-        int []  times = getIntervalleDateTime(time);
+        int []  times = getInterDateTime(time);
         
-        return getIntervalleDateString(times[0],times[1]);
+        return getInterDateString(times[0], times[1]);
     }
     
+    /**
+     * permet d'obtenir une plage horaire aléatoire sur un jour
+     * @return String représentant la plage horaire
+     */
     private static String getPlageHoraire(){
         
         int timeDepart1 = getRandomTime(GR_JOUR);
         String sh1 = getHour(timeDepart1);
 
-        int timeDepart2 = (int)(Math.random()*(GR_JOUR-timeDepart1))+timeDepart1;
+        int timeDepart2 = (int) (Math.random()*(GR_JOUR-timeDepart1))
+                +timeDepart1;
         String sh2=getHour(timeDepart2);
         
         return sh1+","+sh2;
     }
     
     
-    private static  String getHour(int timeDepart1){
+    /**
+     * permet d'obtenir l'heure en partant d'un temps en nombre de grains
+     * @param time temps en grains dont on veut connaître l'heure 
+     * @return String représentant l'heure
+     */
+    private static  String getHour(final int time){
 
-        timeDepart1=timeDepart1%GR_JOUR;
+        int timeDay=time%GR_JOUR;
         
-        int minDepart1= (timeDepart1%(GR_HOUR))*GRANULARITE;
+        int min= (timeDay%(GR_HOUR))*GRANULARITE;
 
-        int hourDepart1=(timeDepart1/GR_HOUR);
+        int hour=(timeDay/GR_HOUR);
 
-        return toStringwith0(hourDepart1)+":"+toStringwith0(minDepart1);
+        return toStringwith0(hour)+":"+toStringwith0(min);
 
     }
 
 
-    
-    private static int getRandomTime(int time){
+    /**
+     * permet d'obtenir un temps aléatoire, 
+     * inférieur au temps passé en paramètre.
+     * @param time temps maximal possible
+     * @return temps aléatoire
+     */
+    private static int getRandomTime(final int time){
         return (int) (Math.random()*time);
     }
 
-    private static String getDay(int time){
+    /**
+     * permet d'obtenir le jour du mois en partant d'un temps en grains.
+     * @param time temps
+     * @return le jour du mois correspondant au temps
+     */
+    private static String getDay(final int time){
         return  toStringwith0(time/GR_JOUR +1);
     }
     
-    private static String toStringwith0(int n){
-        if(n<10) return "0"+n;
+    /**
+     * permet de transformer tout entier n inférieur à 10 en 0n (7 en 07)
+     * @param n entier que l'on veut transformer
+     * @return entier transformé
+     */
+    private static String toStringwith0(final int n){
+        if(n<BASE){return "0"+n; }
         return ""+n;
     }
 
-    private static Airport pickAirport(List<Airport> airports){
+    /**
+     * permet d'obtenir un aéroport de la liste des aéroports,
+     *  mais n'ayant pas déjà été pris
+     * @param airports aéroports déjà pris
+     * @return un aéroport non pris
+     */
+    private static Airport pickAirport(final List<Airport> airports){
 
         Airport airport;
         do{
@@ -196,16 +305,16 @@ public class Generate {
 
 
     /**
-     * @param args
+     * main
+     * @param args paramètre d'un main
      */
-    public static void main(String[] args) {
-        // TODO Auto-generated method stub
+    public static void main(final String[] args) {
         Path myDir = Paths.get("res/requests");
 
         for (int i=0; i<NUMBER_OF_FILES; i++){
             //use the above Path instance as an anchor
             
-            createFile(myDir,i);
+            createFile(myDir, i);
             
            
         }
