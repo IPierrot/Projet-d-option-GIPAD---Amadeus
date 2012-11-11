@@ -1,0 +1,66 @@
+CVO-00: MUC 
+CVO-01: 2012/12/01-12:50,2012/12/01-14:10
+CVO-02: 06:00,13:50
+
+CVE0
+CVE-00: MAN
+CVE-01: non implemented 
+CVE-02: 2012/12/11-07:15,2012/12/15-02:10
+CVE-03: 1,24
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE1
+CVE-00: HEL
+CVE-01: non implemented 
+CVE-02: 2012/12/09-21:30,2012/12/11-04:00
+CVE-03: 16,22
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE2
+CVE-00: GVA
+CVE-01: non implemented 
+CVE-02: 2012/12/07-17:35,2012/12/10-17:50
+CVE-03: 49,53
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE3
+CVE-00: TLS
+CVE-01: non implemented 
+CVE-02: 2012/12/09-21:05,2012/12/14-11:05
+CVE-03: 31,56
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE4
+CVE-00: TLS
+CVE-01: non implemented 
+CVE-02: 2012/12/06-11:10,2012/12/09-10:05
+CVE-03: 38,44
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE5
+CVE-00: MAD
+CVE-01: non implemented 
+CVE-02: 2012/12/05-22:15,2012/12/08-22:55
+CVE-03: 14,61
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVE6
+CVE-00: MAN
+CVE-01: non implemented 
+CVE-02: 2012/12/03-21:15,2012/12/06-18:30
+CVE-03: 1,24
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVF-00:LON
+CVF-01: 2012/12/13-20:20,2012/12/13-20:30
+CVF-02: 12:10,16:20
+
+CG-00: non implemented
+CG-01: non implemented

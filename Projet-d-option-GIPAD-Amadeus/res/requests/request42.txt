@@ -1,0 +1,18 @@
+CVO-00: HEL 
+CVO-01: 2012/12/01-05:05,2012/12/02-20:35
+CVO-02: 10:40,10:40
+
+CVE0
+CVE-00: SXB
+CVE-01: non implemented 
+CVE-02: 2012/12/05-10:30,2012/12/10-03:20
+CVE-03: 61,101
+CVE-04: non implemented
+CVE-05: non implemented
+
+CVF-00:ROM
+CVF-01: 2012/12/16-19:35,2012/12/18-15:30
+CVF-02: 23:40,23:55
+
+CG-00: non implemented
+CG-01: non implemented
