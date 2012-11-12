@@ -73,6 +73,11 @@ public final class Generate {
     public static final int GR_JOUR = NB_HOURS*GR_HOUR;
     
     /**
+     * valeur entière par défaut
+     */
+    public static final int INTEGER_VALUE_DEFAULT=1;
+    
+    /**
      * Constructeur privé vide
      */
     private Generate(){}
@@ -126,7 +131,7 @@ public final class Generate {
                 
                 alreadyTaken.add(departAirport);
                 
-                br.write("CVE-01: non implemented \n");
+                br.write("CVE-01: "+INTEGER_VALUE_DEFAULT+"\n");
                 
                 int[] intEtape=getInterDateTime(intArrivee[0]);
                 
@@ -136,8 +141,8 @@ public final class Generate {
                 int dmin= getRandomTime(intEtape[1]);
                 int dmax = getRandomTime(intEtape[1]-dmin)+dmin;
                 br.write("CVE-03: "+dmin/GR_HOUR+","+dmax/GR_HOUR+"\n");
-                br.write("CVE-04: non implemented\n");
-                br.write("CVE-05: non implemented\n");
+                br.write("CVE-04: "+getPlageHoraire()+"\n");
+                br.write("CVE-05: "+INTEGER_VALUE_DEFAULT+"\n");
                 br.write("\n");
             }
 
