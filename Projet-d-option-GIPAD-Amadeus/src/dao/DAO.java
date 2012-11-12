@@ -14,14 +14,15 @@ import model.Flight;
 public interface DAO {
 
     /**
-     * Index of the destination in departure files
+     * Separator in csv file
      */
-    int DEP_DESTINATION = 0;
+    String SEPARATOR = ";";
     
     /**
-     * Index of the destination in arrival files
+     * Index of the destination in departure or arrival files
+     * (must be the same !)
      */
-    int ARR_DESTINATION = 0;
+    int DESTINATION = 0;
     
     /**
      * Index of the departure time in files

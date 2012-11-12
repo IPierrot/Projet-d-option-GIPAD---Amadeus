@@ -11,8 +11,14 @@ import java.io.InputStreamReader;
 /**
  * Genere les fichiers csv decomposes pour une meilleure selection des vols.
  */
-public class GenerationCSV {
+public final class GenerationCSV {
 
+    /**
+     * Constructeur prive
+     */
+    private GenerationCSV(){
+    }
+    
     /**
      * Initial csv file containing all data
      */
@@ -74,7 +80,7 @@ public class GenerationCSV {
             //Lines loop
             while((line = br.readLine()) != null){
                 
-                elements = line.split(";", length);
+                elements = line.split(DAO.SEPARATOR, length);
                 
                 //Writing if not the same airport for departure and arrival
                 if(!elements[1].equals(elements[2])){
@@ -84,7 +90,8 @@ public class GenerationCSV {
                     }
                     FileWriter fw = new FileWriter(f.getAbsoluteFile(), true);
                     BufferedWriter bw = new BufferedWriter(fw);
-                    bw.write(elements[content]+";"+elements[length-1]+"\n");
+                    bw.write(elements[content]+DAO.SEPARATOR
+                            +elements[length-1]+"\n");
                     bw.close();
                 }
             }
@@ -109,7 +116,11 @@ public class GenerationCSV {
         }
     }
     
-    public static void main(String[] args){
+    /**
+     * main pour generer les fichiers
+     * @param args param.
+     */
+    public static void main(final String[] args){
         generateDep();
         generateArr();
     }
