@@ -107,5 +107,4 @@ public class CVE extends UserConstraint {
                         && flight.getDeparture().before(dep)); 
         return b;
     }
-
 }
