@@ -99,4 +99,61 @@ public final class DateOperations {
 		return (d.after(d1) && d.before(d2));
 	}
 
+	///////////////////////////////////////////
+	/////////// DATE METHODS FOR DAO //////////
+	///////////////////////////////////////////
+
+    /**
+     * Genere un objet Date en fonction des parametres lus sur le fichier
+     * @param yyMMdd le jour selectionne
+     * @param time l'heure a convertir
+     * @param gmt le fuseau horaire GMT
+     * @param offset le nombre de jours de decalage
+     * @return la date correspondante (Java.util.Date)
+     */
+    public static Date generateDate(final String yyMMdd, final String time, 
+            final String gmt, final String offset){
+        int dd = Integer.parseInt(yyMMdd.substring(4, 6))
+                + Integer.parseInt(offset);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmmZZZZZ");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        
+        try {
+            return sdf.parse(yyMMdd.substring(0, 2)+yyMMdd.substring(2, 4)
+                    +dd+time.substring(0, 2) + time.substring(2, 4) + gmt);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    /**
+     * Genere un objet Date en fonction des parametres lus sur le fichier
+     * @param yyMMdd le jour selectionne
+     * @param time l'heure a convertir
+     * @param gmt le fuseau horaire GMT
+     * @return la date correspondante (Java.util.Date)
+     */
+    public static Date generateDate(final String yyMMdd, 
+            final String time, final String gmt){
+        return generateDate(yyMMdd, time, gmt, "0");
+    }
+    
+    /**
+     * Genere un objet date comprenant uniquement l'heure et le fuseau gmt
+     * @param time le string de l'heure
+     * @param gmt le fuseau
+     * @return la date (01/01/1970) + l'heure passee
+     */
+    public static Date generateHour(final String time, final String gmt){
+        SimpleDateFormat sdf = new SimpleDateFormat("HHmmZZZZZ");
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
+        
+        try {
+            return sdf.parse(time + gmt);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
