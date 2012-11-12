@@ -36,35 +36,32 @@ public class CVO extends UserConstraint {
 	/**
 	 * Constructeur avec champs.
 	 * @param airport L'aeroport d'origine.
-	 * @param dateMin La date min locale du départ,
-	 * sous la forme : YYYY/MM/dd-HH:mm
-	 * @param dateMax La date max locale du départ,
-	 * sous la forme : YYYY/MM/dd-HH:mm
-	 * @param hourMin L'heure min du départ (HH:mm)
-	 * @param hourMax L'heure max du départ (HH:mm)
+	 * @param arrInterval La date min locale du départ,
+	 * sous la forme : YYYY/MM/dd-HH:mm.
+	 * @param hourInterval L'heure min du départ (HH:mm).
 	 */
-	public CVO(final String airport, final String dateMin, final String dateMax,
-			final String hourMin, final String hourMax){
+	public CVO(final String airport, final String[] arrInterval,
+			final String[] hourInterval){
 		this.origin = Airport.valueOf(airport);
 		String pattern = "YYYY/MM/dd-HH:mm";
 		try {
 			TimeZone tz = this.origin.getTimeZone();
-			this.dep1 = getDateFromPattern(pattern, dateMin, tz);
-			this.dep2 = getDateFromPattern(pattern, dateMax, tz);
+			this.dep1 = getDateFromPattern(pattern, arrInterval[0], tz);
+			this.dep2 = getDateFromPattern(pattern, arrInterval[1], tz);
 		} catch (ParseException e) {
 			System.out.println("Erreur dans la lecture des dates du"
 					+ " fichier de requête (CVO)");
 			e.printStackTrace();
 		}
-		this.h1 = hourMin;
-		this.h2 = hourMax;
+		this.h1 = hourInterval[0];
+		this.h2 = hourInterval[1];
 	}
 
 	@Override
 	public void apply(final Context context) {
 		context.getComplexTripModel().setStart(origin);
 		context.getComplexTripModel().setEarliestDeparture(dep1);
-		context.getComplexTripModel().setLatestArrival(dep2);
+		context.getComplexTripModel().setLatestDeparture(dep2);
 	}
 
 	@Override

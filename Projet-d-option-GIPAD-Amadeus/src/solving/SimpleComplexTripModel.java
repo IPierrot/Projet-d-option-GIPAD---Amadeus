@@ -53,7 +53,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	/**
 	 * La liste des intervalles de passage des étapes.
 	 */
-	private List<Date[]> stagesIntervals;
+	private List<int[]> stagesIntervals;
 	
 	/**
 	 * Le modele contraint Choco.
@@ -139,7 +139,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	public void addStage(final Airport stage, final Date earliestArrival,
 			final Date latestDeparture, final int durMin, final int durMax) {
 		this.stages.add(stage);
-		this.stagesIntervals.add(new Date[] {earliestArrival, latestDeparture});
+		this.stagesIntervals.add(new int[] {this.mapTime(earliestArrival),
+		        this.mapTime(latestDeparture)});
 		
 		IntegerVariable v1 = makeIntVar("arr", 0, tmaxLastest-t0Earliest);
 		IntegerVariable v2 = makeIntVar("dep", 0, tmaxLastest-t0Earliest);
@@ -150,29 +151,39 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 
 	@Override
 	public Date getEarliestDeparture() {
-		return new Date(this.t0Earliest);
+		return this.unmapTime(t0Earliest);
 	}
 
 	@Override
 	public Date getLatestDeparture() {
-		return new Date(this.t0Latest);
+		return this.unmapTime(t0Latest);
 	}
 
 	@Override
 	public void setEarliestDeparture(final Date d) {
 		this.t0Earliest = (int) (d.getTime()/GRANULARITE);
 	}
+	
+	@Override
+    public void setLatestDeparture(final Date d) {
+        this.t0Latest = (int) (d.getTime()/GRANULARITE);
+    }
 
 	@Override
 	public Date getEarliestArrival() {
-		return new Date(this.tmaxEarliest);
+		return this.unmapTime(tmaxEarliest);
 	}
 	
 	@Override
 	public Date getLatestArrival() {
-		return new Date(this.tmaxLastest);
+		return this.unmapTime(tmaxLastest);
 	}
 
+	@Override
+    public void setEarliestArrival(final Date d) {
+        this.tmaxLastest = (int) (d.getTime()/GRANULARITE);
+    }
+	
 	@Override
 	public void setLatestArrival(final Date d) {
 		this.tmaxLastest = (int) (d.getTime()/GRANULARITE);
@@ -200,7 +211,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	
 	@Override
 	public List<Date[]> getStagesIntervals(){
-		return this.stagesIntervals;
+	    List<Date[]> retour = new ArrayList<Date[]>();
+	    for(int[] t : this.stagesIntervals){
+	        retour.add(new Date[] {this.unmapTime(t[0]), this.unmapTime(t[1])});
+	    }
+		return retour;
 	}
 
 	@Override
@@ -280,7 +295,6 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 				this.addIndexVariable(makeIntVar("index " + i,
 						0, this.getPossibleFlights().size()-1));
 			}
-			
 			return true;
 		} else{
 			return false;
@@ -291,6 +305,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	public int mapTime(final Date d) {
 		int l = (int) (d.getTime()/GRANULARITE);
 		return  l - this.t0Earliest;
+	}
+	
+	@Override
+	public Date unmapTime(final int t){
+	    return new Date(t*GRANULARITE);
 	}
 
 }
