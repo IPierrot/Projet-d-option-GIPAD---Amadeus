@@ -6,7 +6,6 @@ import java.util.List;
 
 import model.Airport;
 import model.Flight;
-import choco.cp.model.CPModel;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.scheduling.TaskVariable;
 import static choco.Choco.*;
@@ -56,11 +55,6 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	private List<int[]> stagesIntervals;
 	
 	/**
-	 * Le modele contraint Choco.
-	 */
-	private CPModel cpModel;
-	
-	/**
 	 * Les variables correspondant à l'aeroport de départ et celui de 
 	 * fin du voyage.
 	 */
@@ -100,7 +94,6 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	 * constructeur par défaut - initialise le CPModel et les listes
 	 */
 	public SimpleComplexTripModel(){
-		this.cpModel = new CPModel();
 		this.stages = new ArrayList<Airport>();
 		this.possibleFlights = new ArrayList<Flight>();
 		this.indexVars = new ArrayList<IntegerVariable>();
@@ -187,11 +180,6 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	@Override
 	public void setLatestArrival(final Date d) {
 		this.tmaxLastest = (int) (d.getTime()/GRANULARITE);
-	}
-
-	@Override
-	public CPModel getCPModel() {
-		return this.cpModel;
 	}
 
 	@Override
