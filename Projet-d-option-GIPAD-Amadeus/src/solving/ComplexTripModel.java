@@ -72,6 +72,12 @@ public interface ComplexTripModel {
 	void setEarliestDeparture(Date d);
 	
 	/**
+     * Définit le départ au plus tard du voyage.
+     * @param d Le départ au plus tard du voyage.
+     */
+	void setLatestDeparture(Date d);
+	
+	/**
 	 * @return La date de fin du voyage au plus tôt.
 	 */
 	Date getEarliestArrival();
@@ -80,6 +86,12 @@ public interface ComplexTripModel {
 	 * @return La date de fin du voyage au plus tard.
 	 */
 	Date getLatestArrival();
+	
+	/**
+     * Définit la date de fin du voyage au plus tôt.
+     * @param d La date de fin au plus tôt du voyage.
+     */
+    void setEarliestArrival(Date d);
 	
 	/**
 	 * Définit la date de fin du voyage au plus tard.

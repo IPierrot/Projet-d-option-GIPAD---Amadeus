@@ -163,6 +163,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	public void setEarliestDeparture(final Date d) {
 		this.t0Earliest = (int) (d.getTime()/GRANULARITE);
 	}
+	
+	@Override
+    public void setLatestDeparture(final Date d) {
+        this.t0Latest = (int) (d.getTime()/GRANULARITE);
+    }
 
 	@Override
 	public Date getEarliestArrival() {
@@ -174,6 +179,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 		return this.unmapTime(tmaxLastest);
 	}
 
+	@Override
+    public void setEarliestArrival(final Date d) {
+        this.tmaxLastest = (int) (d.getTime()/GRANULARITE);
+    }
+	
 	@Override
 	public void setLatestArrival(final Date d) {
 		this.tmaxLastest = (int) (d.getTime()/GRANULARITE);
