@@ -87,6 +87,11 @@ public interface ComplexTripModel {
 	 */
 	void setLatestArrival(Date d);
 	
+	/**
+     * @return La liste des intervales de dates mappées des étapes.
+     */
+    List<Date[]> getStagesIntervals();
+	
 	
 	// ELEMENTS CHOCO
 	
@@ -192,9 +197,9 @@ public interface ComplexTripModel {
 	int mapTime(Date d);
 	
 	/**
-	 * @return La liste des intervales de dates mappées des étapes.
+	 * @param t La date mappée à démapper.
+	 * @return La date correspondant à t.
 	 */
-	List<Date[]> getStagesIntervals();
-
+	Date unmapTime(int t);
 
 }

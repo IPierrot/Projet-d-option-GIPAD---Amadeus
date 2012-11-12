@@ -96,6 +96,9 @@ public class Client {
 		
 		// Chargement des vols
 		this.loadPossibleFlights();
+		
+		// Initialisation du complex trip model
+		this.context.getComplexTripModel().initialize();
 	}
 	
 	/**
