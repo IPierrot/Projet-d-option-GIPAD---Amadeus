@@ -53,7 +53,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	/**
 	 * La liste des intervalles de passage des étapes.
 	 */
-	public List<Date[]> stagesDates;
+	private List<Date[]> stagesIntervals;
 	
 	/**
 	 * Le modele contraint Choco.
@@ -139,7 +139,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	public void addStage(final Airport stage, final Date earliestArrival,
 			final Date latestDeparture, final int durMin, final int durMax) {
 		this.stages.add(stage);
-		this.stagesDates.add(new Date[] {earliestArrival, latestDeparture});
+		this.stagesIntervals.add(new Date[] {earliestArrival, latestDeparture});
 		
 		IntegerVariable v1 = makeIntVar("arr", 0, tmaxLastest-t0Earliest);
 		IntegerVariable v2 = makeIntVar("dep", 0, tmaxLastest-t0Earliest);
@@ -200,7 +200,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	
 	@Override
 	public List<Date[]> getStagesIntervals(){
-		return this.stagesDates;
+		return this.stagesIntervals;
 	}
 
 	@Override
