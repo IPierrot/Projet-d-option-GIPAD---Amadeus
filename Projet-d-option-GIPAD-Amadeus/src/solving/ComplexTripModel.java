@@ -6,7 +6,7 @@ import java.util.List;
 import model.Airport;
 import model.Flight;
 
-import choco.cp.model.CPModel;
+
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.scheduling.TaskVariable;
 
@@ -106,11 +106,6 @@ public interface ComplexTripModel {
 	
 	
 	// ELEMENTS CHOCO
-	
-	/**
-	 * @return Le modele Choco du problème contraint.
-	 */
-	CPModel getCPModel();
 	
 	// METHODES RELATIVES A L'AEROPORT DE DEPART
 	

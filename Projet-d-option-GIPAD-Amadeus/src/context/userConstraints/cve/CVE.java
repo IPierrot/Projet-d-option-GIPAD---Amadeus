@@ -1,7 +1,9 @@
 package context.userConstraints.cve;
 
+import java.text.ParseException;
 import java.util.Date;
 
+import static utils.DateOperations.*;
 import model.Airport;
 import model.Flight;
 import context.Context;
@@ -15,6 +17,16 @@ import context.userConstraints.UserConstraint;
  */
 public class CVE extends UserConstraint {
 
+    /**
+     * La durée minimale en heures par défaut
+     */
+    private static final int DMIN_DEFAULT = 3;
+    
+    /**
+     * La durée maximale en heures par défaut
+     */
+    private static final int DMAX_DEFAULT = 72;
+    
     /**
      * L'aeroport etape.
      */
@@ -31,7 +43,7 @@ public class CVE extends UserConstraint {
     private Date arr, dep;
     
     /**
-     * La durée minimale et maximal du séjour.
+     * La durée minimale et maximal du séjour (en heures).
      */
     private int durMin, durMax;
     
@@ -59,19 +71,41 @@ public class CVE extends UserConstraint {
             final String[] passageInterval, final int[] dur,
             final String[] hours, final int nbtimes){
         this.stage = Airport.valueOf(airport);
-        this.mandatory = mandatory;
+        this.mandatory = mandat;
+        try {
+            this.arr = getDateFromPattern("YYYY/MM/dd-HH:mm",
+                    passageInterval[0]);
+            this.dep = getDateFromPattern("YYYY/MM/dd-HH:mm",
+                    passageInterval[1]);
+        } catch (ParseException e) {
+            System.out.println("Erreur dans la lecture des dates du"
+                    + " fichier de requête (CVE)");
+            e.printStackTrace();
+        }
+        this.durMin = dur[0] > 0 ? dur[0] : DMIN_DEFAULT;
+        this.durMax = dur[1] > 0 ? dur[1] : DMAX_DEFAULT;
+        this.h1 = hours[0];
+        this.h2 = hours[1];
+        this.nbTimes = nbtimes;
     }
 
     @Override
     public void apply(final Context context) {
-        // TODO Auto-generated method stub
-
+        context.getComplexTripModel().addStage(
+                stage, arr, dep, durMin, durMax);
     }
 
     @Override
     public boolean remove(final Flight flight) {
-        // TODO Auto-generated method stub
-        return false;
+        boolean b = (flight.getDestination() == stage 
+                        && flight.getArrival().before(arr))
+                  || (flight.getDestination() == stage
+                        && flight.getArrival().after(dep))
+                  || (flight.getOrigin() == stage
+                        && flight.getDeparture().after(arr)) 
+                  || (flight.getOrigin() == stage
+                        && flight.getDeparture().before(dep)); 
+        return b;
     }
 
 }
