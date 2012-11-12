@@ -23,7 +23,7 @@
 	<variableList>
 		<variable>
 			<name>HOME</name>
-			<value>$%7BECLIPSE_HOME%7D</value>
+			<value>$%7BPROJECT_LOC%7D</value>
 		</variable>
 	</variableList>
 </projectDescription>
