@@ -60,6 +60,11 @@ public class RequestLoaderImp implements RequestLoader {
     public static final int TAILLE_CV=3;
     
     /**
+     * taille dans le fichier du nom complet des contraintes
+     */
+    public static final int TAILLE_CV_COMPLET=7;
+    
+    /**
      * Contraintes sur la ville d'origine
      */
     private CVO cvo;
@@ -90,7 +95,7 @@ public class RequestLoaderImp implements RequestLoader {
             while(sc.hasNextLine()){
                 
                 s=sc.nextLine();
-                if(s.substring(0, TAILLE_CV).equals(CVO)){
+                if(s.length()>0&&s.substring(0, TAILLE_CV).equals(CVO)){
                     String CVO0 = getStringPropre(s);
                     s=sc.nextLine();
                     String[] CVO1 = getStringPropre(s).split(SEPARATEUR);
@@ -99,7 +104,7 @@ public class RequestLoaderImp implements RequestLoader {
                     cvo= new CVO(CVO0, CVO1, CVO2);
                 }
                 
-                if(s.substring(0, TAILLE_CV).equals(CVE)){
+                if(s.length()>0&&s.substring(0, TAILLE_CV).equals(CVE)){
                     s=sc.nextLine();
                     String CVE0 = getStringPropre(s);
                     s=sc.nextLine();
@@ -120,7 +125,7 @@ public class RequestLoaderImp implements RequestLoader {
                     cves.add(cve);          
                 }
                 
-                if (s.substring(0, TAILLE_CV).equals(CVF)){
+                if (s.length()>0&&s.substring(0, TAILLE_CV).equals(CVF)){
                     String CVF0 = getStringPropre(s);
                     s=sc.nextLine();
                     String[] CVF1 = getStringPropre(s).split(SEPARATEUR);
@@ -166,7 +171,12 @@ public class RequestLoaderImp implements RequestLoader {
      * @return la String modifiée
      */
     private String getStringPropre(final String s){
-        return s.split(DOUBLE_POINT)[1].split(COMMENTAIRE)[0].trim();
+        return s.substring(TAILLE_CV_COMPLET).split(COMMENTAIRE)[0].trim();
     }
+    
+//    public static void main (String[] args){
+//        RequestLoader rl = new RequestLoaderImp();
+//        rl.loadRequest("res/requests/request0.txt");
+//    }
 
 }
