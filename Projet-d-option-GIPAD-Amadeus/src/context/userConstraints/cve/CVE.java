@@ -58,7 +58,8 @@ public class CVE extends UserConstraint {
     public CVE(final String airport, final boolean mandat,
             final String[] passageInterval, final int[] dur,
             final String[] hours, final int nbtimes){
-        
+        this.stage = Airport.valueOf(airport);
+        this.mandatory = mandatory;
     }
 
     @Override
