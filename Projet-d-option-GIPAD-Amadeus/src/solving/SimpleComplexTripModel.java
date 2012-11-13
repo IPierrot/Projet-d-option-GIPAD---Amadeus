@@ -6,7 +6,6 @@ import java.util.List;
 
 import model.Airport;
 import model.Flight;
-import choco.cp.model.CPModel;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.scheduling.TaskVariable;
 import static choco.Choco.*;
@@ -53,12 +52,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	/**
 	 * La liste des intervalles de passage des étapes.
 	 */
-	private List<Date[]> stagesDates;
-	
-	/**
-	 * Le modele contraint Choco.
-	 */
-	private CPModel cpModel;
+	private List<int[]> stagesIntervals;
 	
 	/**
 	 * Les variables correspondant à l'aeroport de départ et celui de 
@@ -100,7 +94,6 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	 * constructeur par défaut - initialise le CPModel et les listes
 	 */
 	public SimpleComplexTripModel(){
-		this.cpModel = new CPModel();
 		this.stages = new ArrayList<Airport>();
 		this.possibleFlights = new ArrayList<Flight>();
 		this.indexVars = new ArrayList<IntegerVariable>();
@@ -139,7 +132,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	public void addStage(final Airport stage, final Date earliestArrival,
 			final Date latestDeparture, final int durMin, final int durMax) {
 		this.stages.add(stage);
-		this.stagesDates.add(new Date[] {earliestArrival, latestDeparture});
+		this.stagesIntervals.add(new int[] {this.mapTime(earliestArrival),
+		        this.mapTime(latestDeparture)});
 		
 		IntegerVariable v1 = makeIntVar("arr", 0, tmaxLastest-t0Earliest);
 		IntegerVariable v2 = makeIntVar("dep", 0, tmaxLastest-t0Earliest);
@@ -150,37 +144,42 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 
 	@Override
 	public Date getEarliestDeparture() {
-		return new Date(this.t0Earliest);
+		return this.unmapTime(t0Earliest);
 	}
 
 	@Override
 	public Date getLatestDeparture() {
-		return new Date(this.t0Latest);
+		return this.unmapTime(t0Latest);
 	}
 
 	@Override
 	public void setEarliestDeparture(final Date d) {
 		this.t0Earliest = (int) (d.getTime()/GRANULARITE);
 	}
+	
+	@Override
+    public void setLatestDeparture(final Date d) {
+        this.t0Latest = (int) (d.getTime()/GRANULARITE);
+    }
 
 	@Override
 	public Date getEarliestArrival() {
-		return new Date(this.tmaxEarliest);
+		return this.unmapTime(tmaxEarliest);
 	}
 	
 	@Override
 	public Date getLatestArrival() {
-		return new Date(this.tmaxLastest);
+		return this.unmapTime(tmaxLastest);
 	}
 
+	@Override
+    public void setEarliestArrival(final Date d) {
+        this.tmaxLastest = (int) (d.getTime()/GRANULARITE);
+    }
+	
 	@Override
 	public void setLatestArrival(final Date d) {
 		this.tmaxLastest = (int) (d.getTime()/GRANULARITE);
-	}
-
-	@Override
-	public CPModel getCPModel() {
-		return this.cpModel;
 	}
 
 	@Override
@@ -200,7 +199,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	
 	@Override
 	public List<Date[]> getStagesIntervals(){
-		return this.stagesDates;
+	    List<Date[]> retour = new ArrayList<Date[]>();
+	    for(int[] t : this.stagesIntervals){
+	        retour.add(new Date[] {this.unmapTime(t[0]), this.unmapTime(t[1])});
+	    }
+		return retour;
 	}
 
 	@Override
@@ -280,7 +283,6 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 				this.addIndexVariable(makeIntVar("index " + i,
 						0, this.getPossibleFlights().size()-1));
 			}
-			
 			return true;
 		} else{
 			return false;
@@ -291,6 +293,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	public int mapTime(final Date d) {
 		int l = (int) (d.getTime()/GRANULARITE);
 		return  l - this.t0Earliest;
+	}
+	
+	@Override
+	public Date unmapTime(final int t){
+	    return new Date(t*GRANULARITE);
 	}
 
 }

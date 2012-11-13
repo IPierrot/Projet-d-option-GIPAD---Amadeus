@@ -7,6 +7,11 @@ import context.userConstraints.cve.CVE;
 import context.userConstraints.cvf.CVF;
 import context.userConstraints.cvo.CVO;
 
+/**
+ * Chargeur de requêtes
+ * @author Dimitri, Marc et Pierre
+ *
+ */
 public interface RequestLoader {
 
 	/**

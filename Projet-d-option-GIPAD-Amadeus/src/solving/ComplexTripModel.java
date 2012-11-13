@@ -6,7 +6,7 @@ import java.util.List;
 import model.Airport;
 import model.Flight;
 
-import choco.cp.model.CPModel;
+
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.scheduling.TaskVariable;
 
@@ -72,6 +72,12 @@ public interface ComplexTripModel {
 	void setEarliestDeparture(Date d);
 	
 	/**
+     * Définit le départ au plus tard du voyage.
+     * @param d Le départ au plus tard du voyage.
+     */
+	void setLatestDeparture(Date d);
+	
+	/**
 	 * @return La date de fin du voyage au plus tôt.
 	 */
 	Date getEarliestArrival();
@@ -82,18 +88,24 @@ public interface ComplexTripModel {
 	Date getLatestArrival();
 	
 	/**
+     * Définit la date de fin du voyage au plus tôt.
+     * @param d La date de fin au plus tôt du voyage.
+     */
+    void setEarliestArrival(Date d);
+	
+	/**
 	 * Définit la date de fin du voyage au plus tard.
 	 * @param d La date de fin au plus tard du voyage.
 	 */
 	void setLatestArrival(Date d);
 	
+	/**
+     * @return La liste des intervales de dates mappées des étapes.
+     */
+    List<Date[]> getStagesIntervals();
+	
 	
 	// ELEMENTS CHOCO
-	
-	/**
-	 * @return Le modele Choco du problème contraint.
-	 */
-	CPModel getCPModel();
 	
 	// METHODES RELATIVES A L'AEROPORT DE DEPART
 	
@@ -192,9 +204,9 @@ public interface ComplexTripModel {
 	int mapTime(Date d);
 	
 	/**
-	 * @return La liste des intervales de dates mappées des étapes.
+	 * @param t La date mappée à démapper.
+	 * @return La date correspondant à t.
 	 */
-	List<Date[]> getStagesIntervals();
-
+	Date unmapTime(int t);
 
 }

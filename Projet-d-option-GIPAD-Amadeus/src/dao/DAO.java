@@ -6,15 +6,55 @@ import java.util.List;
 import model.Airport;
 import model.Flight;
 
+/**
+ * La DAO permet l'acces aux donnees sauvegardees sur les fichiers csv.
+ * Elle genere ensuite les vols en tant qu'objets java directement
+ * manipulables par le modele.
+ */
 public interface DAO {
 
-	/**
-	 * @deprecated
-	 * @return Tous les vols partant le jour dd du mois MM de l'anée yy
-	 * @param yyMMdd La date sous forme de chaine de caractères
-	 */
-	List<Flight> getAllFlights(String yyMMdd);
+    /**
+     * Separator in csv file
+     */
+    String SEPARATOR = ";";
+    
+    /**
+     * Index of the destination in departure or arrival files
+     * (must be the same !)
+     */
+    int DESTINATION = 0;
+    
+    /**
+     * Index of the departure time in files
+     */
+    int DEP_TIME = 1;
+    
+    /**
+     * Index of the departure GMT in files
+     */
+    int DEP_GMT = 2;
+    
+    /**
+     * Index of the arrival time in files
+     */
+    int ARR_TIME = 3;
+    
+    /**
+     * Index of the arrival GMT in files
+     */
+    int ARR_GMT = 4;
+    
+    /**
+     * Index of the arrival day offset in files
+     */
+    int ARR_OFFSET = 5;
+    
+    /**
+     * Index of the flight ID in files
+     */
+    int ID = 6;
 
+    
 	/**
 	 * @param origin La ville d'orgine.
 	 * @param destinations Les destinations possibles.

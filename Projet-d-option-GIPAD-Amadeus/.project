@@ -20,4 +20,10 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
 	</natures>
+	<variableList>
+		<variable>
+			<name>HOME</name>
+			<value>$%7BPROJECT_LOC%7D</value>
+		</variable>
+	</variableList>
 </projectDescription>
