@@ -98,7 +98,7 @@ public class Client {
 		this.loadPossibleFlights();
 		
 		// Initialisation du complex trip model
-		this.context.getComplexTripModel().initialize();
+		this.context.getComplexTripModel().build();
 	}
 	
 	/**
@@ -112,8 +112,8 @@ public class Client {
 		DAO dao = this.context.getDao();
 		
 		// Récupération des aeroports de départ, de fin et des étapes.
-		Airport origin = ctxm.getStart();
-		Airport end = ctxm.getEnd();
+		Airport origin = ctxm.getStartAirport();
+		Airport end = ctxm.getEndAirport();
 		List<Airport> stages = ctxm.getStages();
 		
 		// Récupération des dates entre lesquel on va récupérer des vols.

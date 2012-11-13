@@ -59,9 +59,7 @@ public class CVO extends UserConstraint {
 
 	@Override
 	public void apply(final Context context) {
-		context.getComplexTripModel().setStart(origin);
-		context.getComplexTripModel().setEarliestDeparture(dep1);
-		context.getComplexTripModel().setLatestDeparture(dep2);
+		context.getComplexTripModel().setStart(origin, dep1, dep2);
 	}
 
 	@Override

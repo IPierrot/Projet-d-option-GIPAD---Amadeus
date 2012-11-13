@@ -60,9 +60,7 @@ public class CVF extends UserConstraint {
     
 	@Override
 	public void apply(final Context context) {
-	    context.getComplexTripModel().setEnd(end);
-        context.getComplexTripModel().setEarliestArrival(arr1);
-        context.getComplexTripModel().setLatestArrival(arr2);
+	    context.getComplexTripModel().setEnd(end, arr1, arr2);
 	}
 
 	@Override

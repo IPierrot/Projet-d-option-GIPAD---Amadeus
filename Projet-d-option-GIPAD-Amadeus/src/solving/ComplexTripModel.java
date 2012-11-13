@@ -7,6 +7,7 @@ import model.Airport;
 import model.Flight;
 
 
+import choco.cp.model.CPModel;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.scheduling.TaskVariable;
 
@@ -17,27 +18,36 @@ import choco.kernel.model.variables.scheduling.TaskVariable;
  */
 public interface ComplexTripModel {
 	
+    
+    //--------------------//
+    // ELEMENTS DU MODELE //
+    //--------------------//
+    
 	/**
 	 * @return L'aeroport de départ du voyage.
 	 */
-	Airport getStart();
+	Airport getStartAirport();
 	
 	/**
 	 * Définit l'aeroport de départ du voyage.
 	 * @param start l'aeroport de départ.
+	 * @param earliest Le dépat au plus tôt.
+	 * @param latest le départ au plus tard.
 	 */
-	void setStart(Airport start);
+	void setStart(Airport start, Date earliest, Date latest);
 	
 	/**
 	 * @return L'aeroport final du voyage.
 	 */
-	Airport getEnd();
+	Airport getEndAirport();
 	
 	/**
 	 * Définit l'aeroport final du voyage.
 	 * @param end l'aeroport final.
+	 * @param earliest L'arrivée au plus tôt.
+	 * @param latest L'arrivée au plus tard.
 	 */
-	void setEnd(Airport end);
+	void setEnd(Airport end, Date earliest, Date latest);
 	
 	/**
 	 * @return La liste des étapes définie.
@@ -66,18 +76,6 @@ public interface ComplexTripModel {
 	Date getLatestDeparture();
 	
 	/**
-	 * Définit le départ au plus tôt du voyage.
-	 * @param d Le départ au plus tôt du voyage.
-	 */
-	void setEarliestDeparture(Date d);
-	
-	/**
-     * Définit le départ au plus tard du voyage.
-     * @param d Le départ au plus tard du voyage.
-     */
-	void setLatestDeparture(Date d);
-	
-	/**
 	 * @return La date de fin du voyage au plus tôt.
 	 */
 	Date getEarliestArrival();
@@ -88,26 +86,25 @@ public interface ComplexTripModel {
 	Date getLatestArrival();
 	
 	/**
-     * Définit la date de fin du voyage au plus tôt.
-     * @param d La date de fin au plus tôt du voyage.
-     */
-    void setEarliestArrival(Date d);
-	
-	/**
-	 * Définit la date de fin du voyage au plus tard.
-	 * @param d La date de fin au plus tard du voyage.
-	 */
-	void setLatestArrival(Date d);
-	
-	/**
-     * @return La liste des intervales de dates mappées des étapes.
+     * @return La liste des intervales de dates des étapes.
      */
     List<Date[]> getStagesIntervals();
+    
+    /**
+     * @return Les intervalles de durée (en heures) des étapes.
+     */
+    List<int[]> getStagesDurations();
 	
+	//----------------//
+	// ELEMENTS CHOCO //
+    //----------------//
+    
+    /**
+     * @return Le CPModel lié au ComplexTripModel.
+     */
+    CPModel getCPModel();
 	
-	// ELEMENTS CHOCO
-	
-	// METHODES RELATIVES A L'AEROPORT DE DEPART
+	// METHODES RELATIVES A L'AEROPORT DE DEPART //
 	
 	/**
 	 * @return La variable correspondant à l'id de l'aeroport
@@ -121,34 +118,40 @@ public interface ComplexTripModel {
 	 */
 	IntegerVariable getStartDeparture();
 	
-	// METHODES RELATIVES AU ETAPES
+	/**
+	 * @return L'index du vol de départ du voyage.
+	 */
+	IntegerVariable getStartIndex();
+	
+	
+	// METHODES RELATIVES AU ETAPES //
 	
 	/**
 	 * @return Les task variables du modèle, une task variable
 	 * correspond à une étape du voyage.
 	 */
-	List<TaskVariable> getStagesTaskVariables();
-	
-	/**
-	 * Ajoute une taskVariable d'étape.
-	 * @param stageVar la taskVariable à ajouter.
-	 */
-	void addStageTaskVariable(TaskVariable stageVar);
+	TaskVariable[] getStagesTaskVariables();
 	
 	/**
 	 * @return Les variables correspondant au identifiants des étapes
 	 * du voyage.
 	 */
-	List<IntegerVariable> getStagesVariables();
+	IntegerVariable[] getStagesVariables();
 	
 	/**
-	 * Ajoute une variable d'identifiant d'étape.
-	 * @param stageVar la variable.
-	 */
-	void addStageVariable(IntegerVariable stageVar);
+     * @return Les variables correspondant aux index des vols 
+     * du voyage liés aux étapes.
+     */
+    IntegerVariable[][] getStageIndexes();
+    
+    /**
+     * @return Les variables correspondant aux indexes uniques des vols.
+     */
+    IntegerVariable[] getIndexes();
 	
-	// METHODES RELATIVES A L'ARRIVEE
-	
+    
+	// METHODES RELATIVES A L'ARRIVEE //
+    
 	/**
 	 * @return La variable correspondant à l'index de l'aeroport final
 	 * du voyage.
@@ -161,7 +164,12 @@ public interface ComplexTripModel {
 	 */
 	IntegerVariable getEndArrival();
 	
-	// METHODES RELATIVES AUX VOLS
+	   /**
+     * @return L'index du vol d'arrivée du voyage.
+     */
+    IntegerVariable getEndIndex();
+	
+	// METHODES RELATIVES AUX VOLS //
 	
 	/**
 	 * @return La liste des vols susceptibles de répondre au problème.
@@ -175,38 +183,15 @@ public interface ComplexTripModel {
 	void addPossibleFlight(Flight flight);
 	
 	/**
-	 * @return Les variables correspondant aux index des vols du voyage.
-	 */
-	List<IntegerVariable> getIndexVariables();
-	
-	/**
-	 * Ajoute une variable d'index de vol.
-	 * @param indexVar la variable.
-	 */
-	void addIndexVariable(IntegerVariable indexVar);
-	
-	/**
-	 * @return true si le modèle est valide (ie toutes les informations
-	 * nécessaire sur le départ et l'arrivéee sont remplies, ...).
-	 */
-	boolean isValid();
-	
-	/**
-	 * Initialise les variables.
+	 * Construit le modèle.
 	 * @return true en cas de réussite, false sinon.
 	 */
-	boolean initialize();
+	boolean build();
 	
 	/**
-	 * @param d la date à mapper.
-	 * @return mappe la date d à l'échelle de temps du modèle.
+	 * @param d La date à mapper.
+	 * @return La date mappée.
 	 */
 	int mapTime(Date d);
 	
-	/**
-	 * @param t La date mappée à démapper.
-	 * @return La date correspondant à t.
-	 */
-	Date unmapTime(int t);
-
 }

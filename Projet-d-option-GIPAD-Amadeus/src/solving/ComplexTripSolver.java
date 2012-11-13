@@ -1,6 +1,5 @@
 package solving;
 
-import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
 
 /**
@@ -16,12 +15,7 @@ public interface ComplexTripSolver {
     CPSolver getCPSolver();
     
     /**
-     * @return Le modèle Choco.
-     */
-    CPModel getCPModel();
-    
-    /**
-     * Lit le modèle pour pouvoir résoudre le problème.
+     * Lit le modèle et ajoute les contraintes.
      * @param ctxModel Le modèle à lire.
      */
     void read(ComplexTripModel ctxModel);
