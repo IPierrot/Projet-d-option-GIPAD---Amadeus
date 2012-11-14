@@ -36,23 +36,24 @@ public class CVO extends UserConstraint {
 	/**
 	 * Constructeur avec champs.
 	 * @param airport L'aeroport d'origine.
-	 * @param arrInterval La date min locale du départ,
+	 * @param depInterval La date min locale du départ,
 	 * sous la forme : YYYY/MM/dd-HH:mm.
 	 * @param hourInterval L'heure min du départ (HH:mm).
 	 */
-	public CVO(final String airport, final String[] arrInterval,
+	public CVO(final String airport, final String[] depInterval,
 			final String[] hourInterval){
 		this.origin = Airport.valueOf(airport);
-		String pattern = "YYYY/MM/dd-HH:mm";
+		String pattern = "yyyy/MM/d-HH:mm";
 		try {
 			TimeZone tz = this.origin.getTimeZone();
-			this.dep1 = getDateFromPattern(pattern, arrInterval[0], tz);
-			this.dep2 = getDateFromPattern(pattern, arrInterval[1], tz);
+			this.dep1 = getDateFromPattern(pattern, depInterval[0], tz);
+			this.dep2 = getDateFromPattern(pattern, depInterval[1], tz);
 		} catch (ParseException e) {
 			System.out.println("Erreur dans la lecture des dates du"
 					+ " fichier de requête (CVO)");
 			e.printStackTrace();
-		}
+		}		
+        
 		this.h1 = hourInterval[0];
 		this.h2 = hourInterval[1];
 	}
@@ -66,7 +67,9 @@ public class CVO extends UserConstraint {
 	public boolean remove(final Flight flight) {
 		boolean b = false;
 		try {
-			b = isBetweenHours(flight.getDeparture(), "HH:mm", h1, h2);
+			b = (flight.getOrigin() == origin
+			       && isBetweenHours(flight.getDeparture(), "HH:mm", h1, h2))
+			    || (flight.getDeparture().before(dep1));
 		} catch (ParseException e) {
 			System.out.println("Erreur de lecture du format de l'heure dans le"
 					+ " fichier de requêtes (CVO)");

@@ -8,6 +8,8 @@ import model.Flight;
 import static choco.Choco.*;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
+import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.common.logging.Verbosity;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.scheduling.TaskVariable;
 
@@ -44,6 +46,23 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
     private List<int[]> airportsArr;
     
     /**
+     * Les vols disponibles.
+     */
+    private List<Flight> flights;
+    
+    /**
+     * Les indexes des vols de la solutions trouvée.
+     */
+    private IntegerVariable[] flightsIndexes;
+    
+    /**
+     * True si la méthode read a été appellée
+     * sur le solveur depuis son instanciation
+     * ou son dernier reset.
+     */
+    private boolean readyToSolve;
+    
+    /**
      * Constructeur sans paramètres
      */
     public SimpleComplexTripSolver(){
@@ -52,6 +71,9 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         this.arrivees= new ArrayList<int[]>();
         this.airportsDep = new ArrayList<int[]>();
         this.airportsArr = new ArrayList<int[]>();
+        this.flights = null;
+        this.flightsIndexes = null;
+        this.readyToSolve = false;
     }
     
     @Override
@@ -64,9 +86,16 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         
         CPModel cpmodel = cxtmodel.getCPModel();
         
+//        for(int i = 0; i<cpmodel.getNbIntVars(); i++){
+//            System.out.println(cpmodel.getIntVar(i));
+//        }
+        
+        this.flights = cxtmodel.getPossibleFlights();
+        this.flightsIndexes = cxtmodel.getIndexes();
+        
         // Initialisation des données
-        for(int i=0; i<cxtmodel.getPossibleFlights().size(); i++){
-            Flight f = cxtmodel.getPossibleFlights().get(i);
+        for(int i=0; i<this.flights.size(); i++){
+            Flight f = this.flights.get(i);
             this.departs.add(new int[] {i, cxtmodel.mapTime(f.getDeparture())});
             this.arrivees.add(new int[] {i, cxtmodel.mapTime(f.getArrival())});
             this.airportsDep.add(new int[] {i, f.getOrigin().getId()});
@@ -83,21 +112,35 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         cpmodel.addConstraint(
                 neq(cxtmodel.getStartIndex(), cxtmodel.getEndIndex()));
         
+        List<int[]> temp = new ArrayList<int[]>();
+        for(int[] j : airportsDep){
+            if(j[1] == cxtmodel.getStartAirport().getId()){
+                temp.add(j);
+            }
+        }
+        
         cpmodel.addConstraint(feasPairAC(cxtmodel.getStartIndex(),
-                cxtmodel.getStartVariable(), airportsDep));
+                cxtmodel.getStartVariable(), temp));
         
         cpmodel.addConstraint(feasPairAC(cxtmodel.getStartIndex(),
                 cxtmodel.getStartDeparture(), departs));
         
+        temp = new ArrayList<int[]>();
+        for(int[] j : airportsArr){
+            if(j[1] == cxtmodel.getEndAirport().getId()){
+                temp.add(j);
+            }
+        }
+        
         cpmodel.addConstraint(feasPairAC(cxtmodel.getEndIndex(),
-                cxtmodel.getEndVariable(), airportsArr));
+                cxtmodel.getEndVariable(), temp));
         
         cpmodel.addConstraint(feasPairAC(cxtmodel.getEndIndex(),
                 cxtmodel.getEndArrival(), arrivees));
      
         // Etapes
         for(int i = 0; i < cxtmodel.getStagesVariables().length; i++){
-            IntegerVariable[] indexes = cxtmodel.getStageIndexes()[i];
+            IntegerVariable[] indexes = cxtmodel.getStagesIndexes()[i];
             TaskVariable task = cxtmodel.getStagesTaskVariables()[i];
             IntegerVariable stage = cxtmodel.getStagesVariables()[i];
             
@@ -107,11 +150,25 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             cpmodel.addConstraint(feasPairAC(
                     indexes[1], task.end(), departs));
             
-            cpmodel.addConstraint(feasPairAC(
-                    indexes[0], stage, airportsArr));
+            temp = new ArrayList<int[]>();
+            for(int[] j : airportsArr){
+                if(j[1] == cxtmodel.getStages().get(i).getId()){
+                    temp.add(j);
+                }
+            }
             
             cpmodel.addConstraint(feasPairAC(
-                    indexes[1], stage, airportsDep));
+                    indexes[0], stage, temp));
+            
+            temp = new ArrayList<int[]>();
+            for(int[] j : airportsDep){
+                if(j[1] == cxtmodel.getStages().get(i).getId()){
+                    temp.add(j);
+                }
+            }
+            
+            cpmodel.addConstraint(feasPairAC(
+                    indexes[1], stage, temp));
         }
         
         int n = cxtmodel.getStagesVariables().length;
@@ -121,15 +178,52 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         allIndexes[1] = cxtmodel.getEndIndex();
         
         for(int i = 0; i < n; i++){
-            IntegerVariable[] indexes = cxtmodel.getStageIndexes()[i];
+            IntegerVariable[] indexes = cxtmodel.getStagesIndexes()[i];
             allIndexes[2*i+2] = indexes[0];
             allIndexes[2*i+2+1] = indexes[1];
         }
         
+
+        
         for(int i = 0; i < cxtmodel.getIndexes().length; i++){
-            cpmodel.addConstraint(occurrence(
+            cpmodel.addConstraint(occurrenceMin(
                     cxtmodel.getIndexes()[i], allIndexes, 2));
         }
+        
+        this.solver.read(cpmodel);
+        this.readyToSolve = true;
+    }
+
+    @Override
+    public List<Flight> getFirstTripFound() {
+        List<Flight> trip = new ArrayList<Flight>();
+        if(this.readyToSolve){
+        
+            ChocoLogging.setVerbosity(Verbosity.SOLUTION);
+            
+            boolean b = this.solver.solve();
+            if(b){
+                for(IntegerVariable v : this.flightsIndexes){
+                    Integer i = this.solver.getVar(v).getVal();
+                    System.out.println(i);
+                    trip.add(this.flights.get(i));
+                }
+            }
+            
+        }
+        return trip;
+    }
+
+    @Override
+    public void reset() {
+        this.solver = new CPSolver();
+        this.departs = new ArrayList<int[]>();
+        this.arrivees= new ArrayList<int[]>();
+        this.airportsDep = new ArrayList<int[]>();
+        this.airportsArr = new ArrayList<int[]>();
+        this.flights = null;
+        this.flightsIndexes = null;
+        this.readyToSolve = false;
     }
 
 }

@@ -1,5 +1,6 @@
 package context.userConstraints;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import model.Flight;
@@ -30,10 +31,14 @@ public abstract class UserConstraint {
 	 * @param flights Les vols à vérifier.
 	 */
 	public void filter(final List<Flight> flights){
-		for(Flight f : flights){
+	    List<Flight> toRemove = new ArrayList<Flight>();
+	    for(Flight f : flights){
 			if(this.remove(f)){
-				flights.remove(f);
+				toRemove.add(f);
 			}
 		}
+	    flights.removeAll(toRemove);
+	    System.out.println(this.getClass().getSimpleName() 
+                + " " + flights.size());
 	}
 }

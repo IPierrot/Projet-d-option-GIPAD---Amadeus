@@ -142,7 +142,7 @@ public interface ComplexTripModel {
      * @return Les variables correspondant aux index des vols 
      * du voyage liés aux étapes.
      */
-    IntegerVariable[][] getStageIndexes();
+    IntegerVariable[][] getStagesIndexes();
     
     /**
      * @return Les variables correspondant aux indexes uniques des vols.

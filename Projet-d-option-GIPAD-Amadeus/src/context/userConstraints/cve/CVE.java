@@ -73,9 +73,9 @@ public class CVE extends UserConstraint {
         this.stage = Airport.valueOf(airport);
         this.mandatory = mandat;
         try {
-            this.arr = getDateFromPattern("YYYY/MM/dd-HH:mm",
+            this.arr = getDateFromPattern("yyyy/MM/dd-HH:mm",
                     passageInterval[0]);
-            this.dep = getDateFromPattern("YYYY/MM/dd-HH:mm",
+            this.dep = getDateFromPattern("yyyy/MM/dd-HH:mm",
                     passageInterval[1]);
         } catch (ParseException e) {
             System.out.println("Erreur dans la lecture des dates du"
@@ -102,9 +102,19 @@ public class CVE extends UserConstraint {
                   || (flight.getDestination() == stage
                         && flight.getArrival().after(dep))
                   || (flight.getOrigin() == stage
-                        && flight.getDeparture().after(arr)) 
+                        && flight.getDeparture().after(dep)) 
                   || (flight.getOrigin() == stage
-                        && flight.getDeparture().before(dep)); 
+                        && flight.getDeparture().before(arr)); 
+//        if(stage == Airport.PAR && b){
+//            System.out.println(""+((flight.getDestination() == stage 
+//                            && flight.getArrival().before(arr)))
+//                      + " " +((flight.getDestination() == stage
+//                            && flight.getArrival().after(dep)))
+//                      + " " +((flight.getOrigin() == stage
+//                            && flight.getDeparture().after(dep))) 
+//                      + " " +((flight.getOrigin() == stage
+//                            && flight.getDeparture().before(arr))) + " - " +  flight);
+//            }
         return b;
     }
 }

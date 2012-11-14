@@ -77,9 +77,10 @@ public final class GenerationCSV {
             String line;
             String[] elements = new String[length];
             
+            boolean nline = true;
             //Lines loop
             while((line = br.readLine()) != null){
-                
+                nline = true;
                 elements = line.split(DAO.SEPARATOR, length);
                 
                 //Writing if not the same airport for departure and arrival
@@ -87,11 +88,16 @@ public final class GenerationCSV {
                     File f = new File(folder+"/"+elements[title]+".csv");
                     if(!f.exists()){
                         f.createNewFile();
+                        nline = false;
                     }
                     FileWriter fw = new FileWriter(f.getAbsoluteFile(), true);
                     BufferedWriter bw = new BufferedWriter(fw);
+                    if(nline){
+                        bw.newLine();
+                    }
                     bw.write(elements[content]+DAO.SEPARATOR
-                            +elements[length-1]+"\n");
+                            +elements[length-1]);
+            
                     bw.close();
                 }
             }
@@ -121,7 +127,10 @@ public final class GenerationCSV {
      * @param args param.
      */
     public static void main(final String[] args){
+        long t = System.currentTimeMillis();
         generateDep();
         generateArr();
+        System.out.println("Données découpées en  " 
+                + (System.currentTimeMillis()-t) + " ms");
     }
 }

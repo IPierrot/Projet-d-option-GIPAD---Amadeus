@@ -68,6 +68,7 @@ public class Client {
 	public Client(final Context ctx, final RequestLoader rLoader){
 		this.context = ctx;
 		this.requestLoader = rLoader;
+		this.userConstraints = new ArrayList<UserConstraint>();
 	}
 	
 	/**
@@ -108,32 +109,36 @@ public class Client {
 	private void loadPossibleFlights(){
 		
 		List<Flight> possibleFlights = new ArrayList<Flight>();
-		ComplexTripModel ctxm = this.context.getComplexTripModel();
+		ComplexTripModel cxtm = this.context.getComplexTripModel();
 		DAO dao = this.context.getDao();
 		
 		// Récupération des aeroports de départ, de fin et des étapes.
-		Airport origin = ctxm.getStartAirport();
-		Airport end = ctxm.getEndAirport();
-		List<Airport> stages = ctxm.getStages();
+		Airport origin = cxtm.getStartAirport();
+		Airport end = cxtm.getEndAirport();
+		List<Airport> stages = cxtm.getStages();
 		
 		// Récupération des dates entre lesquel on va récupérer des vols.
-		Date d1 = ctxm.getEarliestDeparture();
-		Date d2 = ctxm.getLatestArrival();
+		Date d1 = cxtm.getEarliestDeparture();
+		Date d2 = cxtm.getLatestDeparture();
+		Date d3 = cxtm.getEarliestArrival();
+		Date d4 = cxtm.getLatestArrival();
 		
 		// Ajout des vols
 		possibleFlights.addAll(dao.getFlightsFromAirportToList(
 				origin, stages, d1, d2));
+
 		possibleFlights.addAll(dao.getFlightsFromListToAirport(
-				stages, end, d1, d2));
+				stages, end, d3, d4));
+		
 		possibleFlights.addAll(dao.getFlightsFromListToList(
-				stages, stages, d1, d2));
+				stages, stages, d1, d4));
 		
 		// Filtrage des vols
 		this.filterFlights(possibleFlights);
 		
 		// Injection des vols dans le modèle
 		for(Flight f : possibleFlights){
-			ctxm.addPossibleFlight(f);
+			cxtm.addPossibleFlight(f);
 		}
 	}
 	

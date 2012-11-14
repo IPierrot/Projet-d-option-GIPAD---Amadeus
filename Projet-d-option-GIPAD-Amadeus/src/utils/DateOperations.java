@@ -4,6 +4,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -56,7 +57,7 @@ public final class DateOperations {
 	 */
 	public static Date getDateFromPattern(final String pattern,
 			final String date, final TimeZone tz) throws ParseException{
-		DateFormat df = new SimpleDateFormat(pattern);
+	    DateFormat df = new SimpleDateFormat(pattern);
 		df.setTimeZone(tz);
 		Date d = df.parse(date);
 		return d;
@@ -146,11 +147,11 @@ public final class DateOperations {
      * @return la date (01/01/1970) + l'heure passee
      */
     public static Date generateHour(final String time, final String gmt){
-        SimpleDateFormat sdf = new SimpleDateFormat("HHmmZZZZZ");
+        SimpleDateFormat sdf = new SimpleDateFormat("HHmmZZZZ");
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
-        
         try {
-            return sdf.parse(time + gmt);
+            Date d = sdf.parse(time+gmt);
+            return d;
         } catch (ParseException e) {
             e.printStackTrace();
         }

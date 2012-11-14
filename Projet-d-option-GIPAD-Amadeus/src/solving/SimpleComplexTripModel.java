@@ -162,7 +162,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	        final Date latest) {
 	    
 		this.start = startAirport;
-		this.startVar = constant(startAirport.getId());
+		this.startVar = constant(startAirport.getId());		
 		this.t0Earliest = (int) (earliest.getTime()/GRANULARITE);
 		this.t0Latest = (int) (latest.getTime()/GRANULARITE);
 		
@@ -284,7 +284,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	}
 
 	@Override
-	public IntegerVariable[][] getStageIndexes() {
+	public IntegerVariable[][] getStagesIndexes() {
 		return this.stageIndexes;
 	}
 
@@ -292,7 +292,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	 * @return True si le modèle est valide
 	 */
 	private boolean isValid() {
-		return (getStartAirport() != null 
+	    return (getStartAirport() != null 
 				&& getEndAirport() != null
 				&& getEarliestDeparture() != null
 				&& getLatestArrival() != null
@@ -306,7 +306,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
      * @return La date demappée.
      */
 	private Date unmapTime(final int t){
-	    return new Date(t*GRANULARITE);
+	    long l = (long) t*(long) GRANULARITE;
+	    return new Date(l);
 	}
 
     @Override
@@ -337,19 +338,18 @@ public class SimpleComplexTripModel implements ComplexTripModel{
             retour = true;
             
           // Création de la variable de départ.
-          this.startDepVar = makeIntVar("start", 0, t0Latest-t0Earliest);
-          
+          this.startDepVar = makeIntVar("start", 0, tmaxLastest-t0Earliest);
+
           // Création de la variable d'index de départ.
           this.startIndex = makeIntVar(
-                  "indexDep", 0, this.getPossibleFlights().size());
+                  "indexDep", 0, this.getPossibleFlights().size()-1);
 
           // Création de la variable d'arrivée.
-          this.startDepVar = makeIntVar("end", tmaxEarliest-t0Earliest,
-                  tmaxLastest - t0Earliest);
+          this.endArrVar = makeIntVar("end", 0, tmaxLastest-t0Earliest);
           
           // Création de la variable d'index de l'arrivée.
           this.endIndex = makeIntVar(
-                  "indexArr", 0, this.getPossibleFlights().size());
+                  "indexArr", 0, this.getPossibleFlights().size()-1);
           
           // Création des variables relatives aux étapes.
           int n = this.getStages().size();
@@ -359,8 +359,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
           
           for(int i = 0; i < n; i++){
               Airport a = this.getStages().get(i);
-              int tarr = this.stagesIntervals.get(i)[0];
-              int tdep = this.stagesIntervals.get(i)[1];
+//              int tarr = this.stagesIntervals.get(i)[0];
+//              int tdep = this.stagesIntervals.get(i)[1];
               int durmin = this.stagesDurations.get(i)[0];
               int durmax = this.stagesDurations.get(i)[1];
               
@@ -370,20 +370,20 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               
               // Création de la task Variable.  
               TaskVariable task = makeTaskVar("stage " + i + " - " + a.name(),
-                      tarr-t0Earliest, tdep-t0Earliest,
+                      0, tmaxLastest-t0Earliest,
                       makeIntVar("duration " + i + " - " + a.name()
-                              + a.name(), durmin, durmax));
+                              , durmin, durmax));
               
               this.stagesTaskVars[i] = task;
           
               // Création des variables d'index.
               IntegerVariable arr = makeIntVar(
                       "indexArr " + i + " - " + a.name(),
-                      0, this.getPossibleFlights().size());
+                      0, this.getPossibleFlights().size()-1);
               
               IntegerVariable dep = makeIntVar(
                       "indexDep " + i + " - " + a.name(),
-                      0, this.getPossibleFlights().size());
+                      0, this.getPossibleFlights().size()-1);
               
               this.stageIndexes[i] = new IntegerVariable[] {arr, dep};
           }
@@ -395,7 +395,6 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               this.indexes[i] = makeIntVar(
                       "index " + i, 0, this.getPossibleFlights().size());
           }
-          
           this.addVariablesToCPModel();
             
         } else{
@@ -416,6 +415,9 @@ public class SimpleComplexTripModel implements ComplexTripModel{
         for(IntegerVariable[] vars : this.stageIndexes){
             cpmodel.addVariables(vars);
         }
+//        for(int i = 0; i < cpmodel.getNbIntVars(); i++){
+//           System.out.println(cpmodel.getIntVar(i));
+//        }
     }
 
     @Override

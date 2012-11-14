@@ -1,5 +1,9 @@
 package solving;
 
+import java.util.List;
+
+import model.Flight;
+
 import choco.cp.solver.CPSolver;
 
 /**
@@ -19,4 +23,15 @@ public interface ComplexTripSolver {
      * @param ctxModel Le modèle à lire.
      */
     void read(ComplexTripModel ctxModel);
+    
+    /**
+     * La méthode read doit avoir été appellée avant.
+     * @return La liste des vols composant la première solution trouvée.
+     */
+    List<Flight> getFirstTripFound();
+    
+    /**
+     * Réinitialise le solveur.
+     */
+    void reset();
 }

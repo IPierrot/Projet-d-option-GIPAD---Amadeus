@@ -177,6 +177,7 @@ public class RequestLoaderImp implements RequestLoader {
 //    public static void main (String[] args){
 //        RequestLoader rl = new RequestLoaderImp();
 //        rl.loadRequest("res/requests/request0.txt");
+//        System.out.println(rl.getCVO());
 //    }
 
 }

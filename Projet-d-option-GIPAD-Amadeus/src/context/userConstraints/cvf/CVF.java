@@ -37,18 +37,18 @@ public class CVF extends UserConstraint {
     /**
      * Constructeur avec champs.
      * @param airport L'aeroport d'origine.
-     * @param depInterval Les dates min et max locale du départ,
+     * @param arrInterval Les dates min et max locale du départ,
      * sous la forme : YYYY/MM/dd-HH:mm
      * @param hourInterval Les heures min et max du départ (HH:mm)
      */
-    public CVF(final String airport, final String[] depInterval,
+    public CVF(final String airport, final String[] arrInterval,
             final String[] hourInterval){
         this.end = Airport.valueOf(airport);
-        String pattern = "YYYY/MM/dd-HH:mm";
+        String pattern = "yyyy/MM/dd-HH:mm";
         try {
             TimeZone tz = this.end.getTimeZone();
-            this.arr1 = getDateFromPattern(pattern, depInterval[0], tz);
-            this.arr2 = getDateFromPattern(pattern, depInterval[1], tz);
+            this.arr1 = getDateFromPattern(pattern, arrInterval[0], tz);
+            this.arr2 = getDateFromPattern(pattern, arrInterval[1], tz);
         } catch (ParseException e) {
             System.out.println("Erreur dans la lecture des dates du"
                     + " fichier de requête (CVF)");
@@ -67,7 +67,9 @@ public class CVF extends UserConstraint {
 	public boolean remove(final Flight flight) {
 	    boolean b = false;
         try {
-            b = isBetweenHours(flight.getArrival(), "HH:mm", h1, h2);
+            b = (flight.getDestination() == end
+                    && isBetweenHours(flight.getArrival(), "HH:mm", h1, h2))
+                || (flight.getArrival().after(arr2));
         } catch (ParseException e) {
             System.out.println("Erreur de lecture du format de l'heure dans le"
                     + " fichier de requêtes (CVF)");
