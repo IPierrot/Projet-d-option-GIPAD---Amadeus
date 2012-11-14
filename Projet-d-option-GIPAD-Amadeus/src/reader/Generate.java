@@ -129,7 +129,7 @@ public final class Generate {
                 
                 br.write("CVE-00: "+etapAirport.toString()+"\n");
                 
-                alreadyTaken.add(departAirport);
+                alreadyTaken.add(etapAirport);
                 
                 br.write("CVE-01: "+INTEGER_VALUE_DEFAULT+"\n");
                 
@@ -148,7 +148,7 @@ public final class Generate {
 
            
 
-
+            alreadyTaken.remove(departAirport);
 
             Airport arrivalAirport=pickAirport(alreadyTaken);
 
