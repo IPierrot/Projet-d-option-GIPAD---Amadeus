@@ -77,29 +77,44 @@ public class Client {
 	 */
 	public void loadRequest(final String dir){
 		
+	    System.out.println("Chargement de la requete ");
 		// Lecture du fichier de requête.
 		this.requestLoader.loadRequest(dir);
+		System.out.print("..........");
 		this.cvo = this.requestLoader.getCVO();
+	    System.out.print("..........");
 		this.cvf = this.requestLoader.getCVF();
+		System.out.print("..........");
 		this.cves = this.requestLoader.getCVEs();
+		System.out.print("..........");
 		this.cgs = this.requestLoader.getCGs();
+		System.out.print("..........");
 		
 		// Hierarchisation des contraintes.
 		this.userConstraints.add(cvo);
 		this.userConstraints.add(cvf);
 		this.userConstraints.addAll(cves);
 		this.userConstraints.addAll(cgs);
+		System.out.print(" Ok !");
 		
+		System.out.println("\n" + "\n"  + "Initialisation du modèle ");
 		// Application des contraintes.
 		for(UserConstraint c : this.userConstraints){
 			c.apply(this.context);
+			System.out.print(".....");
 		}
+		System.out.print(" Ok !");
 		
+		System.out.println("\n" + "\n"  
+		        + "Chargement des vols dans la base de données ");
 		// Chargement des vols
 		this.loadPossibleFlights();
+		System.out.print(" Ok !");
 		
+		System.out.println("\n" + "\n"  + "Construction du modèle ");
 		// Initialisation du complex trip model
 		this.context.getComplexTripModel().build();
+		System.out.print(" Ok !");
 	}
 	
 	/**
@@ -123,23 +138,35 @@ public class Client {
 		Date d3 = cxtm.getEarliestArrival();
 		Date d4 = cxtm.getLatestArrival();
 		
+		System.out.print("........");
+		
 		// Ajout des vols
 		possibleFlights.addAll(dao.getFlightsFromAirportToList(
 				origin, stages, d1, d2));
-
+		
+		System.out.print("........");
+		
 		possibleFlights.addAll(dao.getFlightsFromListToAirport(
 				stages, end, d3, d4));
+		
+		System.out.print("........");
 		
 		possibleFlights.addAll(dao.getFlightsFromListToList(
 				stages, stages, d1, d4));
 		
+		System.out.print("........");
+		
 		// Filtrage des vols
 		this.filterFlights(possibleFlights);
+		
+		System.out.print("........");
 		
 		// Injection des vols dans le modèle
 		for(Flight f : possibleFlights){
 			cxtm.addPossibleFlight(f);
 		}
+		
+		System.out.print("........");
 	}
 	
 	/**
