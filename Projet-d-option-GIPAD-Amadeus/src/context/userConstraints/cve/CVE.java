@@ -105,16 +105,7 @@ public class CVE extends UserConstraint {
                         && flight.getDeparture().after(dep)) 
                   || (flight.getOrigin() == stage
                         && flight.getDeparture().before(arr)); 
-//        if(stage == Airport.PAR && b){
-//            System.out.println(""+((flight.getDestination() == stage 
-//                            && flight.getArrival().before(arr)))
-//                      + " " +((flight.getDestination() == stage
-//                            && flight.getArrival().after(dep)))
-//                      + " " +((flight.getOrigin() == stage
-//                            && flight.getDeparture().after(dep))) 
-//                      + " " +((flight.getOrigin() == stage
-//                            && flight.getDeparture().before(arr))) + " - " +  flight);
-//            }
+
         return b;
     }
 }

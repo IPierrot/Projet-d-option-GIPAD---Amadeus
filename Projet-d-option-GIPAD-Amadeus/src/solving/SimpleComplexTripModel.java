@@ -368,11 +368,20 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               IntegerVariable airport = constant(a.getId());
               this.stagesVars[i] = airport;
               
-              // Création de la task Variable.  
-              TaskVariable task = makeTaskVar("stage " + i + " - " + a.name(),
-                      0, tmaxLastest-t0Earliest,
-                      makeIntVar("duration " + i + " - " + a.name()
-                              , durmin, durmax));
+              // Création de la task Variable
+              IntegerVariable st = makeIntVar(
+                    "start " + i + "(" + a.name()+")", 
+                    0, tmaxLastest-t0Earliest);
+              
+              IntegerVariable en = makeIntVar(
+                      "end " + i + "(" + a.name()+")", 
+                      0, tmaxLastest-t0Earliest);
+              
+              IntegerVariable dur = makeIntVar(
+                      "duration " + i + "(" + a.name()+")", durmin, durmax);
+              
+              TaskVariable task = makeTaskVar("stage " + i + "(" + a.name()+")",
+                      st, en, dur);
               
               this.stagesTaskVars[i] = task;
           
@@ -411,7 +420,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
                 endVar, endIndex, endArrVar);
         cpmodel.addVariables(stagesVars);
         cpmodel.addVariables(stagesTaskVars);
-        cpmodel.addVariables(indexes);
+//        cpmodel.addVariables(indexes);
         for(IntegerVariable[] vars : this.stageIndexes){
             cpmodel.addVariables(vars);
         }
