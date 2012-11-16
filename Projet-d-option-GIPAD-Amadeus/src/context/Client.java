@@ -77,7 +77,7 @@ public class Client {
 	 */
 	public void loadRequest(final String dir){
 		
-	    System.out.println("Chargement de la requete ");
+	    System.out.println("- CHARGEMENT DE LA REQUETE - ");
 		// Lecture du fichier de requête.
 		this.requestLoader.loadRequest(dir);
 		System.out.print("..........");
@@ -97,7 +97,7 @@ public class Client {
 		this.userConstraints.addAll(cgs);
 		System.out.print(" Ok !");
 		
-		System.out.println("\n" + "\n"  + "Initialisation du modèle ");
+		System.out.println("\n" + "\n"  + "- INITIALISATION DU MODELE -");
 		// Application des contraintes.
 		for(UserConstraint c : this.userConstraints){
 			c.apply(this.context);
@@ -106,12 +106,12 @@ public class Client {
 		System.out.print(" Ok !");
 		
 		System.out.println("\n" + "\n"  
-		        + "Chargement des vols dans la base de données ");
+		        + "- CHARGEMENT DES VOLS DANS LA BASE DE DONNEES -");
 		// Chargement des vols
 		this.loadPossibleFlights();
 		System.out.print(" Ok !");
 		
-		System.out.println("\n" + "\n"  + "Construction du modèle ");
+		System.out.println("\n" + "\n"  + "- CONSTRUCTION DU MODELE -");
 		// Initialisation du complex trip model
 		this.context.getComplexTripModel().build();
 		System.out.print(" Ok !");
@@ -154,19 +154,26 @@ public class Client {
 		possibleFlights.addAll(dao.getFlightsFromListToList(
 				stages, stages, d1, d4));
 		
-		System.out.print("........");
+		System.out.print(" Ok !");
+		
 		
 		// Filtrage des vols
+	    System.out.println("\n" + "\n"  + "- FILTRAGE PRELIMINAIRE DES VOLS-");
 		this.filterFlights(possibleFlights);
 		
-		System.out.print("........");
+		System.out.print("Ok !");
 		
 		// Injection des vols dans le modèle
-		for(Flight f : possibleFlights){
+	    System.out.println("\n"+"\n"  + "-INJECTION DES VOLS DANS LE MODELE-");
+		int i = 0;
+	    for(Flight f : possibleFlights){
 			cxtm.addPossibleFlight(f);
+			i++;
+			if(i >= possibleFlights.size()/50){
+			    System.out.print(".");
+			    i = 0;
+			}
 		}
-		
-		System.out.print("........");
 	}
 	
 	/**
@@ -175,8 +182,14 @@ public class Client {
 	 * @param flights La liste à filtrer.
 	 */
 	private void filterFlights(final List<Flight> flights){
+	    System.out.println("\n" + "Nombre de vols avant filtrage : " 
+	                        + flights.size());
+	    int i = 1;
 		for(UserConstraint c : this.userConstraints){
 			c.filter(flights);
+		    System.out.println("Nombre de vols après filtrage " + i 
+		      + "(" + c.getClass().getSimpleName() + ") : " + flights.size());
+		    i++;
 		}
 	}
 }

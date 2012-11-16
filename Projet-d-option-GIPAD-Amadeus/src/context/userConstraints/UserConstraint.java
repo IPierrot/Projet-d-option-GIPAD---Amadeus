@@ -38,7 +38,6 @@ public abstract class UserConstraint {
 			}
 		}
 	    flights.removeAll(toRemove);
-//	    System.out.println("Nombre de vols après filtrage "
-//	            + this.getClass().getSimpleName() + " : " + flights.size());
+
 	}
 }

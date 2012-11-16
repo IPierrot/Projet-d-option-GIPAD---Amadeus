@@ -67,9 +67,10 @@ public class CVO extends UserConstraint {
 	public boolean remove(final Flight flight) {
 		boolean b = false;
 		try {
+		   
 			b = (flight.getOrigin() == origin
-			       && isBetweenHours(flight.getDeparture(), "HH:mm", h1, h2))
-			    || (flight.getDeparture().before(dep1));
+			        && !isBetweenHours(flight.getDeparture(), "HH:mm", h1, h2));
+
 		} catch (ParseException e) {
 			System.out.println("Erreur de lecture du format de l'heure dans le"
 					+ " fichier de requêtes (CVO)");

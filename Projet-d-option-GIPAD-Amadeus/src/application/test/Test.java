@@ -31,9 +31,13 @@ public class Test {
         ComplexTripSolver solver = new SimpleComplexTripSolver();
         solver.read(model);
         List<Flight> trip = solver.getFirstTripFound();
-        System.out.println("nombre de vols : " + trip.size());
-        for(Flight f : trip){
-            System.out.println(f);
+        
+        System.out.println("\n" + "Itinéraire trouvé : "  + "\n");
+        
+        for(int i = 0; i < trip.size(); i++){
+            System.out.println("Vol " + i + " : " + trip.get(i));
         }
+        
+        System.out.println();
     }
 }

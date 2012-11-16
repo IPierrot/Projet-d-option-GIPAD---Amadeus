@@ -3,12 +3,12 @@
 
 CVO-00: NCE # IATA code
 CVO-01: 2012/12/01-08:00,2012/12/02-17:00 # %Y/%m/%d-%H:%M,%Y/%m/%d-%H:%M
-CVO-02: 08:00,12:00 # %H:%M,%H:%M
+CVO-02: 08:00,20:00 # %H:%M,%H:%M
 
 CVE1 # to identify each stay (we could use IATA codes of the city, but in case two distinct stays are in the same city, it no longer works) 
 CVE-00: PAR # IATA code
 CVE-01: 0 # 0 for no, 1 for yes
-CVE-02: 2012/12/01-08:00,2012/12/03-17:00 # %Y/%m/%d-%H:%M,%Y/%m/%d-%H:%M
+CVE-02: 2012/12/01-08:00,2012/12/03-16:00 # %Y/%m/%d-%H:%M,%Y/%m/%d-%H:%M
 CVE-03: 3,36 # hours
 CVE-04: 14:00,16:00 # %H:%M,%H:%M
 CVE-05: 1
@@ -16,17 +16,17 @@ CVE-05: 1
 CVE2
 CVE-00: NTE
 CVE-01: 1 # 
-CVE-02: 2012/12/02-08:00,2012/12/03-17:00
-CVE-03: 4,36
-CVE-04: 8:00,20:00
+CVE-02: 2012/12/02-08:00,2012/12/04-22:00
+CVE-03: 3,36
+CVE-04: 08:00,20:00
 CVE-05: 1
 
 CVE3
 CVE-00: TLS
 CVE-01: 1
-CVE-02: 2012/12/02-08:00,2012/12/04-17:00
+CVE-02: 2012/12/01-08:00,2012/12/04-16:00
 CVE-03: 2,24
-CVE-04: 8:00,20:00
+CVE-04: 08:00,20:00
 CVE-05: 1
 
 CVF-00: NCE # IATA code

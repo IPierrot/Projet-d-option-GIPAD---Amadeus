@@ -187,5 +187,5 @@ public interface ComplexTripModel {
 	 * @return La date mappée.
 	 */
 	int mapTime(Date d);
-	
+
 }

@@ -103,16 +103,18 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         
         // Ajout des contraintes
         
-        // Globales
+        // Globales - Tasks disjonctives
         cpmodel.addConstraint(disjunctive(cxtmodel.getStagesTaskVariables()));
-//        cpmodel.addConstraint(allDifferent(cxtmodel.getIndexes()));
         
         System.out.print("....");
         
         // Depart et arrivée
+        
+        /* Ville d'origine et finale de voyage non liées */
         cpmodel.addConstraint(
                 neq(cxtmodel.getStartIndex(), cxtmodel.getEndIndex()));
-        
+
+        /* Vols possible (feasible pairs) */
         List<int[]> temp1 = new ArrayList<int[]>();
         List<int[]> temp2 = new ArrayList<int[]>();
         for(int j = 0; j < airportsDep.size(); j++){
@@ -122,11 +124,19 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             }
         }
         
+        // Version AC
         cpmodel.addConstraint(feasPairAC(cxtmodel.getStartIndex(),
                 cxtmodel.getStartVariable(), temp1));
         
         cpmodel.addConstraint(feasPairAC(cxtmodel.getStartIndex(),
                 cxtmodel.getStartDeparture(), temp2));
+ 
+        // Version FC
+//        cpmodel.addConstraint(feasTupleFC(temp1, cxtmodel.getStartIndex(),
+//                cxtmodel.getStartVariable()));
+//        
+//        cpmodel.addConstraint(feasTupleFC(temp2, cxtmodel.getStartIndex(),
+//                cxtmodel.getStartDeparture()));
         
         List<int[]> temp3 = new ArrayList<int[]>();
         List<int[]> temp4 = new ArrayList<int[]>();
@@ -137,11 +147,19 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             }
         }
         
+        // Version AC
         cpmodel.addConstraint(feasPairAC(cxtmodel.getEndIndex(),
                 cxtmodel.getEndVariable(), temp3));
         
         cpmodel.addConstraint(feasPairAC(cxtmodel.getEndIndex(),
                 cxtmodel.getEndArrival(), temp4));
+        
+        // Version FC
+//        cpmodel.addConstraint(feasTupleFC(temp3, cxtmodel.getEndIndex(),
+//                cxtmodel.getEndVariable()));
+//        
+//        cpmodel.addConstraint(feasTupleFC(temp4, cxtmodel.getEndIndex(),
+//                cxtmodel.getEndArrival()));
      
         System.out.print("....");
         
@@ -151,8 +169,10 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             TaskVariable task = cxtmodel.getStagesTaskVariables()[i];
             IntegerVariable stage = cxtmodel.getStagesVariables()[i];
             
+            /* On ne "survole" pas une étape :P */
             cpmodel.addConstraint(neq(indexes[0], indexes[1]));
             
+            /* Vols possible (feasible pairs) */
             List<int[]> temp5 = new ArrayList<int[]>();
             List<int[]> temp6 = new ArrayList<int[]>();
             List<int[]> temp7 = new ArrayList<int[]>();
@@ -169,7 +189,8 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                     temp8.add(departs.get(j));
                 }
             }
-                        
+            
+            // Version AC
             cpmodel.addConstraint(feasPairAC(
                     indexes[0], stage, temp5));
             
@@ -181,6 +202,13 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             
             cpmodel.addConstraint(feasPairAC(
                     indexes[1], task.end(), temp8));
+            
+            // Version FC
+//            cpmodel.addConstraint(feasTupleFC(temp5, indexes[0], stage));
+//            cpmodel.addConstraint(feasTupleFC(temp6, indexes[0], task.start()));
+//            
+//            cpmodel.addConstraint(feasTupleFC(temp7, indexes[1], stage));
+//            cpmodel.addConstraint(feasTupleFC(temp8, indexes[1], task.end()));
             
             System.out.print("....");
         }
@@ -197,18 +225,19 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             allIndexes[2*i+2+1] = indexes[1];
         }
         
-//        for(int i=0; i<flights.size(); i++){
-//            IntegerVariable v = makeIntVar("occ-"+i, new int[] {0, 2});
-//            cpmodel.addConstraint(occurrence(
-//                    v, allIndexes, i));
-//        }
-        IntegerVariable[] v = makeIntVarArray(
-                "occ-", flights.size(), new int[] {0, 2});
-        int[] values = new int[flights.size()];
         for(int i=0; i<flights.size(); i++){
-            values[i] = i;
+            IntegerVariable v = makeIntVar("occ-"+i, new int[] {0, 2});
+            cpmodel.addConstraint(occurrence(
+                    v, allIndexes, i));
         }
-        cpmodel.addConstraint(globalCardinality(allIndexes, values, v));
+//        IntegerVariable[] v = makeIntVarArray(
+//                "occ-", flights.size(), new int[] {0, 2},
+//                SimpleComplexTripModel.VARIABLES_OPTION);
+//        int[] values = new int[flights.size()];
+//        for(int i=0; i<flights.size(); i++){
+//            values[i] = i;
+//        }
+//        cpmodel.addConstraint(globalCardinality(allIndexes, values, v));
         
         System.out.print("....");
         
@@ -223,12 +252,11 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 
     @Override
     public List<Flight> getFirstTripFound() {
-//        List<Flight> trip = new ArrayList<Flight>();
         List<Flight> temp = new ArrayList<Flight>();
         
         if(this.readyToSolve){
         
-            ChocoLogging.setVerbosity(Verbosity.SOLUTION);
+            ChocoLogging.setVerbosity(Verbosity.DEFAULT);
             
             System.out.println("\n" + "\n"  + "Résolution... " + "\n");
             
@@ -249,36 +277,37 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                     Flight f = flights.get(k);
                     Flight f2 = flights.get(k2);
 
-//                    if (!trip.contains(f)){
-                        temp.add(f);
-                        temp.add(f2);
-//                    }
+                    temp.add(f);
+                    temp.add(f2);
                 }
-                
-//                for(Flight f : temp){
-//                    if(trip.size() == 0){
-//                        trip.add(f);
-//                    } else{
-//                        boolean inserted = false;
-//                        int l=0;
-//                        while(!inserted){
-//                            if(f.getDeparture().before(
-//                                    trip.get(i).getDeparture())){
-//                                trip.add(i, f);
-//                                inserted = true;
-//                            } else{
-//                                i++;
-//                                if(i==trip.size()){
-//                                    trip.add(f);
-//                                    inserted = true;
-//                                }
-//                            }
-//                        }
-//                    }
-//                }
             }
         }
-        return temp;
+        return sort(temp);
+    }
+    
+    /**
+     * Ordonne et supprime les doublons d'une liste de vols
+     * @param flights La liste à ordonner
+     * @return La liste ordonnée et sans doublons
+     */
+    private static List<Flight> sort(final List<Flight> flights){
+        List<Flight> retour = new ArrayList<Flight>();
+        for(Flight f : flights){
+            if(!retour.contains(f)){
+                if(retour.isEmpty()){
+                    retour.add(f);
+                } else{
+                    int i = 0;
+                    while(i < retour.size() 
+                         && f.getDeparture().after(retour.get(i).getDeparture())
+                            ){
+                        i++;
+                    }
+                    retour.add(i, f);
+                }
+            }
+        }
+        return retour;
     }
 
     @Override

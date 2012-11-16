@@ -18,6 +18,11 @@ import static choco.Choco.*;
  */
 public class SimpleComplexTripModel implements ComplexTripModel{
 	
+    /**
+     * L'option des Variable
+     */
+    public static final String VARIABLES_OPTION = "cp:enum";
+    
 	/**
 	 * La granularité de l'échelle de temps, ici 5 minutes soit 300 000 ms.
 	 */
@@ -328,20 +333,32 @@ public class SimpleComplexTripModel implements ComplexTripModel{
             retour = true;
             
           // Création de la variable de départ.
-          this.startDepVar = makeIntVar("start", 0, tmaxLastest-t0Earliest);
+          this.startDepVar = makeIntVar("start", 0, tmaxLastest-t0Earliest,
+                  VARIABLES_OPTION);
 
           // Création de la variable d'index de départ.
           this.startIndex = makeIntVar(
-                  "indexDep", 0, this.getPossibleFlights().size()-1, "cp:enum");
+                  "indexDep", 0, this.getPossibleFlights().size()-1,
+                  VARIABLES_OPTION);
 
           System.out.print("....");
           
           // Création de la variable d'arrivée.
-          this.endArrVar = makeIntVar("end", 0, tmaxLastest-t0Earliest);
+          this.endArrVar = makeIntVar("end", 0, tmaxLastest-t0Earliest,
+                  VARIABLES_OPTION);
           
           // Création de la variable d'index de l'arrivée.
           this.endIndex = makeIntVar(
-                  "indexArr", 0, this.getPossibleFlights().size()-1, "cp:enum");
+                  "indexArr", 0, this.getPossibleFlights().size()-1,
+                  VARIABLES_OPTION);
+          
+          // Application des contraintes "temporelles" sur le départ ...
+          cpmodel.addConstraint(geq(startDepVar, 0));
+          cpmodel.addConstraint(leq(startDepVar, t0Latest-t0Earliest));
+          
+          // ... sur l'arrivée
+          cpmodel.addConstraint(geq(endArrVar, tmaxEarliest-t0Earliest));
+          cpmodel.addConstraint(leq(endArrVar, tmaxLastest-t0Earliest));
           
           System.out.print("....");
           
@@ -355,8 +372,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
           
           for(int i = 0; i < n; i++){
               Airport a = this.getStages().get(i);
-//              int tarr = this.stagesIntervals.get(i)[0];
-//              int tdep = this.stagesIntervals.get(i)[1];
+              int tarr = this.stagesIntervals.get(i)[0];
+              int tdep = this.stagesIntervals.get(i)[1];
               int durmin = this.stagesDurations.get(i)[0];
               int durmax = this.stagesDurations.get(i)[1];
               
@@ -367,28 +384,39 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               // Création de la task Variable
               IntegerVariable st = makeIntVar(
                     "start " + i + "(" + a.name()+")", 
-                    0, tmaxLastest-t0Earliest);
+                    0, tmaxLastest-t0Earliest, VARIABLES_OPTION);
               
               IntegerVariable en = makeIntVar(
                       "end " + i + "(" + a.name()+")", 
-                      0, tmaxLastest-t0Earliest);
+                      0, tmaxLastest-t0Earliest, VARIABLES_OPTION);
               
               IntegerVariable dur = makeIntVar(
-                      "duration " + i + "(" + a.name()+")", durmin, durmax);
+                      "duration " + i + "(" + a.name()+")",
+                      0, tmaxLastest-t0Earliest, VARIABLES_OPTION);
               
               TaskVariable task = makeTaskVar("stage " + i + "(" + a.name()+")",
-                      st, en, dur);
+                      st, en, dur, VARIABLES_OPTION);
               
               this.stagesTaskVars[i] = task;
-          
+              
+              // Application des contraintes "temporelles" sur l'étape
+              
+              /* départ et d'arrivée */
+              cpmodel.addConstraint(geq(st, tarr-t0Earliest));
+              cpmodel.addConstraint(leq(en, tdep-t0Earliest));
+              
+              /* Durée */
+              cpmodel.addConstraint(geq(dur, durmin));
+              cpmodel.addConstraint(leq(dur, durmax));
+              
               // Création des variables d'index.
               IntegerVariable arr = makeIntVar(
                       "indexArr " + i + " - " + a.name(),
-                      0, this.getPossibleFlights().size()-1, "cp:enum");
+                      0, this.getPossibleFlights().size()-1, VARIABLES_OPTION);
               
               IntegerVariable dep = makeIntVar(
                       "indexDep " + i + " - " + a.name(),
-                      0, this.getPossibleFlights().size()-1, "cp:enum");
+                      0, this.getPossibleFlights().size()-1, VARIABLES_OPTION);
               
               this.stageIndexes[i] = new IntegerVariable[] {arr, dep};
               
@@ -421,5 +449,4 @@ public class SimpleComplexTripModel implements ComplexTripModel{
     public int mapTime(final Date d) {
         return (int) (d.getTime()/GRANULARITE-t0Earliest);
     }
-
 }

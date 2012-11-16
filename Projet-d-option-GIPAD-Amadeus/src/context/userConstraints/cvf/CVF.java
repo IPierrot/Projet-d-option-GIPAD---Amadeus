@@ -68,8 +68,7 @@ public class CVF extends UserConstraint {
 	    boolean b = false;
         try {
             b = (flight.getDestination() == end
-                    && isBetweenHours(flight.getArrival(), "HH:mm", h1, h2))
-                || (flight.getArrival().after(arr2));
+                    && !isBetweenHours(flight.getArrival(), "HH:mm", h1, h2));
         } catch (ParseException e) {
             System.out.println("Erreur de lecture du format de l'heure dans le"
                     + " fichier de requêtes (CVF)");

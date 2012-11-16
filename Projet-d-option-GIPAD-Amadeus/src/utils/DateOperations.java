@@ -92,9 +92,9 @@ public final class DateOperations {
 	 */
 	public static boolean isBetweenHours(final Date d, final String pattern,
 			final String h1, final String h2) throws ParseException{
-		DateFormat df = new SimpleDateFormat("ddMMYYYY");
+		DateFormat df = new SimpleDateFormat("ddMMyyyy");
 		String day = df.format(d);
-		df = new SimpleDateFormat("ddMMYYYY" + pattern);
+		df = new SimpleDateFormat("ddMMyyyy" + pattern);
 		Date d1 = df.parse(day + h1);
 		Date d2 = df.parse(day + h2);
 		return (d.after(d1) && d.before(d2));
