@@ -1,4 +1,4 @@
-package dao;
+package dao.csv;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.InputStreamReader;
+
 
 /**
  * Genere les fichiers csv decomposes pour une meilleure selection des vols.
@@ -81,7 +82,7 @@ public final class GenerationCSV {
             //Lines loop
             while((line = br.readLine()) != null){
                 nline = true;
-                elements = line.split(DAO.SEPARATOR, length);
+                elements = line.split(DAOImplCSV.SEPARATOR, length);
                 
                 //Writing if not the same airport for departure and arrival
                 if(!elements[1].equals(elements[2])){
@@ -95,7 +96,7 @@ public final class GenerationCSV {
                     if(nline){
                         bw.newLine();
                     }
-                    bw.write(elements[content]+DAO.SEPARATOR
+                    bw.write(elements[content]+DAOImplCSV.SEPARATOR
                             +elements[length-1]);
             
                     bw.close();

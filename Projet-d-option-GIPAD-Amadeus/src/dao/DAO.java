@@ -13,47 +13,6 @@ import model.Flight;
  */
 public interface DAO {
 
-    /**
-     * Separator in csv file
-     */
-    String SEPARATOR = ";";
-    
-    /**
-     * Index of the destination in departure or arrival files
-     * (must be the same !)
-     */
-    int DESTINATION = 0;
-    
-    /**
-     * Index of the departure time in files
-     */
-    int DEP_TIME = 1;
-    
-    /**
-     * Index of the departure GMT in files
-     */
-    int DEP_GMT = 2;
-    
-    /**
-     * Index of the arrival time in files
-     */
-    int ARR_TIME = 3;
-    
-    /**
-     * Index of the arrival GMT in files
-     */
-    int ARR_GMT = 4;
-    
-    /**
-     * Index of the arrival day offset in files
-     */
-    int ARR_OFFSET = 5;
-    
-    /**
-     * Index of the flight ID in files
-     */
-    int ID = 6;
-
     
 	/**
 	 * @param origin La ville d'orgine.

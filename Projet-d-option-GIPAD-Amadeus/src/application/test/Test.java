@@ -7,7 +7,7 @@ import model.Flight;
 import context.Client;
 import context.Context;
 import dao.DAO;
-import dao.DAOImpl;
+import dao.csv.DAOImplCSV;
 import reader.RequestLoader;
 import reader.RequestLoaderImp;
 import solving.ComplexTripModel;
@@ -20,7 +20,7 @@ public class Test {
     public static void main(String[] args){
         
         ComplexTripModel model = new SimpleComplexTripModel();
-        DAO dao = new DAOImpl();
+        DAO dao = new DAOImplCSV();
         
         Context context = new Context(model, dao);
         
