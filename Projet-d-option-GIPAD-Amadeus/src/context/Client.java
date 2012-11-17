@@ -78,6 +78,7 @@ public class Client {
 	public void loadRequest(final String dir){
 		
 	    System.out.println("- CHARGEMENT DE LA REQUETE - ");
+	    long t = System.currentTimeMillis();
 		// Lecture du fichier de requête.
 		this.requestLoader.loadRequest(dir);
 		System.out.print("..........");
@@ -95,34 +96,37 @@ public class Client {
 		this.userConstraints.add(cvf);
 		this.userConstraints.addAll(cves);
 		this.userConstraints.addAll(cgs);
-		System.out.print(" Ok !");
+		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
 		
+	    t = System.currentTimeMillis();
 		System.out.println("\n" + "\n"  + "- INITIALISATION DU MODELE -");
 		// Application des contraintes.
 		for(UserConstraint c : this.userConstraints){
 			c.apply(this.context);
 			System.out.print(".....");
 		}
-		System.out.print(" Ok !");
+		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
 		
+		t = System.currentTimeMillis();
 		System.out.println("\n" + "\n"  
 		        + "- CHARGEMENT DES VOLS DANS LA BASE DE DONNEES -");
 		// Chargement des vols
-		this.loadPossibleFlights();
-		System.out.print(" Ok !");
+		this.loadPossibleFlights(t);
 		
+		t = System.currentTimeMillis();
 		System.out.println("\n" + "\n"  + "- CONSTRUCTION DU MODELE -");
 		// Initialisation du complex trip model
 		this.context.getComplexTripModel().build();
-		System.out.print(" Ok !");
+		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
 	}
 	
 	/**
 	 * Charge les vols possibles susceptibles de satisfaire les contraintes
 	 * du problème.
+	 * @param t Le temps déjà écoulé.
 	 */
-	private void loadPossibleFlights(){
-		
+	private void loadPossibleFlights(final long t){
+			    
 		List<Flight> possibleFlights = new ArrayList<Flight>();
 		ComplexTripModel cxtm = this.context.getComplexTripModel();
 		DAO dao = this.context.getDao();
@@ -138,32 +142,34 @@ public class Client {
 		Date d3 = cxtm.getEarliestArrival();
 		Date d4 = cxtm.getLatestArrival();
 		
-		System.out.print("........");
+		System.out.print("...........");
 		
 		// Ajout des vols
 		possibleFlights.addAll(dao.getFlightsFromAirportToList(
 				origin, stages, d1, d2));
 		
-		System.out.print("........");
+		System.out.print("...........");
 		
 		possibleFlights.addAll(dao.getFlightsFromListToAirport(
 				stages, end, d3, d4));
 		
-		System.out.print("........");
+		System.out.print("...........");
 		
 		possibleFlights.addAll(dao.getFlightsFromListToList(
 				stages, stages, d1, d4));
 		
-		System.out.print(" Ok !");
+		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
 		
 		
 		// Filtrage des vols
+		long t1 = System.currentTimeMillis();
 	    System.out.println("\n" + "\n"  + "- FILTRAGE PRELIMINAIRE DES VOLS-");
 		this.filterFlights(possibleFlights);
 		
-		System.out.print("Ok !");
+		System.out.print("Ok ! "+"("+(System.currentTimeMillis()-t1)+"ms)");
 		
 		// Injection des vols dans le modèle
+		t1 = System.currentTimeMillis();
 	    System.out.println("\n"+"\n"  + "-INJECTION DES VOLS DANS LE MODELE-");
 		int i = 0;
 	    for(Flight f : possibleFlights){
@@ -174,6 +180,7 @@ public class Client {
 			    i = 0;
 			}
 		}
+	    System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t1)+"ms)");
 	}
 	
 	/**

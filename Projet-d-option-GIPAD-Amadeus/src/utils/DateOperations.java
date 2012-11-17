@@ -4,7 +4,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -97,11 +96,11 @@ public final class DateOperations {
 		df = new SimpleDateFormat("ddMMyyyy" + pattern);
 		Date d1 = df.parse(day + h1);
 		Date d2 = df.parse(day + h2);
-		return (d.after(d1) && d.before(d2));
+		return (!d.before(d1) && !d.after(d2));
 	}
 
 	///////////////////////////////////////////
-	/////////// DATE METHODS FOR DAO //////////
+	/////////  DATE METHODS FOR DAO  //////////
 	///////////////////////////////////////////
 
     /**

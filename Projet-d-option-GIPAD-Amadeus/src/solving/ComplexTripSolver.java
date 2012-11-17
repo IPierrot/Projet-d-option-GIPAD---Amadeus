@@ -1,8 +1,6 @@
 package solving;
 
-import java.util.List;
-
-import model.Flight;
+import model.Trip;
 
 import choco.cp.solver.CPSolver;
 
@@ -28,7 +26,7 @@ public interface ComplexTripSolver {
      * La méthode read doit avoir été appellée avant.
      * @return La liste des vols composant la première solution trouvée.
      */
-    List<Flight> getFirstTripFound();
+    Trip getFirstTripFound();
     
     /**
      * Réinitialise le solveur.

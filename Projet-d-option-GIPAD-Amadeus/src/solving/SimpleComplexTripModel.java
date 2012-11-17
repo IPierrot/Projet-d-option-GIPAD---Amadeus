@@ -449,4 +449,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
     public int mapTime(final Date d) {
         return (int) (d.getTime()/GRANULARITE-t0Earliest);
     }
+
+    @Override
+    public double unmapDuration(final int d) {
+        double duree = (double)(d*GRANULARITE)/NB_MS_IN_ONE_HOUR;
+        int i = (int) (duree*100);
+        return i/100d;
+    }
 }

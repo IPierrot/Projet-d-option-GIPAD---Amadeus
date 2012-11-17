@@ -1,8 +1,6 @@
 package application.test;
 
-import java.util.List;
-
-import model.Flight;
+import model.Trip;
 
 import context.Client;
 import context.Context;
@@ -26,18 +24,11 @@ public class Test {
         
         RequestLoader rloader = new RequestLoaderImp();
         Client client = new Client(context, rloader);
-        client.loadRequest("res/requests/constraint.txt");
+        client.loadRequest("res/requests/constraint 1.txt");
         
         ComplexTripSolver solver = new SimpleComplexTripSolver();
         solver.read(model);
-        List<Flight> trip = solver.getFirstTripFound();
-        
-        System.out.println("\n" + "Itinéraire trouvé : "  + "\n");
-        
-        for(int i = 0; i < trip.size(); i++){
-            System.out.println("Vol " + i + " : " + trip.get(i));
-        }
-        
-        System.out.println();
+        Trip trip = solver.getFirstTripFound();
+        System.out.println(trip);
     }
 }
