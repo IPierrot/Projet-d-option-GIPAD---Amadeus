@@ -81,6 +81,11 @@ public final class Generate {
      * plage horaire par défaut
      */
     public static final String PLAGE_DEFAULT = "08:00,22:00";
+    
+    /**
+     * durée minimale plage horaire
+     */
+    public static final int PLAGE_MIN = 4*GR_HOUR;
 
     /**
      * Constructeur privé vide
@@ -305,11 +310,11 @@ public final class Generate {
      */
     private static String getPlageHoraire(){
 
-        int timeDepart1 = getRandomTime(GR_JOUR);
+        int timeDepart1 = getRandomTime(GR_JOUR-PLAGE_MIN);
         String sh1 = getHour(timeDepart1);
 
-        int timeDepart2 = (int) (Math.random()*(GR_JOUR-timeDepart1))
-                +timeDepart1;
+        int timeDepart2 = (int) (Math.random()*(GR_JOUR-timeDepart1-PLAGE_MIN))
+                +timeDepart1+PLAGE_MIN;
         String sh2=getHour(timeDepart2);
 
         return sh1+","+sh2;
