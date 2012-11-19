@@ -13,6 +13,8 @@ import java.util.TimeZone;
  */
 public final class DateOperations {
 	
+    public final static long MS_IN_ONE_DAY = 1000*60*60*24;
+    
 	/**
 	 * Constructeur privé vide.
 	 */
@@ -127,6 +129,7 @@ public final class DateOperations {
         return null;
     }
     
+    
     /**
      * Genere un objet Date en fonction des parametres lus sur le fichier
      * @param yyMMdd le jour selectionne
@@ -155,5 +158,24 @@ public final class DateOperations {
             e.printStackTrace();
         }
         return null;
+    }
+    
+    /**
+     * Genere le jour correspondant au jour d'entree, sans les heures (00:00)
+     * @param d le jour considere
+     * @return le jour de d a minuit
+     */
+    public static Date getDay(final Date d){
+        return new Date((d.getTime()/MS_IN_ONE_DAY)*d.getTime());
+    }
+    
+    /**
+     * Aggrege un jour et une heure
+     * @param init le jour a aggreger
+     * @param hhmm l'heure a aggreger
+     * @return la date complete
+     */
+    public static Date dateDep(final Date init, final Date hhmm){
+        return new Date(init.getTime()+hhmm.getTime());
     }
 }
