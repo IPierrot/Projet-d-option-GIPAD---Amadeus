@@ -45,7 +45,7 @@ public final class Generate {
     /**
      * Nombre maximal de jours du voyage
      */
-    public static final int JOURS_VOYAGE=20;
+    public static final int JOURS_VOYAGE=25;
 
     /**
      * Nombre d'heures dans une journée
@@ -112,20 +112,22 @@ public final class Generate {
      * faire un panel de fichier
      * @param myDir dossier où seront les fichiers
      * @param nameFiles nom qu'auront les fichiers, avec un petit index en plus
+     * @param nbEtapes : le nombre d'étapes
+     * @param plageAller : plage horaire du départ
+     * @param plageRetour : plage horaire du retour
      */
-    private static void createFiles(final Path myDir, final int nbEtapes,
+    private static void createFiles(final Path myDir,
             final String plageAller, final String plageRetour,
-            final String nameFiles){
+            final int nbEtapes, final String nameFiles){
 
         for (int i=0; i<NUMBER_OF_FILES; i++){
             //use the above Path instance as an anchor
             String nameFile = nameFiles +i+".txt";
-            createFile(myDir, nameFile, nbEtapes, plageAller, plageRetour);
+            createFile(myDir, nameFile, plageAller, plageRetour, nbEtapes);
         }
 
     }
-
-
+    
     /**
      * Créer un fichier de requête
      * @param myDir : Path du dossier dans lequel on veut créer le fichier
@@ -133,10 +135,11 @@ public final class Generate {
      * @param nbEtapes : le nombre d'étapes
      * @param plageAller : plage horaire du départ
      * @param plageRetour : plage horaire du retour
+     * @param nbJours : durée du voyage
      */
     private static void createFile(final Path myDir, final String nameFile, 
-            final int nbEtapes, final String plageAller, 
-            final String plageRetour){
+            final String plageAller, final String plageRetour, 
+            final int nbEtapes, final int nbJours){
 
         Path createFile = myDir.resolve(nameFile);
 
@@ -167,8 +170,8 @@ public final class Generate {
 
             //int nbEtapes=(int) (Math.random()*NB_MAX_ETAPES);
             
-            int[] intArrivee = getInterDateTime(nbEtapes*2*GR_JOUR, 
-                    JOURS_VOYAGE*GR_JOUR);
+            int[] intArrivee = {nbJours*GR_JOUR,
+                    getRandomTime(JOURS_D_INTERVALLE*GR_JOUR)};
 
             br.write("\n");
 
@@ -225,18 +228,37 @@ public final class Generate {
         }
 
     }
-    
+
+
     /**
      * Créer un fichier de requête
      * @param myDir : Path du dossier dans lequel on veut créer le fichier
      * @param nameFile : nom du fichier
      * @param nbEtapes : le nombre d'étapes
+     * @param plageAller : plage horaire du départ
+     * @param plageRetour : plage horaire du retour
      */
     private static void createFile(final Path myDir, final String nameFile, 
+            final String plageAller, final String plageRetour, 
             final int nbEtapes){
 
-        createFile(myDir, nameFile, nbEtapes,
-                getPlageHoraire(), getPlageHoraire());
+        createFile(myDir, nameFile, getPlageHoraire(),
+                getPlageHoraire(), nbEtapes, nbEtapes*2*GR_JOUR);
+
+    }
+    
+    /**
+     * Créer un fichier de requête
+     * @param myDir : Path du dossier dans lequel on veut créer le fichier
+     * @param nameFile : nom du fichier
+     * @param plageAller : plage horaire du départ
+     * @param plageRetour : plage horaire du retour
+     */
+    private static void createFile(final Path myDir, final String nameFile, 
+            final String plageAller, final String plageRetour){
+
+        createFile(myDir, nameFile, getPlageHoraire(), 
+                getPlageHoraire(), (int) (Math.random()*NB_MAX_ETAPES));
 
     }
     
@@ -249,8 +271,8 @@ public final class Generate {
      */
     private static void createFile(final Path myDir, final String nameFile){
 
-        createFile(myDir, nameFile, (int) (Math.random()*NB_MAX_ETAPES),
-                getPlageHoraire(), getPlageHoraire());
+        createFile(myDir, nameFile, getPlageHoraire(), 
+                getPlageHoraire());
         
        
 
@@ -416,11 +438,13 @@ public final class Generate {
 
         String nameFiles = "request";
 
-        createFiles(myDir, 1, PLAGE_DEFAULT, PLAGE_DEFAULT, nameFiles);
+//        createFiles(myDir, 1, PLAGE_DEFAULT, PLAGE_DEFAULT, nameFiles);
 
 //        createFiles(myDir, nameFiles);
 //        
-//        createFile(myDir, "Etapes5", 5, PLAGE_DEFAULT, PLAGE_DEFAULT);
+//        createFile(myDir, "Etapes5", PLAGE_DEFAULT, PLAGE_DEFAULT, 5);
+        
+        createFile(myDir, "Et5dur8", PLAGE_DEFAULT, PLAGE_DEFAULT, 5, 8);
 
 
 
