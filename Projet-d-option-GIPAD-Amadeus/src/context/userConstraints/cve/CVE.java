@@ -120,17 +120,18 @@ public class CVE extends UserConstraint {
         List<Airport> st = new ArrayList<Airport>();
         st.add(this.stage);
         
-        // Récupération des dates entre lesquel on va récupérer des vols.
-        Date d1 = cxtm.getEarliestDeparture();
-        Date d4 = cxtm.getLatestArrival();
-        
         // Ajout des vols
-        possibleFlights.addAll(dao.getFlightsFromListToList(
-                st, stages, d1, d4));
+        possibleFlights.addAll(
+                dao.getFlightsFromListToAirport(stages, stage, arr, dep));
+        
+        possibleFlights.addAll(
+                dao.getFlightsFromAirportToList(stage, stages, arr, dep));
 
         // Filtrage et injection des vols dans le modèle
         for(Flight f : possibleFlights){
-            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)){
+            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)
+                   && !f.getDeparture().before(cxtm.getEarliestDeparture())
+                   && !f.getArrival().after(cxtm.getLatestArrival())){
                 cxtm.addPossibleFlight(f);
             }
         }

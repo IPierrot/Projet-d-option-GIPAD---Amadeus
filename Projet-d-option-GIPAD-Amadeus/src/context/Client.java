@@ -109,26 +109,6 @@ public class Client {
 		this.loadPossibleFlights();
 		
 	    System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
-
-//	    // Filtrage final
-//	    t = System.currentTimeMillis();
-//        System.out.println("\n" + "\n"  
-//                + "- FILTRAGE FINAL DES VOLS -");
-//        
-//        int i = 0;
-//        for(UserConstraint c : this.userConstraints){
-//            c.filter(context.getComplexTripModel().getPossibleFlights());
-//            System.out.println(
-//	    context.getComplexTripModel().getPossibleFlights().size());
-//            if(i >= this.userConstraints.size()/5){
-//                i = 0;
-//                System.out.print(".....");
-//            } else {
-//                i++;
-//            }
-//        }
-//        System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
-
 		
 		t = System.currentTimeMillis();
 		System.out.println("\n" + "\n"  + "- CONSTRUCTION DU MODELE -");

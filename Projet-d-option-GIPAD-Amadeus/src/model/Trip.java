@@ -149,6 +149,10 @@ public class Trip {
         return stagesDates;
     }
     
+    /**
+     * Représente le Trip sous forme de résumé texte.
+     * @return La chaine de charactères contenant le résumé du voyage.
+     */
     public String toString(){ 
         String retour = "";
         retour += "\n" + "Itinéraire trouvé : "  + "\n" + "\n";
@@ -164,7 +168,8 @@ public class Trip {
         
         Date dep = this.getStartDeparture();
         retour += "Départ du voyage depuis " + this.getStart()
-                + " le " + df1.format(dep) + " à " + df2.format(dep) + ", " + "\n";
+                + " le " + df1.format(dep) 
+                + " à " + df2.format(dep) + ", " + "\n";
         
         for(int i = 0; i < getStages().size(); i++){
             retour += "Arrivée à " + getStages().get(i)
@@ -172,12 +177,14 @@ public class Trip {
                     + " à " + df2.format(getStagesDates().get(i)[0]) + ","
                     + " séjour pendant " + getDurations().get(i) + "h,"
                     + " départ le " + df1.format(getStagesDates().get(i)[1]) 
-                    + " à " + df2.format(getStagesDates().get(i)[1]) + "," + "\n";
+                    + " à " 
+                    + df2.format(getStagesDates().get(i)[1]) + "," + "\n";
         }
         
         Date arr = this.getEndArrival();
         retour += "Fin du voyage à " + this.getEnd()
-                + " le " + df1.format(arr) + " à " + df2.format(arr) + "." + "\n";
+                + " le " + df1.format(arr) 
+                + " à " + df2.format(arr) + "." + "\n";
         return retour;
     }
 }

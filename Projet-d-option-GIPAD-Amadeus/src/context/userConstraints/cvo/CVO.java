@@ -71,9 +71,6 @@ public class CVO extends UserConstraint {
 	@Override
 	public boolean remove(final Flight flight) {
 		boolean b = false;
-		if(flight.getDeparture().after(dep2)){
-		    System.out.println("Merde");
-		}
 		try {
 		   
 			b = (flight.getOrigin() == origin
@@ -106,7 +103,8 @@ public class CVO extends UserConstraint {
 
         // Filtrage des vols et injection des vols dans le modèle
         for (Flight f : possibleFlights) {
-            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)){
+            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)
+                    && !f.getArrival().after(cxtm.getLatestArrival())){
                 cxtm.addPossibleFlight(f);
             }    
         }

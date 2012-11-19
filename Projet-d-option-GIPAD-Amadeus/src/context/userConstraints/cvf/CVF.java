@@ -101,7 +101,8 @@ public class CVF extends UserConstraint {
                 
         // Filtrage et injection des vols dans le modèle
         for(Flight f : possibleFlights){
-            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)){
+            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)
+                    && !f.getDeparture().before(cxtm.getEarliestDeparture())){
                 cxtm.addPossibleFlight(f);
             }
         }
