@@ -4,6 +4,8 @@ import model.*;
 import utils.*;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -97,10 +99,9 @@ public class DAOImplCSV implements DAO {
                           
                     Date dEnd = DateOperations.dateDep(
                             DateOperations.getDay(d2), depHoraire);
-                    
                     //Ajout du vol tant qu'il est dans les limites temporelles
                     while(!currentDep.after(dEnd)){
-                    
+                        System.out.println(currentDep);
                         Date currentArr = DateOperations.dateDep(
                                 DateOperations.getDay(currentDep), arrHoraire);
                         int dayOffset = Integer.parseInt(line[ARR_OFFSET]);

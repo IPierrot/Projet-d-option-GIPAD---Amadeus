@@ -166,7 +166,17 @@ public final class DateOperations {
      * @return le jour de d a minuit
      */
     public static Date getDay(final Date d){
-        return new Date((d.getTime()/MS_IN_ONE_DAY)*d.getTime());
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+        String s = df.format(d);
+        df = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+        Date r = null;
+        try {
+            r = df.parse(s + " 00:00");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return r;
+//        return new Date((d.getTime()/MS_IN_ONE_DAY)*d.getTime());
     }
     
     /**
