@@ -121,8 +121,7 @@ public final class DateOperations {
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         
         try {
-            return sdf.parse(yyMMdd.substring(0, 2)+yyMMdd.substring(2, 4)
-                    +dd+time.substring(0, 2) + time.substring(2, 4) + gmt);
+            return sdf.parse("20"+yyMMdd.substring(0, 4)+ dd+ time + gmt);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -176,7 +175,6 @@ public final class DateOperations {
             e.printStackTrace();
         }
         return r;
-//        return new Date((d.getTime()/MS_IN_ONE_DAY)*d.getTime());
     }
     
     /**
@@ -186,6 +184,15 @@ public final class DateOperations {
      * @return la date complete
      */
     public static Date dateDep(final Date init, final Date hhmm){
-        return new Date(init.getTime()+hhmm.getTime());
+        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
+        String s = df.format(init);
+        df = new SimpleDateFormat("HH:mm");
+        Date r = null;
+        try {
+            r = df.parse(s + df.format(hhmm));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return r;
     }
 }
