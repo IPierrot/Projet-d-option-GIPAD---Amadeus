@@ -1,18 +1,40 @@
+<<<<<<< HEAD
 CVO-00: SXB 
 CVO-01: 2012/12/01-03:30,2012/12/03-14:50
 CVO-02: 08:00,22:00
+=======
+CVO-00: ROM 
+CVO-01: 2012/12/01-06:00,2012/12/01-19:05
+CVO-02: 15:15,20:40
+>>>>>>> branch 'master' of git@github.com:IPierrot/Projet-d-option-GIPAD---Amadeus.git
 
 CVE0
+<<<<<<< HEAD
 CVE-00: OSL
+=======
+CVE-00: VIE
+>>>>>>> branch 'master' of git@github.com:IPierrot/Projet-d-option-GIPAD---Amadeus.git
 CVE-01: 1
+<<<<<<< HEAD
 CVE-02: 2012/12/02-11:00,2012/12/03-07:10
 CVE-03: 18,18
 CVE-04: 17:00,22:20
+=======
+CVE-02: 2012/12/15-07:20,2012/12/15-10:45
+CVE-03: 0,2
+CVE-04: 15:20,20:25
+>>>>>>> branch 'master' of git@github.com:IPierrot/Projet-d-option-GIPAD---Amadeus.git
 CVE-05: 1
 
+<<<<<<< HEAD
 CVF-00:BER
 CVF-01: 2012/12/03-02:00,2012/12/04-15:30
 CVF-02: 08:00,22:00
+=======
+CVF-00:HAM
+CVF-01: 2012/12/15-18:40,2012/12/16-12:15
+CVF-02: 01:35,05:55
+>>>>>>> branch 'master' of git@github.com:IPierrot/Projet-d-option-GIPAD---Amadeus.git
 
 CG-00: non implemented
 CG-01: non implemented
