@@ -333,7 +333,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
             retour = true;
             
           // Création de la variable de départ.
-          this.startDepVar = makeIntVar("start", 0, tmaxLastest-t0Earliest,
+          this.startDepVar = makeIntVar("start", 0, t0Latest-t0Earliest,
                   VARIABLES_OPTION);
 
           // Création de la variable d'index de départ.
@@ -344,21 +344,14 @@ public class SimpleComplexTripModel implements ComplexTripModel{
           System.out.print("....");
           
           // Création de la variable d'arrivée.
-          this.endArrVar = makeIntVar("end", 0, tmaxLastest-t0Earliest,
+          this.endArrVar = makeIntVar("end", tmaxEarliest-t0Earliest,
+                  tmaxLastest-t0Earliest,
                   VARIABLES_OPTION);
           
           // Création de la variable d'index de l'arrivée.
           this.endIndex = makeIntVar(
                   "indexArr", 0, this.getPossibleFlights().size()-1,
-                  VARIABLES_OPTION);
-          
-          // Application des contraintes "temporelles" sur le départ ...
-          cpmodel.addConstraint(geq(startDepVar, 0));
-          cpmodel.addConstraint(leq(startDepVar, t0Latest-t0Earliest));
-          
-          // ... sur l'arrivée
-          cpmodel.addConstraint(geq(endArrVar, tmaxEarliest-t0Earliest));
-          cpmodel.addConstraint(leq(endArrVar, tmaxLastest-t0Earliest));
+                  VARIABLES_OPTION);       
           
           System.out.print("....");
           
@@ -384,30 +377,20 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               // Création de la task Variable
               IntegerVariable st = makeIntVar(
                     "start " + i + "(" + a.name()+")", 
-                    0, tmaxLastest-t0Earliest, VARIABLES_OPTION);
+                    tarr-t0Earliest, tdep-t0Earliest, VARIABLES_OPTION);
               
               IntegerVariable en = makeIntVar(
                       "end " + i + "(" + a.name()+")", 
-                      0, tmaxLastest-t0Earliest, VARIABLES_OPTION);
+                      tarr-t0Earliest, tdep-t0Earliest, VARIABLES_OPTION);
               
               IntegerVariable dur = makeIntVar(
                       "duration " + i + "(" + a.name()+")",
-                      0, tmaxLastest-t0Earliest, VARIABLES_OPTION);
+                      durmin, durmax, VARIABLES_OPTION);
               
               TaskVariable task = makeTaskVar("stage " + i + "(" + a.name()+")",
                       st, en, dur, VARIABLES_OPTION);
               
               this.stagesTaskVars[i] = task;
-              
-              // Application des contraintes "temporelles" sur l'étape
-              
-              /* départ et d'arrivée */
-              cpmodel.addConstraint(geq(st, tarr-t0Earliest));
-              cpmodel.addConstraint(leq(en, tdep-t0Earliest));
-              
-              /* Durée */
-              cpmodel.addConstraint(geq(dur, durmin));
-              cpmodel.addConstraint(leq(dur, durmax));
               
               // Création des variables d'index.
               IntegerVariable arr = makeIntVar(

@@ -187,9 +187,11 @@ public final class DateOperations {
         DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
         String s = df.format(init);
         df = new SimpleDateFormat("HH:mm");
+        String h = df.format(hhmm);
+        df = new SimpleDateFormat("yyyy/MM/dd HH:mm");
         Date r = null;
         try {
-            r = df.parse(s + df.format(hhmm));
+            r = df.parse(s + " " +  h);
         } catch (ParseException e) {
             e.printStackTrace();
         }

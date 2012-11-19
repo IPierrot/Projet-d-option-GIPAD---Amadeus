@@ -134,7 +134,11 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             List<int[]> temp1 = new ArrayList<int[]>();
             List<int[]> temp2 = new ArrayList<int[]>();
             for(int j = 0; j < airportsDep.size(); j++){
-                if(airportsDep.get(j)[1] == cxtmodel.getStartAirport().getId()){
+                if(airportsDep.get(j)[1] == cxtmodel.getStartAirport().getId()
+                        && departs.get(j)[1] 
+                                >= cxtmodel.getStartDeparture().getLowB()
+                        && departs.get(j)[1] 
+                                <= cxtmodel.getStartDeparture().getUppB()){
                     temp1.add(airportsDep.get(j));
                     temp2.add(departs.get(j));
                 }
@@ -150,7 +154,11 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             List<int[]> temp3 = new ArrayList<int[]>();
             List<int[]> temp4 = new ArrayList<int[]>();
             for(int j = 0; j < airportsArr.size(); j++){
-                if(airportsArr.get(j)[1] == cxtmodel.getEndAirport().getId()){
+                if(airportsArr.get(j)[1] == cxtmodel.getEndAirport().getId() 
+                        && arrivees.get(j)[1] 
+                                >= cxtmodel.getEndArrival().getLowB()
+                        && arrivees.get(j)[1] 
+                                <= cxtmodel.getEndArrival().getUppB()){
                     temp3.add(airportsArr.get(j));
                     temp4.add(arrivees.get(j));
                 }
@@ -181,12 +189,20 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 List<int[]> temp8 = new ArrayList<int[]>();
                 for(int j = 0; j < airportsArr.size(); j++){
                     if(airportsArr.get(j)[1]
-                            == cxtmodel.getStages().get(i).getId()){
+                            == cxtmodel.getStages().get(i).getId()
+                            && arrivees.get(j)[1] 
+                                >= task.start().getLowB()
+                            && arrivees.get(j)[1] 
+                                <= task.end().getUppB()){
                         temp5.add(airportsArr.get(j));
                         temp6.add(arrivees.get(j));
                     }
                     if(airportsDep.get(j)[1]
-                            == cxtmodel.getStages().get(i).getId()){
+                            == cxtmodel.getStages().get(i).getId()
+                            && departs.get(j)[1] 
+                                >= task.start().getLowB()
+                            && departs.get(j)[1] 
+                                <= task.end().getUppB()){
                         temp7.add(airportsDep.get(j));
                         temp8.add(departs.get(j));
                     }

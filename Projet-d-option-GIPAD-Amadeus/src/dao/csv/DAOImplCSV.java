@@ -96,12 +96,10 @@ public class DAOImplCSV implements DAO {
                         currentDep.setTime(currentDep.getTime()
                                 +DateOperations.MS_IN_ONE_DAY);
                     }
-                          
                     Date dEnd = DateOperations.dateDep(
                             DateOperations.getDay(d2), depHoraire);
                     //Ajout du vol tant qu'il est dans les limites temporelles
                     while(!currentDep.after(dEnd)){
-                        System.out.println(currentDep);
                         Date currentArr = DateOperations.dateDep(
                                 DateOperations.getDay(currentDep), arrHoraire);
                         int dayOffset = Integer.parseInt(line[ARR_OFFSET]);
@@ -110,7 +108,8 @@ public class DAOImplCSV implements DAO {
                         
                         Flight f = new Flight(origin, 
                                 Airport.valueOf(line[DESTINATION]), 
-                                currentDep, currentArr, line[ID]);
+                                new Date(currentDep.getTime()), 
+                                new Date(currentArr.getTime()), line[ID]);
                         if(!ret.contains(f)){
                             ret.add(f); 
                         }
@@ -176,10 +175,10 @@ public class DAOImplCSV implements DAO {
                                 DateOperations.getDay(currentArr), depHoraire);
                         currentDep.setTime(currentDep.getTime()
                                 -dayOffset*DateOperations.MS_IN_ONE_DAY);
-                        
                         Flight f = new Flight(Airport.valueOf(
                                 line[DESTINATION]), destination, 
-                                currentDep, currentArr, line[ID]);
+                                new Date(currentDep.getTime()),
+                                new Date(currentArr.getTime()), line[ID]);
                         if(!ret.contains(f)){
                             ret.add(f); 
                         }
