@@ -29,7 +29,7 @@ public final class Generate {
     /**
      * Nombre de fichiers que l'on veut créer
      */
-    public static final int NUMBER_OF_FILES = 100;
+    public static final int NUMBER_OF_FILES = 10;
 
     /**
      * Nombre maximal d'étapes possibles
@@ -99,6 +99,23 @@ public final class Generate {
             //use the above Path instance as an anchor
             String nameFile = nameFiles +i+".txt";
             createFile(myDir, nameFile);
+        }
+
+    }
+    
+    /**
+     * faire un panel de fichier
+     * @param myDir dossier où seront les fichiers
+     * @param nameFiles nom qu'auront les fichiers, avec un petit index en plus
+     */
+    private static void createFiles(final Path myDir, final int nbEtapes,
+            final String plageAller, final String plageRetour,
+            final String nameFiles){
+
+        for (int i=0; i<NUMBER_OF_FILES; i++){
+            //use the above Path instance as an anchor
+            String nameFile = nameFiles +i+".txt";
+            createFile(myDir, nameFile, nbEtapes, plageAller, plageRetour);
         }
 
     }
@@ -394,10 +411,11 @@ public final class Generate {
 
         String nameFiles = "request";
 
+        createFiles(myDir, 1, PLAGE_DEFAULT, PLAGE_DEFAULT, nameFiles);
 
-        createFiles(myDir, nameFiles);
-        
-        createFile(myDir, "Etapes5", 5, PLAGE_DEFAULT, PLAGE_DEFAULT);
+//        createFiles(myDir, nameFiles);
+//        
+//        createFile(myDir, "Etapes5", 5, PLAGE_DEFAULT, PLAGE_DEFAULT);
 
 
 

@@ -4,13 +4,18 @@ import static utils.DateOperations.getDateFromPattern;
 import static utils.DateOperations.isBetweenHours;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+
+import solving.ComplexTripModel;
 
 import model.Airport;
 import model.Flight;
 import context.Context;
 import context.userConstraints.UserConstraint;
+import dao.DAO;
 
 /**
  * Représente une contrainte sur la ville finale du voyage
@@ -76,5 +81,30 @@ public class CVF extends UserConstraint {
         }
         return b;
 	}
+
+    @Override
+    public void loadFlights(final Context context) {
+        List<Flight> possibleFlights = new ArrayList<Flight>();
+        ComplexTripModel cxtm = context.getComplexTripModel();
+        DAO dao = context.getDao();
+        
+        // Récupération des aeroports de départ, de fin et des étapes.
+        List<Airport> stages = cxtm.getStages();
+        
+        // Récupération des dates entre lesquel on va récupérer des vols.
+        Date d3 = cxtm.getEarliestArrival();
+        Date d4 = cxtm.getLatestArrival();
+        
+        // Ajout des vols
+        possibleFlights.addAll(dao.getFlightsFromListToAirport(
+                stages, end, d3, d4));
+                
+        // Filtrage et injection des vols dans le modèle
+        for(Flight f : possibleFlights){
+            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)){
+                cxtm.addPossibleFlight(f);
+            }
+        }
+    }
 
 }

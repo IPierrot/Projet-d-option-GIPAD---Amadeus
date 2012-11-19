@@ -1,13 +1,18 @@
 package context.userConstraints.cve;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+
+import solving.ComplexTripModel;
 
 import static utils.DateOperations.*;
 import model.Airport;
 import model.Flight;
 import context.Context;
 import context.userConstraints.UserConstraint;
+import dao.DAO;
 
 /**
  * Représente une contrainte liée à une étape
@@ -97,15 +102,37 @@ public class CVE extends UserConstraint {
 
     @Override
     public boolean remove(final Flight flight) {
-        boolean b = (flight.getDestination() == stage 
-                        && flight.getArrival().before(arr))
-                  || (flight.getDestination() == stage
-                        && flight.getArrival().after(dep))
-                  || (flight.getOrigin() == stage
-                        && flight.getDeparture().after(dep)) 
-                  || (flight.getOrigin() == stage
-                        && flight.getDeparture().before(arr)); 
+        boolean b = (flight.getDestination() == stage)
+                  || (flight.getArrival().after(dep))
+                  || (flight.getDeparture().before(arr)); 
 
         return b;
+    }
+
+    @Override
+    public void loadFlights(final Context context) {
+        List<Flight> possibleFlights = new ArrayList<Flight>();
+        ComplexTripModel cxtm = context.getComplexTripModel();
+        DAO dao = context.getDao();
+        
+        // Récupération des étapes.
+        List<Airport> stages = cxtm.getStages();
+        List<Airport> st = new ArrayList<Airport>();
+        st.add(this.stage);
+        
+        // Récupération des dates entre lesquel on va récupérer des vols.
+        Date d1 = cxtm.getEarliestDeparture();
+        Date d4 = cxtm.getLatestArrival();
+        
+        // Ajout des vols
+        possibleFlights.addAll(dao.getFlightsFromListToList(
+                st, stages, d1, d4));
+
+        // Filtrage et injection des vols dans le modèle
+        for(Flight f : possibleFlights){
+            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)){
+                cxtm.addPossibleFlight(f);
+            }
+        }
     }
 }

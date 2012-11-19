@@ -1,20 +1,15 @@
 package context;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import model.Airport;
-import model.Flight;
 
 import context.userConstraints.UserConstraint;
 import context.userConstraints.cg.CG;
 import context.userConstraints.cve.CVE;
 import context.userConstraints.cvf.CVF;
 import context.userConstraints.cvo.CVO;
-import dao.DAO;
 import reader.RequestLoader;
-import solving.ComplexTripModel;
 
 /**
  * Représente un client du générateur de voyages complexe.
@@ -111,7 +106,29 @@ public class Client {
 		System.out.println("\n" + "\n"  
 		        + "- CHARGEMENT DES VOLS DANS LA BASE DE DONNEES -");
 		// Chargement des vols
-		this.loadPossibleFlights(t);
+		this.loadPossibleFlights();
+		
+	    System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
+
+//	    // Filtrage final
+//	    t = System.currentTimeMillis();
+//        System.out.println("\n" + "\n"  
+//                + "- FILTRAGE FINAL DES VOLS -");
+//        
+//        int i = 0;
+//        for(UserConstraint c : this.userConstraints){
+//            c.filter(context.getComplexTripModel().getPossibleFlights());
+//            System.out.println(
+//	    context.getComplexTripModel().getPossibleFlights().size());
+//            if(i >= this.userConstraints.size()/5){
+//                i = 0;
+//                System.out.print(".....");
+//            } else {
+//                i++;
+//            }
+//        }
+//        System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
+
 		
 		t = System.currentTimeMillis();
 		System.out.println("\n" + "\n"  + "- CONSTRUCTION DU MODELE -");
@@ -123,80 +140,18 @@ public class Client {
 	/**
 	 * Charge les vols possibles susceptibles de satisfaire les contraintes
 	 * du problème.
-	 * @param t Le temps déjà écoulé.
 	 */
-	private void loadPossibleFlights(final long t){
+	private void loadPossibleFlights(){
 			    
-		List<Flight> possibleFlights = new ArrayList<Flight>();
-		ComplexTripModel cxtm = this.context.getComplexTripModel();
-		DAO dao = this.context.getDao();
-		
-		// Récupération des aeroports de départ, de fin et des étapes.
-		Airport origin = cxtm.getStartAirport();
-		Airport end = cxtm.getEndAirport();
-		List<Airport> stages = cxtm.getStages();
-		
-		// Récupération des dates entre lesquel on va récupérer des vols.
-		Date d1 = cxtm.getEarliestDeparture();
-		Date d2 = cxtm.getLatestDeparture();
-		Date d3 = cxtm.getEarliestArrival();
-		Date d4 = cxtm.getLatestArrival();
-		
-		System.out.print("...........");
-		
-		// Ajout des vols
-		possibleFlights.addAll(dao.getFlightsFromAirportToList(
-				origin, stages, d1, d2));
-		
-		System.out.print("...........");
-		
-		possibleFlights.addAll(dao.getFlightsFromListToAirport(
-				stages, end, d3, d4));
-		
-		System.out.print("...........");
-		
-		possibleFlights.addAll(dao.getFlightsFromListToList(
-				stages, stages, d1, d4));
-		
-		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
-		
-		
-		// Filtrage des vols
-		long t1 = System.currentTimeMillis();
-	    System.out.println("\n" + "\n"  + "- FILTRAGE PRELIMINAIRE DES VOLS-");
-		this.filterFlights(possibleFlights);
-		
-		System.out.print("Ok ! "+"("+(System.currentTimeMillis()-t1)+"ms)");
-		
-		// Injection des vols dans le modèle
-		t1 = System.currentTimeMillis();
-	    System.out.println("\n"+"\n"  + "-INJECTION DES VOLS DANS LE MODELE-");
-		int i = 0;
-	    for(Flight f : possibleFlights){
-			cxtm.addPossibleFlight(f);
-			i++;
-			if(i >= possibleFlights.size()/50){
-			    System.out.print(".");
-			    i = 0;
-			}
-		}
-	    System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t1)+"ms)");
-	}
-	
-	/**
-	 * Filtre les vols via la méthode de filtrage locale de chacunes des
-	 * contraintes utilisateur.
-	 * @param flights La liste à filtrer.
-	 */
-	private void filterFlights(final List<Flight> flights){
-	    System.out.println("\n" + "Nombre de vols avant filtrage : " 
-	                        + flights.size());
-	    int i = 1;
-		for(UserConstraint c : this.userConstraints){
-			c.filter(flights);
-		    System.out.println("Nombre de vols après filtrage " + i 
-		      + "(" + c.getClass().getSimpleName() + ") : " + flights.size());
-		    i++;
-		}
+        int i = 1;
+        for(UserConstraint c : this.userConstraints){
+            c.loadFlights(context);
+            
+            System.out.println("Nombre de vols après chargement " + i 
+              + "(" + c.getClass().getSimpleName() + ") : " 
+              + context.getComplexTripModel().getPossibleFlights().size());
+            
+            i++;
+        }
 	}
 }

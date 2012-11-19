@@ -1,8 +1,12 @@
 package context.userConstraints.cvo;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.TimeZone;
+
+import solving.ComplexTripModel;
 
 import static utils.DateOperations.*;
 
@@ -10,6 +14,7 @@ import model.Airport;
 import model.Flight;
 import context.Context;
 import context.userConstraints.UserConstraint;
+import dao.DAO;
 
 /**
  * Représente une contrainte sur la ville d'origine du voyage
@@ -66,6 +71,9 @@ public class CVO extends UserConstraint {
 	@Override
 	public boolean remove(final Flight flight) {
 		boolean b = false;
+		if(flight.getDeparture().after(dep2)){
+		    System.out.println("Merde");
+		}
 		try {
 		   
 			b = (flight.getOrigin() == origin
@@ -78,5 +86,30 @@ public class CVO extends UserConstraint {
 		}
 		return b;
 	}
+
+    @Override
+    public void loadFlights(final Context context) {
+        List<Flight> possibleFlights = new ArrayList<Flight>();
+        ComplexTripModel cxtm = context.getComplexTripModel();
+        DAO dao = context.getDao();
+        
+        // Récupération des aeroports étapes.
+        List<Airport> stages = cxtm.getStages();
+        
+        // Récupération des dates entre lesquel on va récupérer des vols.
+        Date d1 = cxtm.getEarliestDeparture();
+        Date d2 = cxtm.getLatestDeparture();
+                
+        // Ajout des vols
+        possibleFlights.addAll(dao.getFlightsFromAirportToList(
+                origin, stages, d1, d2));
+
+        // Filtrage des vols et injection des vols dans le modèle
+        for (Flight f : possibleFlights) {
+            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)){
+                cxtm.addPossibleFlight(f);
+            }    
+        }
+    }
 
 }

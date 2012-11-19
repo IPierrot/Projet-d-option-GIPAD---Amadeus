@@ -1,5 +1,8 @@
 package context.userConstraints;
 
+//import java.util.ArrayList;
+//import java.util.List;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,12 @@ public abstract class UserConstraint {
 	 * @return true si le vol est compatible avec la contrainte; false sinon.
 	 */
 	public abstract boolean remove(Flight flight);
+	
+	/**
+	 * Charge les vols susceptibles de satisfaire la contrainte.
+	 * @param context Le contexte.
+	 */
+	public abstract void loadFlights(Context context);
 	
 	/**
 	 * Parcourt la liste de vols et retire ceux qui ne sont

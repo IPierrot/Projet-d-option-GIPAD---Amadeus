@@ -18,8 +18,8 @@ public interface DAO {
 	 * @param origin La ville d'orgine.
 	 * @param destinations Les destinations possibles.
 	 * @param d1 La date de départ au plus tôt.
-	 * @param d2 La date d'arrivée au plus tard.
-	 * @return Tous les vols allant de origin à tous les vols contenus dans
+	 * @param d2 La date de départ au plus tard.
+	 * @return Tous les vols allant de origin à toutes les villes contenues dans
 	 * destinations, partant au plus tôt à la date d1 et au plus 
 	 * tard à la date d2.
 	 */
@@ -29,9 +29,9 @@ public interface DAO {
 	/**
 	 * @param origins Les villes d'origine possibles.
 	 * @param destination La destination.
-	 * @param d1 La date de départ au plus tôt.
+	 * @param d1 La date d'arrivée au plus tôt.
 	 * @param d2 La date d'arrivée au plus tard.
-	 * @return Tous les vols allant de toutes les villes contenus dans origins
+	 * @return Tous les vols allant de toutes les villes contenues dans origins
 	 * à tous destination, arrivant au plus tôt à la date d1 et au plus
 	 * tard à la date d2.
 	 */
@@ -43,7 +43,7 @@ public interface DAO {
 	 * @param destinations Les destination possible.
 	 * @param d1 La date de départ au plus tôt.
 	 * @param d2 La date d'arrivée au plus tard.
-	 * @return Tous les vols allant de toutes les villes contenus dans origins
+	 * @return Tous les vols allant de toutes les villes contenues dans origins
 	 * à toutes celles contenue dans destination, partant au plus tôt à la
 	 * date d1 et arrivant au plus tard à la date d2.
 	 */

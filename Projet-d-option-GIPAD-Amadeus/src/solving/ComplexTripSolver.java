@@ -19,8 +19,9 @@ public interface ComplexTripSolver {
     /**
      * Lit le modèle et ajoute les contraintes.
      * @param ctxModel Le modèle à lire.
+     * @return True si le modèle a été lu avec succès.
      */
-    void read(ComplexTripModel ctxModel);
+    boolean read(ComplexTripModel ctxModel);
     
     /**
      * La méthode read doit avoir été appellée avant.
