@@ -128,7 +128,6 @@ public class DAOImplCSV implements DAO {
     }
 
 	
-	
 	@Override
 	public List<Flight> getFlightsFromListToAirport(final List<Airport> origins,
 			final Airport destination, final Date d1, final Date d2) {
@@ -208,79 +207,12 @@ public class DAOImplCSV implements DAO {
 		for(Airport a: origins){
 		    ret.addAll(getFlightsFromAirportToList(a, destinations, d1, d2));
 		}
+		for(Flight f: ret){
+		    if(f.getArrival().after(d2)){
+		        ret.remove(f);
+		    }
+		}
 		return ret;
 	}
-	
-	public List<Flight> generateFlights(final Date d1, final Date d2,
-            final Airport single, final boolean isDep, 
-            final List<Airport> list){
-	    
-        List<Flight> ret = new ArrayList<Flight>();
-        try{
-            
-            String folder = "";
-            if(isDep){
-                folder = GenerationCSV.DEP_FOLDER;
-            } else {
-                folder = GenerationCSV.ARR_FOLDER;
-            }
-            
-            FileInputStream fstream = 
-                    new FileInputStream(folder+"/"+single.toString()+".csv");
-            DataInputStream in = new DataInputStream(fstream);
-            BufferedReader br = new BufferedReader(new InputStreamReader(in));
-            String[] line;
-            String s;
-            long msInOneDay = 1000*60*60*24;
-            
-            //Line loop
-            while((s = br.readLine()) != null){
-                line = s.split(SEPARATOR);
-                if(list.contains(Airport.valueOf(line[DESTINATION]))){
-                    
-                    //Calcul dates extremes en fonction de l'horaire
-                    Date currentDep = new Date(d1.getTime()
-                            +DateOperations.generateHour(line[DEP_TIME], 
-                            line[DEP_GMT]).getTime());
-                    if(currentDep.before(d1)){
-                        currentDep.setTime(currentDep.getTime()+msInOneDay);
-                    }
-                    
-                    long msOffset = msInOneDay
-                            *Integer.parseInt(line[ARR_OFFSET]);
-                    Date currentArr = new Date(d1.getTime()
-                            +DateOperations.generateHour(line[ARR_TIME], 
-                            line[ARR_GMT]).getTime()+msOffset);
-                    
-                    //Ajout du vol tant qu'il est dans les limites temporelles
-                    while(!currentArr.after(d2)){
-                        if(isDep){
-                            Flight f = new Flight(single, 
-                                    Airport.valueOf(line[DESTINATION]), 
-                                    currentDep, currentArr, line[ID]);
-                            if(!ret.contains(f)){
-                                ret.add(f); 
-                            }
-                        } else {
-                            Flight f =new Flight(Airport.valueOf
-                                    (line[DESTINATION]), single, currentDep,
-                                    currentArr, line[ID]);
-                            if(!ret.contains(f)){
-                                ret.add(f);
-                            }
-                        }
-                        currentDep = new Date(currentDep.getTime()+msInOneDay);
-                        currentArr = new Date(currentDep.getTime()+msInOneDay);
-                    }
-                }
-            }
-            br.close();
-        } catch(Exception e){
-            e.printStackTrace();
-            System.err.println("Error: " + e.getMessage());
-        }
-        
-        return ret;
-    }
 	
 }
