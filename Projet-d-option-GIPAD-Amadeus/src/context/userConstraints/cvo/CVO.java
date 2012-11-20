@@ -86,27 +86,29 @@ public class CVO extends UserConstraint {
 
     @Override
     public void loadFlights(final Context context) {
-        List<Flight> possibleFlights = new ArrayList<Flight>();
         ComplexTripModel cxtm = context.getComplexTripModel();
         DAO dao = context.getDao();
-        
-        // Récupération des aeroports étapes.
-        List<Airport> stages = cxtm.getStages();
-        
+
         // Récupération des dates entre lesquel on va récupérer des vols.
         Date d1 = cxtm.getEarliestDeparture();
         Date d2 = cxtm.getLatestDeparture();
                 
         // Ajout des vols
-        possibleFlights.addAll(dao.getFlightsFromAirportToList(
-                origin, stages, d1, d2));
-
-        // Filtrage des vols et injection des vols dans le modèle
-        for (Flight f : possibleFlights) {
-            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)
-                    && !f.getArrival().after(cxtm.getLatestArrival())){
-                cxtm.addPossibleFlight(f);
-            }    
+        for (int i = 0; i < cxtm.getStages().size(); i++) {
+            List<Airport> stage = new ArrayList<Airport>();
+            stage.add(cxtm.getStages().get(i));
+            for (Flight f : dao.getFlightsFromAirportToList(origin,
+                    stage, d1, d2)) {
+                if(!this.remove(f) 
+                        && !cxtm.getPossibleFlights().contains(f)
+                        && !f.getArrival().after(cxtm.getLatestArrival())
+                        && f.getArrival().after(
+                                cxtm.getStagesIntervals().get(i)[0])
+                        && f.getArrival().before(
+                                cxtm.getStagesIntervals().get(i)[1])){
+                    cxtm.addPossibleFlight(f);
+                }    
+            }
         }
     }
 

@@ -434,7 +434,7 @@ public final class Generate {
      * @param args paramètre d'un main
      */
     public static void main(final String[] args) {
-        Path myDir = Paths.get("res/requests");
+        Path myDir = Paths.get("res/requests/test");
 
         String nameFiles = "request";
 
@@ -444,7 +444,10 @@ public final class Generate {
 //        
 //        createFile(myDir, "Etapes5", PLAGE_DEFAULT, PLAGE_DEFAULT, 5);
         
-        createFile(myDir, "Et5dur8", PLAGE_DEFAULT, PLAGE_DEFAULT, 5, 8);
+        for(int i = 0; i < 10; i++){
+            createFile(myDir, "request " + i + ".txt",
+                    PLAGE_DEFAULT, PLAGE_DEFAULT, 5, 8);
+        }    
 
 
 

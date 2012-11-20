@@ -111,28 +111,39 @@ public class CVE extends UserConstraint {
 
     @Override
     public void loadFlights(final Context context) {
-        List<Flight> possibleFlights = new ArrayList<Flight>();
         ComplexTripModel cxtm = context.getComplexTripModel();
         DAO dao = context.getDao();
-        
-        // Récupération des étapes.
-        List<Airport> stages = cxtm.getStages();
-        List<Airport> st = new ArrayList<Airport>();
-        st.add(this.stage);
-        
-        // Ajout des vols
-        possibleFlights.addAll(
-                dao.getFlightsFromListToAirport(stages, stage, arr, dep));
-        
-        possibleFlights.addAll(
-                dao.getFlightsFromAirportToList(stage, stages, arr, dep));
 
-        // Filtrage et injection des vols dans le modèle
-        for(Flight f : possibleFlights){
-            if(!this.remove(f) && !cxtm.getPossibleFlights().contains(f)
-                   && !f.getDeparture().before(cxtm.getEarliestDeparture())
-                   && !f.getArrival().after(cxtm.getLatestArrival())){
-                cxtm.addPossibleFlight(f);
+        // Ajout des vols
+        for (int i = 0; i < cxtm.getStages().size(); i++) {
+            List<Airport> stages = new ArrayList<Airport>();
+            stages.add(cxtm.getStages().get(i));
+            for (Flight f : dao.getFlightsFromAirportToList(stage,
+                    stages, arr, dep)) {
+                if(!this.remove(f) 
+                        && !cxtm.getPossibleFlights().contains(f)
+                        && !f.getDeparture().before(cxtm.getEarliestDeparture())
+                        && !f.getArrival().after(cxtm.getLatestArrival())
+                        && f.getArrival().after(
+                                cxtm.getStagesIntervals().get(i)[0])
+                        && f.getArrival().before(
+                                cxtm.getStagesIntervals().get(i)[1])){
+                    cxtm.addPossibleFlight(f);
+                }    
+            }
+
+            for (Flight f : dao.getFlightsFromListToAirport(
+                    stages, stage, arr, dep)) {
+                if(!this.remove(f) 
+                        && !cxtm.getPossibleFlights().contains(f)
+                        && !f.getDeparture().before(cxtm.getEarliestDeparture())
+                        && !f.getArrival().after(cxtm.getLatestArrival())
+                        && f.getDeparture().after(
+                                cxtm.getStagesIntervals().get(i)[0])
+                        && f.getDeparture().before(
+                                cxtm.getStagesIntervals().get(i)[1])){
+                    cxtm.addPossibleFlight(f);
+                }    
             }
         }
     }

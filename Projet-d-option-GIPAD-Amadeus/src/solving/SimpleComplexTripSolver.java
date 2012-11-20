@@ -133,6 +133,8 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             /* Vols possible (feasible pairs) */
             List<int[]> temp1 = new ArrayList<int[]>();
             List<int[]> temp2 = new ArrayList<int[]>();
+            List<int[]> temp3 = new ArrayList<int[]>();
+            List<int[]> temp4 = new ArrayList<int[]>();
             for(int j = 0; j < airportsDep.size(); j++){
                 if(airportsDep.get(j)[1] == cxtmodel.getStartAirport().getId()
                         && departs.get(j)[1] 
@@ -142,18 +144,6 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                     temp1.add(airportsDep.get(j));
                     temp2.add(departs.get(j));
                 }
-            }
-            
-            // Version AC
-            cpmodel.addConstraint(feasPairAC(cxtmodel.getStartIndex(),
-                    cxtmodel.getStartVariable(), temp1));
-            
-            cpmodel.addConstraint(feasPairAC(cxtmodel.getStartIndex(),
-                    cxtmodel.getStartDeparture(), temp2));
-            
-            List<int[]> temp3 = new ArrayList<int[]>();
-            List<int[]> temp4 = new ArrayList<int[]>();
-            for(int j = 0; j < airportsArr.size(); j++){
                 if(airportsArr.get(j)[1] == cxtmodel.getEndAirport().getId() 
                         && arrivees.get(j)[1] 
                                 >= cxtmodel.getEndArrival().getLowB()
@@ -165,6 +155,12 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             }
             
             // Version AC
+            cpmodel.addConstraint(feasPairAC(cxtmodel.getStartIndex(),
+                    cxtmodel.getStartVariable(), temp1));
+            
+            cpmodel.addConstraint(feasPairAC(cxtmodel.getStartIndex(),
+                    cxtmodel.getStartDeparture(), temp2));
+
             cpmodel.addConstraint(feasPairAC(cxtmodel.getEndIndex(),
                     cxtmodel.getEndVariable(), temp3));
             
@@ -267,7 +263,6 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 
     @Override
     public Trip getFirstTripFound() {
-        List<Flight> temp = new ArrayList<Flight>();
         List<Flight> vols = new ArrayList<Flight>();
         Trip trip = null;
         
@@ -283,12 +278,12 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 Integer i = this.solver.getVar(
                         cxtModel.getStartIndex()).getVal();
                 Flight dep = flights.get(i);
-                temp.add(dep);
+                vols.add(dep);
                 
                 Integer j = this.solver.getVar(
                         cxtModel.getEndIndex()).getVal();
                 Flight arr = flights.get(j);
-                temp.add(arr);
+                vols.add(arr);
 
                 trip = new Trip(cxtModel.getStartAirport(), dep.getDeparture(),
                         cxtModel.getEndAirport(), arr.getArrival());
@@ -299,76 +294,32 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                     Flight f = flights.get(k);
                     Flight f2 = flights.get(k2);
                     
-                    if(!temp.contains(f)){
-                        temp.add(f);
+                    if(!vols.contains(f)){
+                        vols.add(f);
                     }
-                    if(!temp.contains(f2)){
-                        temp.add(f2);
+                    if(!vols.contains(f2)){
+                        vols.add(f2);
                     }
                 }
                 
-                List<Integer> sorted = sort(temp);
-                
-                for (int k = 0; k < temp.size(); k++) {
-                    int l1 = sorted.get(k);
-                    int l2 = (k == temp.size()-1) ? sorted.get(k-1)
-                        : sorted.get(k+1);
-                    if (l1 < temp.size()-1) {
-                        TaskVariable tv = cxtModel.getStagesTaskVariables()[l1];
-                        double dur = cxtModel.unmapDuration(
-                                solver.getVar(tv.duration()).getVal());
-                        
-                        Flight f1 = temp.get(l1);
-                        Flight f2 = temp.get(l2);
-                        
-                        if (l1 == temp.size()-2) {
-                            vols.add(f1);
-                            vols.add(f2);
-                        } else {
-                            vols.add(f1);
-                        }
-                        if (k != temp.size()-1) {
-                            Date d1 = f1.getArrival();
-                            Date d2 = f2.getDeparture();
-                            trip.addStage(f1.getDestination(),
-                                    new Date[] {d1, d2}, dur);
-                        } else {
-                            Date d1 = f2.getArrival();
-                            Date d2 = f1.getDeparture();
-                            trip.addStage(f1.getOrigin(),
-                                    new Date[] {d1, d2}, dur);
-                        }
-                    }    
+                for (int k = 0; 
+                        k < cxtModel.getStagesTaskVariables().length; k++) {
+                    TaskVariable tv = cxtModel.
+                            getStagesTaskVariables()[k];
+                    Date d1 = cxtModel.unmapTime(
+                            solver.getVar(tv.start()).getVal());
+                    Date d2 = cxtModel.unmapTime(
+                            solver.getVar(tv.end()).getVal());
+                    int dur = cxtModel.unmapDuration(
+                            solver.getVar(tv.duration()).getVal());
+
+                    trip.addStage(cxtModel.getStages().get(k),
+                            new Date[] {d1, d2}, dur);
                 }
                 trip.setFlights(vols);
             }
         }
         return trip;
-    }
-    
-    /**
-     * Ordonne les indexes d'une liste de vols (de facon à ce que les vols se 
-     * suivent dans le temps.
-     * @param flights La liste à ordonner
-     * @return La liste ordonnée et sans doublons
-     */
-    private static List<Integer> sort(final List<Flight> flights){
-        List<Integer> retour = new ArrayList<Integer>();
-        for(int j = 0; j<flights.size(); j++){
-            Flight f = flights.get(j);
-            if(retour.isEmpty()){
-                retour.add(j);
-            } else{
-                int i = 0;
-                while(i < retour.size() 
-                     && f.getDeparture().after(
-                             flights.get(retour.get(i)).getDeparture())){
-                    i++;
-                }
-                retour.add(i, j);
-            }
-        }
-        return retour;
     }
 
     @Override

@@ -17,8 +17,9 @@ public class Test {
 
     public static void main(String[] args){
         
-//        for(int i = 0; i < 10; i++) {
-
+        for(int i = 0; i < 1; i++) {
+            long t = System.currentTimeMillis();
+            
             ComplexTripModel model = new SimpleComplexTripModel();
             DAO dao = new DAOImplCSV();
             
@@ -27,8 +28,9 @@ public class Test {
             RequestLoader rloader = new RequestLoaderImp();
             Client client = new Client(context, rloader);
         
-            client.loadRequest("res/requests/constraint 1.txt");
-//            client.loadRequest("res/requests/request" + i + ".txt");
+            client.loadRequest("res/requests/test/request 3.txt");
+//            client.loadRequest("res/requests/test/request "
+//                                        + i + ".txt");
             
             ComplexTripSolver solver = new SimpleComplexTripSolver();
             solver.read(model);
@@ -39,7 +41,9 @@ public class Test {
                 System.out.println(" Pas de solution possible " + "\n");
             }
             
-//        }
+            System.out.println("Temps total : " 
+                    + (System.currentTimeMillis()-t) + "ms" + "\n");
+        }
         
     }
 }

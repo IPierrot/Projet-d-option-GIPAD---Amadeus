@@ -190,8 +190,14 @@ public interface ComplexTripModel {
 	
 	/**
 	 * @param d La durée à demapper
-	 * @return La durée en heures.
+	 * @return La durée en ms.
 	 */
-	double unmapDuration(int d);
+	int unmapDuration(int d);
+	
+	/**
+     * @param t La date à demapper.
+     * @return La date demappée.
+     */
+	Date unmapTime(int t);
 
 }

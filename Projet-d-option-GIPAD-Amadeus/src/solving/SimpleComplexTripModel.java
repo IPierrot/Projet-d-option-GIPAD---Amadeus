@@ -206,22 +206,22 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 
 	@Override
 	public Date getEarliestDeparture() {
-		return this.unmapTime(t0Earliest);
+		return this.unmapTime(0);
 	}
 
 	@Override
 	public Date getLatestDeparture() {
-		return this.unmapTime(t0Latest);
+		return this.unmapTime(t0Latest-t0Earliest);
 	}
 
 	@Override
 	public Date getEarliestArrival() {
-		return this.unmapTime(tmaxEarliest);
+		return this.unmapTime(tmaxEarliest-t0Earliest);
 	}
 	
 	@Override
 	public Date getLatestArrival() {
-		return this.unmapTime(tmaxLastest);
+		return this.unmapTime(tmaxLastest-t0Earliest);
 	}
 
 	@Override
@@ -243,7 +243,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	public List<Date[]> getStagesIntervals(){
 	    List<Date[]> retour = new ArrayList<Date[]>();
 	    for(int[] t : this.stagesIntervals){
-	        retour.add(new Date[] {this.unmapTime(t[0]), this.unmapTime(t[1])});
+	        retour.add(new Date[] {this.unmapTime(t[0]-t0Earliest),
+	                this.unmapTime(t[1]-t0Earliest)});
 	    }
 		return retour;
 	}
@@ -301,12 +302,9 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 				&& getStages().size() < getPossibleFlights().size());
 	}
 	
-	/**
-     * @param t La date à demapper.
-     * @return La date demappée.
-     */
-	private Date unmapTime(final int t){
-	    long l = (long) t*(long) GRANULARITE;
+	@Override
+	public Date unmapTime(final int t){
+	    long l = (long) (t+t0Earliest)*(long) GRANULARITE;
 	    return new Date(l);
 	}
 
@@ -434,9 +432,10 @@ public class SimpleComplexTripModel implements ComplexTripModel{
     }
 
     @Override
-    public double unmapDuration(final int d) {
-        double duree = (double)(d*GRANULARITE)/NB_MS_IN_ONE_HOUR;
-        int i = (int) (duree*100);
-        return i/100d;
+    public int unmapDuration(final int d) {
+        int duree = (d*GRANULARITE);
+//        int i = (int) (duree*100);
+//        return i/100d;
+        return duree;
     }
 }

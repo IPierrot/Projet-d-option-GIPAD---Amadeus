@@ -47,7 +47,7 @@ public class Trip {
     /**
      * Les durées de séjour en heures dans les étapes.
      */
-    private List<Double> durations;
+    private List<Integer> durations;
     
     /**
      * Les dates d'arrivée et de départ dans les étapes.
@@ -69,7 +69,7 @@ public class Trip {
         this.endArrival = arrival;
         this.stages = new ArrayList<Airport>();
         this.stagesDates = new ArrayList<Date[]>();
-        this.durations = new ArrayList<Double>();
+        this.durations = new ArrayList<Integer>();
     }
     
     /**
@@ -79,10 +79,22 @@ public class Trip {
      * @param duration La durée de séjour.
      */
     public void addStage(final Airport stage,
-            final Date[] dates, final double duration){
-        this.stages.add(stage);
-        this.stagesDates.add(dates);
-        this.durations.add(duration);
+            final Date[] dates, final int duration){
+        if(this.stages.isEmpty()){
+            this.stages.add(stage);
+            this.stagesDates.add(dates);
+            this.durations.add(duration);
+        } else{
+            int i = 0;
+            while (i < this.stages.size() 
+                 && dates[0].after(
+                        this.stagesDates.get(i)[0])) {
+                i++;
+            }
+            this.stages.add(i, stage);
+            this.stagesDates.add(i, dates);
+            this.durations.add(i, duration);
+        }
     }
 
     /**
@@ -97,7 +109,7 @@ public class Trip {
      * @param vols Les vols.
      */
     public void setFlights(final List<Flight> vols) {
-        this.flights = vols;
+        this.flights = sort(vols);
     }
 
     /**
@@ -138,8 +150,21 @@ public class Trip {
     /**
      * @return Les durées (en heures) de séjour dans les étapes (dans l'ordre).
      */
-    public List<Double> getDurations() {
+    public List<Integer> getDurations() {
         return durations;
+    }
+    
+    /**
+     * @param i L'index de l'étape.
+     * @return La durée formattée sous forme de String de séjour dans
+     * l'étape i.
+     */
+    public String getFormatedDuration(final int i) {
+        long l = (long) (getDurations().get(i));
+        DateFormat sf1 = new SimpleDateFormat("HH");
+        DateFormat sf2 = new SimpleDateFormat("mm");
+        Date d = new Date(l);
+        return sf1.format(d) + " heures et " + sf2.format(d) + " minutes";
     }
 
     /**
@@ -147,6 +172,31 @@ public class Trip {
      */
     public List<Date[]> getStagesDates() {
         return stagesDates;
+    }
+    
+    /**
+     * Ordonne les indexes d'une liste de vols (de facon à ce que les vols se 
+     * suivent dans le temps.
+     * @param flights La liste à ordonner
+     * @return La liste ordonnée et sans doublons
+     */
+    private static List<Flight> sort(final List<Flight> flights){
+        List<Flight> retour = new ArrayList<Flight>();
+        for(int j = 0; j<flights.size(); j++){
+            Flight f = flights.get(j);
+            if(retour.isEmpty()){
+                retour.add(f);
+            } else{
+                int i = 0;
+                while (i < retour.size() 
+                     && f.getDeparture().after(
+                            retour.get(i).getDeparture())) {
+                    i++;
+                }
+                retour.add(i, f);
+            }
+        }
+        return retour;
     }
     
     /**
@@ -175,7 +225,7 @@ public class Trip {
             retour += "Arrivée à " + getStages().get(i)
                     + " le " + df1.format(getStagesDates().get(i)[0]) 
                     + " à " + df2.format(getStagesDates().get(i)[0]) + ","
-                    + " séjour pendant " + getDurations().get(i) + "h,"
+                    + " séjour pendant " + getFormatedDuration(i) + ","
                     + " départ le " + df1.format(getStagesDates().get(i)[1]) 
                     + " à " 
                     + df2.format(getStagesDates().get(i)[1]) + "," + "\n";
