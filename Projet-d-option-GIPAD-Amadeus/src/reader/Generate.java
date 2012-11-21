@@ -137,7 +137,7 @@ public final class Generate {
      * @param plageRetour : plage horaire du retour
      * @param nbJours : durée du voyage
      */
-    private static void createFile(final Path myDir, final String nameFile, 
+    public static void createFile(final Path myDir, final String nameFile, 
             final String plageAller, final String plageRetour, 
             final int nbEtapes, final int nbJours){
 
@@ -434,9 +434,7 @@ public final class Generate {
      * @param args paramètre d'un main
      */
     public static void main(final String[] args) {
-        Path myDir = Paths.get("res/requests/test");
-
-        String nameFiles = "request";
+        Path myDir = Paths.get("res/requests/1 etape sur 3 jours");
 
 //        createFiles(myDir, 1, PLAGE_DEFAULT, PLAGE_DEFAULT, nameFiles);
 
@@ -444,9 +442,9 @@ public final class Generate {
 //        
 //        createFile(myDir, "Etapes5", PLAGE_DEFAULT, PLAGE_DEFAULT, 5);
         
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < 100; i++){
             createFile(myDir, "request " + i + ".txt",
-                    PLAGE_DEFAULT, PLAGE_DEFAULT, 5, 8);
+                    PLAGE_DEFAULT, PLAGE_DEFAULT, 10,15);
         }    
 
 

@@ -1,5 +1,7 @@
 package solving;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -95,7 +97,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         CPModel cpmodel = cxtmodel.getCPModel();
         this.flights = cxtmodel.getPossibleFlights();
         
-        if(this.flights.isEmpty()){
+        if(!cxtModel.isValid()){
             retour = false;
         }
         
@@ -237,14 +239,6 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 cpmodel.addConstraint(occurrence(
                         v, allIndexes, i));
             }
-    //        IntegerVariable[] v = makeIntVarArray(
-    //                "occ-", flights.size(), new int[] {0, 2},
-    //                SimpleComplexTripModel.VARIABLES_OPTION);
-    //        int[] values = new int[flights.size()];
-    //        for(int i=0; i<flights.size(); i++){
-    //            values[i] = i;
-    //        }
-    //        cpmodel.addConstraint(globalCardinality(allIndexes, values, v));
             
             System.out.print("....");
             

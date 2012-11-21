@@ -161,10 +161,18 @@ public class Trip {
      */
     public String getFormatedDuration(final int i) {
         long l = (long) (getDurations().get(i));
-        DateFormat sf1 = new SimpleDateFormat("HH");
-        DateFormat sf2 = new SimpleDateFormat("mm");
-        Date d = new Date(l);
-        return sf1.format(d) + " heures et " + sf2.format(d) + " minutes";
+        double hours = (double) ((double) l/1000/60/60);
+        double minutes = hours - (int) hours; 
+        int h = (int) hours;
+        int mn = (int) ((minutes)*60);
+        mn = (mn != 0) ? mn+1 : mn;
+//        DateFormat sf1 = new SimpleDateFormat("HH");
+//        DateFormat sf2 = new SimpleDateFormat("mm");
+//        DateFormat sf3 = new SimpleDateFormat("D");
+//        String jours = (nbJours > 0) ? nbJours + " jours, " : "";
+//        return jours + sf1.format(d) 
+//                + " heures et " + sf2.format(d) + " minutes";
+        return h + "h et " + mn + " minutes";
     }
 
     /**

@@ -292,7 +292,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	/**
 	 * @return True si le modèle est valide
 	 */
-	private boolean isValid() {
+	public boolean isValid() {
 	    return (getStartAirport() != null 
 				&& getEndAirport() != null
 				&& getEarliestDeparture() != null

@@ -87,8 +87,13 @@ public class CVE extends UserConstraint {
                     + " fichier de requête (CVE)");
             e.printStackTrace();
         }
-        this.durMin = dur[0] > 0 ? dur[0] : DMIN_DEFAULT;
-        this.durMax = dur[1] > 0 ? dur[1] : DMAX_DEFAULT;
+        if (this.durMin <= 0 || this.durMax <= 0){
+            this.durMin = DMIN_DEFAULT;
+            this.durMax = DMAX_DEFAULT;
+        } else {
+            this.durMin = dur[0];
+            this.durMax = dur[1];
+        }
         this.h1 = hours[0];
         this.h2 = hours[1];
         this.nbTimes = nbtimes;

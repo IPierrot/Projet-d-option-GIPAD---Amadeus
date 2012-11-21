@@ -199,5 +199,9 @@ public interface ComplexTripModel {
      * @return La date demappée.
      */
 	Date unmapTime(int t);
-
+	
+	/**
+     * @return True si le modèle est valide
+     */
+    boolean isValid();
 }
