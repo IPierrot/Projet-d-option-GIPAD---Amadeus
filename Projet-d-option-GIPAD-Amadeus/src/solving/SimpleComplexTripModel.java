@@ -53,7 +53,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	/**
 	 * La liste des intervalles de passage des étapes.
 	 */
-	private List<Date[]> stagesDates;
+	public List<Date[]> stagesDates;
 	
 	/**
 	 * Le modele contraint Choco.
