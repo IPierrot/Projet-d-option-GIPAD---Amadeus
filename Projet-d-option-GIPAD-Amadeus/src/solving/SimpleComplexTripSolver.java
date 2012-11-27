@@ -257,6 +257,8 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 
     @Override
     public Trip getFirstTripFound() {
+        
+        
         List<Flight> vols = new ArrayList<Flight>();
         Trip trip = null;
         

@@ -13,7 +13,10 @@ import java.util.TimeZone;
  */
 public final class DateOperations {
 	
-    public final static long MS_IN_ONE_DAY = 1000*60*60*24;
+    /**
+     * Nombre de ms en un jour.
+     */
+    public static final long MS_IN_ONE_DAY = 1000*60*60*24;
     
 	/**
 	 * Constructeur privé vide.
@@ -198,4 +201,6 @@ public final class DateOperations {
         }
         return r;
     }
+    
+  //TODO meilleure algo implementee avant conflit, a refaire
 }

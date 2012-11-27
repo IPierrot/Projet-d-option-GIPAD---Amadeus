@@ -63,7 +63,8 @@ public interface ComplexTripModel {
 	 * @param maxDuration Durée max du séjour.
 	 * @param h1 début de l'intervalle horaire du séjour.
 	 * @param h2 fin de l'intervalle horaire du séjour.
-	 * @param nbTimes le nombre de fois où on doit rester dans l'intervalle [h1, h2].
+	 * @param nbTimes le nombre de fois où on doit rester 
+	 * dans l'intervalle [h1, h2].
 	 */
 	void addStage(Airport stage, Date earliestArrival, Date latestDeparture,
 			int minDuration, int maxDuration, int h1, int h2, int nbTimes);
@@ -97,6 +98,17 @@ public interface ComplexTripModel {
      * @return Les intervalles de durée (en heures) des étapes.
      */
     List<int[]> getStagesDurations();
+    
+    /**
+     * @return les intervalles des horaires de presence dans les etapes.
+     */
+    List<int[]> getStagesHours();
+    
+    /**
+     * @return les nombres de fois ou les horaires de presence 
+     * doivent etre verifies
+     */
+    List<Integer> getNbTimes();
     
     /**
      * Définit la durée totale du voyage entre les intervalles spécifiés

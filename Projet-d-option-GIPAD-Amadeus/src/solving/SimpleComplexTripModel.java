@@ -145,6 +145,16 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	 */
 	private TaskVariable totalTrip;
 	
+	/**
+	 * Les intervalles de presence dans l'etape pour chaque etape.
+	 */
+	private List<int[]> stagesHours;
+	
+	/**
+	 * Les nombres de fois ou stagesHours doivent etre verifies.
+	 */
+	private List<Integer> nbTimes;
+	
 	
 	// VARIABLES D'INSTANCE - END
 	
@@ -159,6 +169,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 		this.possibleFlights = new ArrayList<Flight>();
 		this.stagesIntervals = new ArrayList<int[]>();
 		this.stagesDurations = new ArrayList<int[]>();
+		this.stagesHours = new ArrayList<int[]>();
+		this.nbTimes = new ArrayList<Integer>();
 	}
 	
 	// CONSTRUCTEURS - END
@@ -202,7 +214,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 
 	@Override
 	public void addStage(final Airport stage, final Date earliestArrival,
-			final Date latestDeparture, final int durMin, final int durMax) {
+			final Date latestDeparture, final int durMin, final int durMax, 
+			final int h1, final int h2, final int nbFois) {
 	    
 	    // Ajout des informations (aeroport, intervalle de passage, durée).
 		this.stages.add(stage);
@@ -212,7 +225,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 		
 		int i = NB_MS_IN_ONE_HOUR/GRANULARITE;
 		
-		this.stagesDurations.add(new int[] {durMin*i, durMax*i}); 
+		this.stagesDurations.add(new int[] {durMin*i, durMax*i});
+		
+		//Ajout de CVE04 et CVE05
+		this.stagesHours.add(new int[]{h1, h2});
+		this.nbTimes.add(nbFois);
 	}
 
 	@Override
@@ -458,5 +475,15 @@ public class SimpleComplexTripModel implements ComplexTripModel{
         
         IntegerVariable duration = makeIntVar("totalDuration", min, max);       
         totalTrip = makeTaskVar("totalTrip", startDepVar, endArrVar, duration);
+    }
+
+    @Override
+    public List<int[]> getStagesHours() {
+        return this.stagesHours;
+    }
+
+    @Override
+    public List<Integer> getNbTimes() {
+        return this.nbTimes;
     }
 }
