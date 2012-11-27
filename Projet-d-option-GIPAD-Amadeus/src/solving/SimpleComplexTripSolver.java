@@ -257,7 +257,13 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 
     @Override
     public Trip getFirstTripFound() {
-        
+        //TODO: CVE04-05 se fait dans cette methode
+//        //Chargement des intervalles de presence
+//        List<int[]> stagesHours = new ArrayList<int[]>();
+//        stagesHours.addAll(cxtModel.getStagesHours());
+//        
+//        List<Integer> nbFois = new ArrayList<Integer>();
+//        nbFois.addAll(cxtModel.getNbTimes());
         
         List<Flight> vols = new ArrayList<Flight>();
         Trip trip = null;
