@@ -1,6 +1,7 @@
 package reader;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -142,7 +143,9 @@ public final class Generate {
             final int nbEtapes, final int nbJours){
 
         Path createFile = myDir.resolve(nameFile);
-
+        
+        
+        
         List<Airport> alreadyTaken= new ArrayList<Airport>();
 
 
@@ -218,7 +221,14 @@ public final class Generate {
 
 
             br.write("\n");
-            br.write("CG-00: non implemented\n");
+            
+            int min=nbJours-JOURS_D_INTERVALLE;
+            if(min<0) {min=0; }
+            int[] intervCG00 = getInterDateTime(min*GR_JOUR, 
+                    (nbJours+JOURS_D_INTERVALLE)*GR_JOUR);
+            
+            br.write("CG-00: "+intervCG00[0]/GR_HOUR+","
+            +(intervCG00[1]/GR_HOUR+intervCG00[0]/GR_HOUR)+"\n");
             br.write("CG-01: non implemented\n");
 
             br.flush();
@@ -243,7 +253,7 @@ public final class Generate {
             final int nbEtapes){
 
         createFile(myDir, nameFile, getPlageHoraire(),
-                getPlageHoraire(), nbEtapes, nbEtapes*2*GR_JOUR);
+                getPlageHoraire(), nbEtapes, nbEtapes*2);
 
     }
     
@@ -434,7 +444,7 @@ public final class Generate {
      * @param args paramètre d'un main
      */
     public static void main(final String[] args) {
-        Path myDir = Paths.get("res/requests/1 etape sur 3 jours");
+        Path myDir = Paths.get("res/requests");
 
 //        createFiles(myDir, 1, PLAGE_DEFAULT, PLAGE_DEFAULT, nameFiles);
 
@@ -443,8 +453,7 @@ public final class Generate {
 //        createFile(myDir, "Etapes5", PLAGE_DEFAULT, PLAGE_DEFAULT, 5);
         
         for(int i = 0; i < 100; i++){
-            createFile(myDir, "request " + i + ".txt",
-                    PLAGE_DEFAULT, PLAGE_DEFAULT, 10,15);
+            createFile(myDir, "request " + i + ".txt");
         }    
 
 

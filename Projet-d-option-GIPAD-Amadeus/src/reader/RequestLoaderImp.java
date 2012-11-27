@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import context.userConstraints.cg.CG;
+import context.userConstraints.cg.CG00;
 import context.userConstraints.cve.CVE;
 import context.userConstraints.cvf.CVF;
 import context.userConstraints.cvo.CVO;
@@ -50,9 +51,10 @@ public class RequestLoaderImp implements RequestLoader {
     public static final String CVE="CVE";
     
     /**
-     * String utilisée pour représenter une contrainte générale
+     * String utilisée pour représenter une contrainte générale 
+     * sur la durée max
      */
-    public static final String CG="CG";
+    public static final String CG00="CG-00";
     
     /**
      * taille dans le fichier du nom simple des contraintes
@@ -60,9 +62,19 @@ public class RequestLoaderImp implements RequestLoader {
     public static final int TAILLE_CV=3;
     
     /**
+     * taille dans le fichier du nom des contraintes générales
+     */
+    public static final int TAILLE_CG=5;
+    
+    /**
      * taille dans le fichier du nom complet des contraintes
      */
     public static final int TAILLE_CV_COMPLET=7;
+    
+    /**
+     * taille dans le fichier du nom complet des contraintes générales
+     */
+    public static final int TAILLE_CG_COMPLET=6;
     
     /**
      * Contraintes sur la ville d'origine
@@ -96,42 +108,60 @@ public class RequestLoaderImp implements RequestLoader {
                 
                 s=sc.nextLine();
                 if(s.length()>0&&s.substring(0, TAILLE_CV).equals(CVO)){
-                    String CVO0 = getStringPropre(s);
+                    String CVO0 = getStringPropre(s, TAILLE_CV_COMPLET);
                     s=sc.nextLine();
-                    String[] CVO1 = getStringPropre(s).split(SEPARATEUR);
+                    String[] CVO1 = getStringPropre(s, TAILLE_CV_COMPLET)
+                            .split(SEPARATEUR);
                     s=sc.nextLine();
-                    String[] CVO2 = getStringPropre(s).split(SEPARATEUR);
+                    String[] CVO2 = getStringPropre(s, TAILLE_CV_COMPLET)
+                            .split(SEPARATEUR);
                     cvo= new CVO(CVO0, CVO1, CVO2);
                 }
                 
                 if(s.length()>0&&s.substring(0, TAILLE_CV).equals(CVE)){
                     s=sc.nextLine();
-                    String CVE0 = getStringPropre(s);
+                    String CVE0 = getStringPropre(s, TAILLE_CV_COMPLET);
                     s=sc.nextLine();
-                    String CVE1s = getStringPropre(s);
+                    String CVE1s = getStringPropre(s, TAILLE_CV_COMPLET);
                     boolean CVE1=true;
                     if(Integer.parseInt(CVE1s)==0){ CVE1=false; }
                     s=sc.nextLine();
-                    String[] CVE2 = getStringPropre(s).split(SEPARATEUR);
+                    String[] CVE2 = getStringPropre(s, TAILLE_CV_COMPLET)
+                            .split(SEPARATEUR);
                     s=sc.nextLine();
-                    String[] CVE3s = getStringPropre(s).split(SEPARATEUR);
+                    String[] CVE3s = getStringPropre(s, TAILLE_CV_COMPLET)
+                            .split(SEPARATEUR);
                     int [] CVE3 = {Integer.parseInt(CVE3s[0]), 
                             Integer.parseInt(CVE3s[1])};
                     s=sc.nextLine();
-                    String[] CVE4 = getStringPropre(s).split(SEPARATEUR);
+                    String[] CVE4 = getStringPropre(s, TAILLE_CV_COMPLET)
+                            .split(SEPARATEUR);
                     s=sc.nextLine();
-                    int CVE5 = Integer.parseInt(getStringPropre(s));
+                    int CVE5 = Integer.parseInt(getStringPropre(s,
+                            TAILLE_CV_COMPLET));
                     CVE cve= new CVE(CVE0, CVE1, CVE2, CVE3, CVE4, CVE5);
                     cves.add(cve);          
                 }
                 
                 if (s.length()>0&&s.substring(0, TAILLE_CV).equals(CVF)){
-                    String CVF0 = getStringPropre(s);
+                    String CVF0 = getStringPropre(s, TAILLE_CV_COMPLET);
                     s=sc.nextLine();
-                    String[] CVF1 = getStringPropre(s).split(SEPARATEUR);
+                    String[] CVF1 = getStringPropre(s, TAILLE_CV_COMPLET)
+                            .split(SEPARATEUR);
                     s=sc.nextLine();
-                    String[] CVF2 = getStringPropre(s).split(SEPARATEUR);
+                    String[] CVF2 = getStringPropre(s, TAILLE_CV_COMPLET)
+                            .split(SEPARATEUR);
                     cvf= new CVF(CVF0, CVF1, CVF2);
+                }
+                
+                if (s.length()>0&&s.substring(0, TAILLE_CG).equals(CG00)){
+                    String CG0s = getStringPropre(s, TAILLE_CG_COMPLET);
+                    String[] CG0 = CG0s.split(",");
+                    if(CG0.length==2){
+                        int CG0Min= Integer.parseInt(CG0[0].trim());
+                        int CG0Max= Integer.parseInt(CG0[1].trim());
+                        cgs.add(new CG00(CG0Min, CG0Max));
+                    }
                 }
             }
             
@@ -168,16 +198,14 @@ public class RequestLoaderImp implements RequestLoader {
      * retourne la String sans commentaires, sans la contrainte avant, 
      * et sans espaces, ni avant, ni après
      * @param s la String que l'on veut modifier
+     * @param nbCarInutiles le nombre de caractères que l'on supprime 
+     * au début de la chaîne de caractères
      * @return la String modifiée
      */
-    private String getStringPropre(final String s){
-        return s.substring(TAILLE_CV_COMPLET).split(COMMENTAIRE)[0].trim();
+    private String getStringPropre(final String s, final int nbCarInutiles){
+        return s.substring(nbCarInutiles).split(COMMENTAIRE)[0].trim();
     }
     
-//    public static void main (String[] args){
-//        RequestLoader rl = new RequestLoaderImp();
-//        rl.loadRequest("res/requests/request0.txt");
-//        System.out.println(rl.getCVO());
-//    }
+
 
 }
