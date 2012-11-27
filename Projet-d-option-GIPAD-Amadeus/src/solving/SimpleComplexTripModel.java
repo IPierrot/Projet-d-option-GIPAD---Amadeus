@@ -135,6 +135,17 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	 */
 	private List<Flight> possibleFlights;
 	
+	/**
+	 * l'intervalle total de la durée du voyage en heures
+	 */
+	private int[] totalInterval;
+	
+	/**
+	 * l'ensemble du voyage défini comme une tâche
+	 */
+	private TaskVariable totalTrip;
+	
+	
 	// VARIABLES D'INSTANCE - END
 	
 	// CONSTRUCTEURS - START
@@ -437,5 +448,15 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 //        int i = (int) (duree*100);
 //        return i/100d;
         return duree;
+    }
+
+    @Override
+    public void setTotalDuration(final int hmin, final int hmax) {
+        totalInterval = new int[]{hmin, hmax};       
+        int min = totalInterval[0]*NB_MS_IN_ONE_HOUR/GRANULARITE;
+        int max = totalInterval[1]*NB_MS_IN_ONE_HOUR/GRANULARITE;
+        
+        IntegerVariable duration = makeIntVar("totalDuration", min, max);       
+        totalTrip = makeTaskVar("totalTrip", startDepVar, endArrVar, duration);
     }
 }

@@ -94,6 +94,13 @@ public interface ComplexTripModel {
      * @return Les intervalles de durée (en heures) des étapes.
      */
     List<int[]> getStagesDurations();
+    
+    /**
+     * Définit la durée totale du voyage entre les intervalles spécifiés
+     * @param hmin la durée minimale du voyage en heures
+     * @param hmax la durée maximale du voyage en heures
+     */
+    void setTotalDuration(int hmin, int hmax);
 	
 	//----------------//
 	// ELEMENTS CHOCO //

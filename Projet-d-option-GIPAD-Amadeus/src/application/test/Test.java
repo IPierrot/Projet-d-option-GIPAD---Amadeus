@@ -37,27 +37,27 @@ public final class Test {
     /**
      * Le nombre de requête à examiner.
      */
-    public static final int NB_FILE_REQUEST=100;
+    public static final int NB_FILE_REQUEST=10;
     
     /**
      * Le nombre min d'étape des requêtes à générer.
      */
-    public static final int NB_ETAPES_MIN = 2;
+    public static final int NB_ETAPES_MIN = 10;
     
     /**
      * Le nombre max d'étape des requêtes à générer.
      */
-    public static final int NB_ETAPES_MAX = 4;
+    public static final int NB_ETAPES_MAX = 20;
     
     /**
      * Le nombre min de jours de voyages au plus des requêtes à générer.
      */
-    public static final int NB_JOURS_MIN = 1;
+    public static final int NB_JOURS_MIN = 15;
     
     /**
      * Le nombre max de jours de voyages au plus des requêtes à générer.
      */
-    public static final int NB_JOURS_MAX = 10;
+    public static final int NB_JOURS_MAX = 15;
 
     /**
      * Le temps de chargement de la derniere requete 
@@ -187,46 +187,45 @@ public final class Test {
      */
     public static void main(final String[] args){
         
-        for (int etapes = NB_ETAPES_MIN; etapes <= NB_ETAPES_MAX; etapes++) {
-            for (int jours = NB_JOURS_MIN; jours <= NB_JOURS_MAX; jours++) {
-                
-                String baseName = "res/requests/" + etapes + " etape sur " 
-                        + jours + " jours";
-                
-                Path myDir = Paths.get(baseName);
-                
-                File folder = new File(baseName);
-                if(!folder.exists()){
-                    folder.mkdir();
-                }
-                
-                File folderS = new File(baseName + "/success");
-                if(!folderS.exists()){
-                    folderS.mkdir();
-                }
-                
-                File folderF = new File(baseName + "/fail");
-                if(!folderF.exists()){
-                    folderF.mkdir();
-                }
-                
-                for(int i = 0; i < NB_FILE_REQUEST; i++){
-                    Generate.createFile(myDir, "request " + i + ".txt",
-                            Generate.PLAGE_DEFAULT, Generate.PLAGE_DEFAULT,
-                            etapes, jours);
-                }    
-                
-                doRequests(baseName + "/request ",
-                            baseName + "/resultsSuccess.csv",
-                            baseName + "/resultsFail.csv",
-                            baseName + "/success/request ",
-                            baseName + "/fail/request ");
-            }
-        }
-        
-        
-        
-//        System.out.println(tryToSolve("res/requests/constraint 0.txt"));
+        // BATTERIE DE TESTS
+//        for (int etapes = NB_ETAPES_MIN; etapes <= NB_ETAPES_MAX; etapes++) {
+//            for (int jours = NB_JOURS_MIN; jours <= NB_JOURS_MAX; jours++) {
+//                
+//                String baseName = "res/requests/" + etapes + " etape sur " 
+//                        + jours + " jours";
+//                
+//                Path myDir = Paths.get(baseName);
+//                
+//                File folder = new File(baseName);
+//                if(!folder.exists()){
+//                    folder.mkdir();
+//                }
+//                
+//                File folderS = new File(baseName + "/success");
+//                if(!folderS.exists()){
+//                    folderS.mkdir();
+//                }
+//                
+//                File folderF = new File(baseName + "/fail");
+//                if(!folderF.exists()){
+//                    folderF.mkdir();
+//                }
+//                
+//                for(int i = 0; i < NB_FILE_REQUEST; i++){
+//                    Generate.createFile(myDir, "request " + i + ".txt",
+//                            Generate.PLAGE_DEFAULT, Generate.PLAGE_DEFAULT,
+//                            etapes, jours);
+//                }    
+//                
+//                doRequests(baseName + "/request ",
+//                            baseName + "/resultsSuccess.csv",
+//                            baseName + "/resultsFail.csv",
+//                            baseName + "/success/request ",
+//                            baseName + "/fail/request ");
+//            }
+//        }
+
+        System.out.println(tryToSolve("res/requests/constraint 0.txt"));
 
     }
 }
