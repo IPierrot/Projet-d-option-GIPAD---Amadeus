@@ -68,6 +68,20 @@ public final class DateOperations {
 	}
 	
 	/**
+	 * Retourne la difference de temps
+	 * @param h1 la valeur a retrancher
+	 * @param h2 la valeur a differencier
+	 * @param dayOffset la valeur [int] correspondant a 1 jour
+	 * @return h2-h1 en tenant compte de l'offset d'un jour
+	 */
+	public static int timeDiff(final int h1, final int h2, final int dayOffset){
+	    if(h1<h2){
+	        return h2-h1;
+	    }
+	    return h2+dayOffset - h1;
+	}
+	
+	/**
 	 * @param pattern pattern Le pattern à utiliser pour représenter les dates :
 	 * YYYY ou YY : year
 	 * MM : month
@@ -168,16 +182,6 @@ public final class DateOperations {
      * @return le jour de d a minuit
      */
     public static Date getDay(final Date d){
-//        DateFormat df = new SimpleDateFormat("yyyy/MM/dd");
-//        String s = df.format(d);
-//        df = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-//        Date r = null;
-//        try {
-//            r = df.parse(s + " 00:00");
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        return r;
         return new Date((d.getTime()/MS_IN_ONE_DAY)*MS_IN_ONE_DAY);
     }
     
@@ -201,6 +205,4 @@ public final class DateOperations {
         }
         return r;
     }
-    
-  //TODO meilleure algo implementee avant conflit, a refaire
 }

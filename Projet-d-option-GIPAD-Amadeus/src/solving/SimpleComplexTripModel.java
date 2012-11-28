@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import utils.DateOperations;
+
 import model.Airport;
 import model.Flight;
 import choco.cp.model.CPModel;
@@ -224,11 +226,15 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 		            (int) (latestDeparture.getTime()/GRANULARITE)});
 		
 		int i = NB_MS_IN_ONE_HOUR/GRANULARITE;
+		int lBound = (DateOperations.timeDiff(h1, h2, 24*NB_MS_IN_ONE_HOUR)
+		        +(nbFois-1)*24*NB_MS_IN_ONE_HOUR)/GRANULARITE;//TODO verif nb/granularite ou juste nb?
+		//TODO Cas vol arrive pdt [h1, h2]Êpas pris en compte
 		
-		this.stagesDurations.add(new int[] {durMin*i, durMax*i});
+		this.stagesDurations.add(
+		        new int[] {Math.max(durMin*i, lBound), durMax*i});
 		
 		//Ajout de CVE04 et CVE05
-		this.stagesHours.add(new int[]{h1, h2});
+		this.stagesHours.add(new int[]{h1, h2}); //TODO idem que ligne 229
 		this.nbTimes.add(nbFois);
 	}
 

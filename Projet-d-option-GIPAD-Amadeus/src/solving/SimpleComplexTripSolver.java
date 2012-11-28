@@ -131,7 +131,8 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             /* Ville d'origine et finale de voyage non liées */
             cpmodel.addConstraint(
                     neq(cxtmodel.getStartIndex(), cxtmodel.getEndIndex()));
-    
+            //TODO: cette contrainte prend-elle en compte le cas ou final==origin?
+            
             /* Vols possible (feasible pairs) */
             List<int[]> temp1 = new ArrayList<int[]>();
             List<int[]> temp2 = new ArrayList<int[]>();
@@ -257,13 +258,6 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 
     @Override
     public Trip getFirstTripFound() {
-        //TODO: CVE04-05 se fait dans cette methode
-//        //Chargement des intervalles de presence
-//        List<int[]> stagesHours = new ArrayList<int[]>();
-//        stagesHours.addAll(cxtModel.getStagesHours());
-//        
-//        List<Integer> nbFois = new ArrayList<Integer>();
-//        nbFois.addAll(cxtModel.getNbTimes());
         
         List<Flight> vols = new ArrayList<Flight>();
         Trip trip = null;
