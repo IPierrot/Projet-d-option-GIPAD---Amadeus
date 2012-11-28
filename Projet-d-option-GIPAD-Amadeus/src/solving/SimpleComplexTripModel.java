@@ -217,7 +217,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	@Override
 	public void addStage(final Airport stage, final Date earliestArrival,
 			final Date latestDeparture, final int durMin, final int durMax, 
-			final int h1, final int h2, final int nbFois) {
+			final int[] h, final int nbFois) {
 	    
 	    // Ajout des informations (aeroport, intervalle de passage, durée).
 		this.stages.add(stage);
@@ -226,7 +226,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 		            (int) (latestDeparture.getTime()/GRANULARITE)});
 		
 		int i = NB_MS_IN_ONE_HOUR/GRANULARITE;
-		int lBound = (DateOperations.timeDiff(h1, h2, 24*NB_MS_IN_ONE_HOUR)
+		int lBound = (DateOperations.timeDiff(h[0], h[1], 24*NB_MS_IN_ONE_HOUR)
 		        +(nbFois-1)*24*NB_MS_IN_ONE_HOUR)/GRANULARITE;//TODO verif nb/granularite ou juste nb?
 		//TODO Cas vol arrive pdt [h1, h2]Êpas pris en compte
 		
@@ -234,7 +234,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 		        new int[] {Math.max(durMin*i, lBound), durMax*i});
 		
 		//Ajout de CVE04 et CVE05
-		this.stagesHours.add(new int[]{h1, h2}); //TODO idem que ligne 229
+		this.stagesHours.add(h); //TODO idem que ligne 229
 		this.nbTimes.add(nbFois);
 	}
 
