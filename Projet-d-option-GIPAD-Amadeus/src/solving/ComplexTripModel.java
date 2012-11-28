@@ -225,4 +225,9 @@ public interface ComplexTripModel {
      * @return True si le modèle est valide
      */
     boolean isValid();
+    
+    /**
+     * @return La TaskVariable correspondant au voyage complet.
+     */
+    TaskVariable getTotalTrip();
 }

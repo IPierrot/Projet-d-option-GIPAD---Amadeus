@@ -144,8 +144,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	 * l'ensemble du voyage défini comme une tâche
 	 */
 	private TaskVariable totalTrip;
-	
-	/**
+
+    /**
 	 * Les intervalles de presence dans l'etape pour chaque etape.
 	 */
 	private List<int[]> stagesHours;
@@ -489,5 +489,10 @@ public class SimpleComplexTripModel implements ComplexTripModel{
     @Override
     public List<Integer> getNbTimes() {
         return this.nbTimes;
+    }
+    
+    @Override
+    public TaskVariable getTotalTrip() {
+        return totalTrip;
     }
 }

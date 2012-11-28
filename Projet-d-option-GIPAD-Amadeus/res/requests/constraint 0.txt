@@ -33,6 +33,6 @@ CVF-00: NCE # IATA code
 CVF-01: 2012/12/03-08:00,2012/12/04-17:00 # %Y/%m/%d-%H:%M,%Y/%m/%d-%H:%M
 CVF-02: 08:00,20:00 # %H:%M,%H:%M
 
-CG-00: 0,240 # hours
+CG-00: 50,55 # hours
 CG-01: CVE1<CVE2 # stay_identifier_A<stay_identifier_B
 CG-01: CVE2<CVE3

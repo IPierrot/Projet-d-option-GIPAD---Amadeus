@@ -40,6 +40,11 @@ public class Trip {
     private Date endArrival;
     
     /**
+     * La durée total du voyage.
+     */
+    private int totalDuration;
+    
+    /**
      * Les étapes du voyage.
      */
     private List<Airport> stages;
@@ -59,14 +64,17 @@ public class Trip {
      * @param origin L'origine du voyage.
      * @param departure La date de départ de l'origine.
      * @param destination La destination du voyage.
-     * @param arrival La date d'arrivée dans la destination.
+     * @param arrival La date d'arrivée dans la destination. 
+     * @param totalDur La durée totale.
      */
     public Trip(final Airport origin, final Date departure,
-            final Airport destination, final Date arrival){
+            final Airport destination, final Date arrival,
+            final int totalDur) {
         this.start = origin;
         this.startDeparture = departure;
         this.end = destination;
         this.endArrival = arrival;
+        this.totalDuration = totalDur;
         this.stages = new ArrayList<Airport>();
         this.stagesDates = new ArrayList<Date[]>();
         this.durations = new ArrayList<Integer>();
@@ -159,8 +167,7 @@ public class Trip {
      * @return La durée formattée sous forme de String de séjour dans
      * l'étape i.
      */
-    public String getFormatedDuration(final int i) {
-        long l = (long) (getDurations().get(i));
+    public String getFormatedDuration(final long l) {
         double hours = (double) ((double) l/1000/60/60);
         double minutes = hours - (int) hours; 
         int h = (int) hours;
@@ -174,7 +181,7 @@ public class Trip {
 //                + " heures et " + sf2.format(d) + " minutes";
         return h + "h et " + mn + " minutes";
     }
-
+    
     /**
      * @return Les dates d'arrivée et de départ dans les étapes.
      */
@@ -233,7 +240,8 @@ public class Trip {
             retour += "Arrivée à " + getStages().get(i)
                     + " le " + df1.format(getStagesDates().get(i)[0]) 
                     + " à " + df2.format(getStagesDates().get(i)[0]) + ","
-                    + " séjour pendant " + getFormatedDuration(i) + ","
+                    + " séjour pendant " + getFormatedDuration(
+                            (long) (getDurations().get(i))) + ","
                     + " départ le " + df1.format(getStagesDates().get(i)[1]) 
                     + " à " 
                     + df2.format(getStagesDates().get(i)[1]) + "," + "\n";
@@ -243,6 +251,8 @@ public class Trip {
         retour += "Fin du voyage à " + this.getEnd()
                 + " le " + df1.format(arr) 
                 + " à " + df2.format(arr) + "." + "\n";
+        retour += "\n" + "Durée totale du voyage : " 
+                + getFormatedDuration(totalDuration) + "\n";
         return retour;
     }
 }

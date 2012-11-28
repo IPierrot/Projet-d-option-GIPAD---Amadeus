@@ -218,19 +218,19 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 cpmodel.addConstraint(feasPairAC(
                         indexes[1], task.end(), temp8));
                 
-                /* Contrainte sur les intervalle d'heure */
-                int[] h = cxtmodel.getStagesHours().get(i);
-                int nbTimes = cxtmodel.getNbTimes().get(i);
-                
-                int durDay = SimpleComplexTripModel.NB_MS_IN_ONE_HOUR*24
-                        /SimpleComplexTripModel.GRANULARITE;
-                
-                IntegerVariable hr = makeIntVar("hr");
-                cpmodel.addConstraint(eq(hr, mod(durDay, task.start())));
-                cpmodel.addConstraint(ifThenElse(gt(hr, h[0]),
-                        geq(task.duration(), minus(h[1]+durDay*nbTimes, hr)),
-                        geq(task.duration(),
-                                minus(h[1]+durDay*(nbTimes-1), hr))));
+//                /* Contrainte sur les intervalle d'heure */
+//                int[] h = cxtmodel.getStagesHours().get(i);
+//                int nbTimes = cxtmodel.getNbTimes().get(i);
+//                
+//                int durDay = SimpleComplexTripModel.NB_MS_IN_ONE_HOUR*24
+//                        /SimpleComplexTripModel.GRANULARITE;
+//                
+//                IntegerVariable hr = makeIntVar("hr");
+//                cpmodel.addConstraint(eq(hr, mod(durDay, task.start())));
+//                cpmodel.addConstraint(ifThenElse(gt(hr, h[0]),
+//                        geq(task.duration(), minus(h[1]+durDay*nbTimes, hr)),
+//                        geq(task.duration(),
+//                                minus(h[1]+durDay*(nbTimes-1), hr))));
                 
                 System.out.print("....");
             }
@@ -294,7 +294,9 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 vols.add(arr);
 
                 trip = new Trip(cxtModel.getStartAirport(), dep.getDeparture(),
-                        cxtModel.getEndAirport(), arr.getArrival());
+                        cxtModel.getEndAirport(), arr.getArrival(), 
+                        cxtModel.unmapDuration(solver.getVar(
+                                cxtModel.getTotalTrip().duration()).getVal()));
                 
                 for(IntegerVariable[] v : cxtModel.getStagesIndexes()){
                     Integer k = this.solver.getVar(v[0]).getVal();
