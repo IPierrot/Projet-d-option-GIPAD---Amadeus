@@ -31,7 +31,7 @@ public class CG00 extends CG {
      * @param max valeur maximale
      */
     public CG00(final int min, final int max){
-        if(min<max && min>0){
+        if(min<=max && min>=0){
             hmin = min;
             hmax = max;
         } else {

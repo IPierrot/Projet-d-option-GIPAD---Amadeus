@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import solving.ComplexTripModel;
+import utils.DateOperations;
 
 import static utils.DateOperations.*;
 import model.Airport;
@@ -55,7 +56,7 @@ public class CVE extends UserConstraint {
     /**
      * L'intervalle d'heure pendant lequel on doit être à l'étape.
      */
-    private String h1, h2;
+    private int h1, h2;
     
     /**
      * Le nombre de fois où on doit être dans cet intervalle.
@@ -94,15 +95,23 @@ public class CVE extends UserConstraint {
             this.durMin = dur[0];
             this.durMax = dur[1];
         }
-        this.h1 = hours[0];
-        this.h2 = hours[1];
+        try {
+            this.h1 = (int) DateOperations.
+                    getDateFromPattern("HH:mm", hours[0]).getTime();
+            this.h2 = (int) DateOperations.
+                    getDateFromPattern("HH:mm", hours[1]).getTime();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
         this.nbTimes = nbtimes;
     }
 
     @Override
     public void apply(final Context context) {
         context.getComplexTripModel().addStage(
-                stage, arr, dep, durMin, durMax);
+                stage, arr, dep,
+                durMin, durMax,
+                new int[] {h1, h2}, nbTimes);
     }
 
     @Override

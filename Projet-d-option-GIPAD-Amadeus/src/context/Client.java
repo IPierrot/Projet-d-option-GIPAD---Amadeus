@@ -90,11 +90,11 @@ public class Client {
 		this.userConstraints.add(cvo);
 		this.userConstraints.add(cvf);
 		this.userConstraints.addAll(cves);
-		this.userConstraints.addAll(cgs);
 		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
 		
 	    t = System.currentTimeMillis();
 		System.out.println("\n" + "\n"  + "- INITIALISATION DU MODELE -");
+		
 		// Application des contraintes.
 		for(UserConstraint c : this.userConstraints){
 			c.apply(this.context);
@@ -105,6 +105,7 @@ public class Client {
 		t = System.currentTimeMillis();
 		System.out.println("\n" + "\n"  
 		        + "- CHARGEMENT DES VOLS DANS LA BASE DE DONNEES -");
+		
 		// Chargement des vols
 		this.loadPossibleFlights();
 		
@@ -112,8 +113,14 @@ public class Client {
 		
 		t = System.currentTimeMillis();
 		System.out.println("\n" + "\n"  + "- CONSTRUCTION DU MODELE -");
+		
 		// Initialisation du complex trip model
 		this.context.getComplexTripModel().build();
+		
+	      // Application des contraintes générales
+        for (CG cg : cgs) {
+            cg.apply(context);
+        }
 		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
 	}
 	

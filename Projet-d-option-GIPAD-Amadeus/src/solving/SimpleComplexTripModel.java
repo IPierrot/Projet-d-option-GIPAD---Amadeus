@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import utils.DateOperations;
-
 import model.Airport;
 import model.Flight;
 import choco.cp.model.CPModel;
@@ -28,12 +26,12 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	/**
 	 * La granularité de l'échelle de temps, ici 5 minutes soit 300 000 ms.
 	 */
-	private static final int GRANULARITE = 300000;
+	static final int GRANULARITE = 300000;
 
 	/**
 	 * Le nombre de miliseconds dans une heure.
 	 */
-	private static final int NB_MS_IN_ONE_HOUR = 3600000;
+	static final int NB_MS_IN_ONE_HOUR = 3600000;
 	
 	// VARIABLES D'INSTANCE - START
 	
@@ -226,15 +224,14 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 		            (int) (latestDeparture.getTime()/GRANULARITE)});
 		
 		int i = NB_MS_IN_ONE_HOUR/GRANULARITE;
-		int lBound = (DateOperations.timeDiff(h[0], h[1], 24*NB_MS_IN_ONE_HOUR)
-		        +(nbFois-1)*24*NB_MS_IN_ONE_HOUR)/GRANULARITE;//TODO verif nb/granularite ou juste nb?
-		//TODO Cas vol arrive pdt [h1, h2]Êpas pris en compte
 		
 		this.stagesDurations.add(
-		        new int[] {Math.max(durMin*i, lBound), durMax*i});
+		        new int[] {durMin*i, durMax*i});
 		
 		//Ajout de CVE04 et CVE05
-		this.stagesHours.add(h); //TODO idem que ligne 229
+		int h1 = h[0]/GRANULARITE;
+		int h2 = h[1]/GRANULARITE;
+		this.stagesHours.add(new int[] {h1, h2});
 		this.nbTimes.add(nbFois);
 	}
 
@@ -479,8 +476,9 @@ public class SimpleComplexTripModel implements ComplexTripModel{
         int min = totalInterval[0]*NB_MS_IN_ONE_HOUR/GRANULARITE;
         int max = totalInterval[1]*NB_MS_IN_ONE_HOUR/GRANULARITE;
         
-        IntegerVariable duration = makeIntVar("totalDuration", min, max);       
+        IntegerVariable duration = makeIntVar("totalDuration", min, max);
         totalTrip = makeTaskVar("totalTrip", startDepVar, endArrVar, duration);
+        cpmodel.addVariable(totalTrip);
     }
 
     @Override
