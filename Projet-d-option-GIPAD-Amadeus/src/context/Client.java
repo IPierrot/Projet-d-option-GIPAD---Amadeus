@@ -1,5 +1,6 @@
 package context;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,61 +68,74 @@ public class Client {
 	}
 	
 	/**
+     * Charge une requète dans le client.
+     * @param dir Le chemin auquel se trouve le fichier de requête.
+     */
+    public void loadRequest(final String dir){
+        loadRequest(new File(dir));
+    }
+	
+	/**
 	 * Charge une requète dans le client.
-	 * @param dir Le chemin auquel se trouve le fichier de requête.
+	 * @param file Le fichier de requête.
+	 * @return true si le chargement a réussi.
 	 */
-	public void loadRequest(final String dir){
+	public boolean loadRequest(final File file){
 		
 	    System.out.println("- CHARGEMENT DE LA REQUETE - ");
 	    long t = System.currentTimeMillis();
 		// Lecture du fichier de requête.
-		this.requestLoader.loadRequest(dir);
-		System.out.print("..........");
-		this.cvo = this.requestLoader.getCVO();
-	    System.out.print("..........");
-		this.cvf = this.requestLoader.getCVF();
-		System.out.print("..........");
-		this.cves = this.requestLoader.getCVEs();
-		System.out.print("..........");
-		this.cgs = this.requestLoader.getCGs();
-		System.out.print("..........");
+		boolean b = this.requestLoader.loadRequest(file);
+		if (b) {
 		
-		// Hierarchisation des contraintes.
-		this.userConstraints.add(cvo);
-		this.userConstraints.add(cvf);
-		this.userConstraints.addAll(cves);
-		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
-		
-	    t = System.currentTimeMillis();
-		System.out.println("\n" + "\n"  + "- INITIALISATION DU MODELE -");
-		
-		// Application des contraintes.
-		for(UserConstraint c : this.userConstraints){
-			c.apply(this.context);
-			System.out.print(".....");
+    		System.out.print("..........");
+    		this.cvo = this.requestLoader.getCVO();
+    	    System.out.print("..........");
+    		this.cvf = this.requestLoader.getCVF();
+    		System.out.print("..........");
+    		this.cves = this.requestLoader.getCVEs();
+    		System.out.print("..........");
+    		this.cgs = this.requestLoader.getCGs();
+    		System.out.print("..........");
+    		
+    		// Hierarchisation des contraintes.
+    		this.userConstraints.add(cvo);
+    		this.userConstraints.add(cvf);
+    		this.userConstraints.addAll(cves);
+    		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
+    		
+    	    t = System.currentTimeMillis();
+    		System.out.println("\n" + "\n"  + "- INITIALISATION DU MODELE -");
+    		
+    		// Application des contraintes.
+    		for(UserConstraint c : this.userConstraints){
+    			c.apply(this.context);
+    			System.out.print(".....");
+    		}
+    		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
+    		
+    		t = System.currentTimeMillis();
+    		System.out.println("\n" + "\n"  
+    		        + "- CHARGEMENT DES VOLS DANS LA BASE DE DONNEES -");
+    		
+    		// Chargement des vols
+    		this.loadPossibleFlights();
+    		
+    	    System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
+    		
+    		t = System.currentTimeMillis();
+    		System.out.println("\n" + "\n"  + "- CONSTRUCTION DU MODELE -");
+    		
+    		// Initialisation du complex trip model
+    		this.context.getComplexTripModel().build();
+    		
+    	      // Application des contraintes générales
+            for (CG cg : cgs) {
+                cg.apply(context);
+            }
+    		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
 		}
-		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
-		
-		t = System.currentTimeMillis();
-		System.out.println("\n" + "\n"  
-		        + "- CHARGEMENT DES VOLS DANS LA BASE DE DONNEES -");
-		
-		// Chargement des vols
-		this.loadPossibleFlights();
-		
-	    System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
-		
-		t = System.currentTimeMillis();
-		System.out.println("\n" + "\n"  + "- CONSTRUCTION DU MODELE -");
-		
-		// Initialisation du complex trip model
-		this.context.getComplexTripModel().build();
-		
-	      // Application des contraintes générales
-        for (CG cg : cgs) {
-            cg.apply(context);
-        }
-		System.out.print(" Ok ! "+"("+(System.currentTimeMillis()-t)+"ms)");
+		return b;
 	}
 	
 	/**

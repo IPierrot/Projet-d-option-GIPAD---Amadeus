@@ -4,8 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import model.Trip;
 
@@ -13,7 +11,6 @@ import context.Client;
 import context.Context;
 import dao.DAO;
 import dao.csv.DAOImplCSV;
-import reader.Generate;
 import reader.RequestLoader;
 import reader.RequestLoaderImp;
 import solving.ComplexTripModel;
@@ -84,11 +81,31 @@ public final class Test {
     
     /**
      * Essaye de résoudre la requête.
-     * @param dirRequest La direction de la requête.
+     * @param dir La direction de la requête.
      * @return Le Trip trouvé, ou null si il n'y a pas de solution.
      */
-    public static Trip tryToSolve(final String dirRequest){
+    public static Trip tryToSolve(final String dir){
+        return tryToSolve(new File(dir));
+    }
+    
+    /**
+     * Essaye de résoudre la requête.
+     * @param request La requête sous forme de fichier.
+     * @return Le Trip trouvé, ou null si il n'y a pas de solution.
+     */
+    public static Trip tryToSolve(final File request){
 
+        System.out.println("--------------------------------------------------"
+        		+ "-----------------------------------------------------------"
+                + "-----------------------------------------------------------"
+        		+ "---------" + "\n");
+        System.out.println("                                                  "
+        		+ "                     COMPLEX TRIP GENERATOR V 0.1 " + "\n");
+        System.out.println("--------------------------------------------------"
+                + "-----------------------------------------------------------"
+                + "-----------------------------------------------------------"
+                + "---------" + "\n" + "\n");
+        
         long t = System.currentTimeMillis();
 
         ComplexTripModel model = new SimpleComplexTripModel();
@@ -99,17 +116,27 @@ public final class Test {
         RequestLoader rloader = new RequestLoaderImp();
         Client client = new Client(context, rloader);
 
-        client.loadRequest(dirRequest);
+        boolean b = client.loadRequest(request);
 
-        ComplexTripSolver solver = new SimpleComplexTripSolver();
-        solver.read(model);
-        Trip trip = solver.getFirstTripFound();
-
-        totalTime = System.currentTimeMillis() - t;
-        chocoTime = solver.getCPSolver().getTimeCount();
-        loadTime = totalTime - chocoTime;
-
-        return trip;
+        if (b) {
+            ComplexTripSolver solver = new SimpleComplexTripSolver();
+            solver.read(model);
+            Trip trip = solver.getFirstTripFound();
+    
+            totalTime = System.currentTimeMillis() - t;
+            chocoTime = solver.getCPSolver().getTimeCount();
+            loadTime = totalTime - chocoTime;            
+            
+            System.out.println("Solution trouvée en " + totalTime + "ms");
+            
+            return trip;
+            
+        } else {
+            System.out.println("Echec lors du chargement du fichier "
+            		+ "de requête - Format invalide");
+            return null;
+        }
+            
     }
 
     /**

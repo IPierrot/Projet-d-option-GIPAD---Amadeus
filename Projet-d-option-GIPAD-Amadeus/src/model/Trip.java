@@ -172,7 +172,7 @@ public class Trip {
         double minutes = hours - (int) hours; 
         int h = (int) hours;
         int mn = (int) ((minutes)*60);
-        mn = (mn != 0) ? mn+1 : mn;
+        mn = ((mn+1)/5) * 5;
 //        DateFormat sf1 = new SimpleDateFormat("HH");
 //        DateFormat sf2 = new SimpleDateFormat("mm");
 //        DateFormat sf3 = new SimpleDateFormat("D");

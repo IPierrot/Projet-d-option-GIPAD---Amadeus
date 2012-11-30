@@ -1,7 +1,6 @@
 package reader;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -97,12 +96,17 @@ public class RequestLoaderImp implements RequestLoader {
     private List<CG> cgs;
     
     @Override
-    public void loadRequest(final String dir) {
+    public boolean loadRequest(final String dir) {
+        return loadRequest(new File(dir));
+    }
+    
+    @Override
+    public boolean loadRequest(final File file) {
         cves = new ArrayList<CVE> ();
         cgs = new ArrayList<CG> ();
         Scanner sc;
         try {
-            sc = new Scanner(new File(dir));
+            sc = new Scanner(file);
             String s="";
             while(sc.hasNextLine()){
                 
@@ -164,9 +168,11 @@ public class RequestLoaderImp implements RequestLoader {
                     }
                 }
             }
-            
-        } catch (FileNotFoundException e) {
+            sc.close();
+            return (cvo != null && cvf != null)? true : false;
+        } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
         
 
@@ -205,7 +211,5 @@ public class RequestLoaderImp implements RequestLoader {
     private String getStringPropre(final String s, final int nbCarInutiles){
         return s.substring(nbCarInutiles).split(COMMENTAIRE)[0].trim();
     }
-    
-
 
 }

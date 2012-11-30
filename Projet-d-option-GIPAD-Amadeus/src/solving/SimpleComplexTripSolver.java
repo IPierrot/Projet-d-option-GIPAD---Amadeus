@@ -10,6 +10,10 @@ import model.Trip;
 import static choco.Choco.*;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
+import choco.cp.solver.search.integer.valiterator.DecreasingDomain;
+import choco.cp.solver.search.integer.valiterator.IncreasingDomain;
+import choco.cp.solver.search.integer.valselector.RandomIntValSelector;
+import choco.cp.solver.search.integer.varselector.RandomIntVarSelector;
 import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.common.logging.Verbosity;
 import choco.kernel.model.variables.integer.IntegerVariable;
@@ -218,7 +222,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 cpmodel.addConstraint(feasPairAC(
                         indexes[1], task.end(), temp8));
                 
-//                /* Contrainte sur les intervalle d'heure */
+                /* Contrainte sur les intervalle d'heure */
 //                int[] h = cxtmodel.getStagesHours().get(i);
 //                int nbTimes = cxtmodel.getNbTimes().get(i);
 //                
@@ -276,7 +280,9 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         
         if(this.readyToSolve){
         
-            ChocoLogging.setVerbosity(Verbosity.VERBOSE);
+            ChocoLogging.toSilent();
+            solver.setVarIntSelector(new RandomIntVarSelector(solver));
+            solver.setValIntIterator(new DecreasingDomain());
             
             System.out.println("\n" + "\n"  + "Résolution... " + "\n");
             

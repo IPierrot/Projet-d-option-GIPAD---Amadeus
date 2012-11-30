@@ -1,5 +1,6 @@
 package reader;
 
+import java.io.File;
 import java.util.List;
 
 import context.userConstraints.cg.CG;
@@ -17,8 +18,16 @@ public interface RequestLoader {
 	/**
 	 * Charge la requête présente à l'adresse donnée.
 	 * @param dir Le chemin de la requête à charger.
+	 * @return true si le chargement a réussi.
 	 */
-	void loadRequest(String dir);
+	boolean loadRequest(String dir);
+	
+	/**
+     * Charge la requête présente à l'adresse donnée.
+     * @param file La requête à charger sous forme de fichier.
+     * @return true si le chargement a réussi.
+     */
+    boolean loadRequest(File file);
 
 	/**
 	 * @return La contrainte CVO chargée (si requête chargée, null sinon).
