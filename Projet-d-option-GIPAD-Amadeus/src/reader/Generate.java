@@ -23,72 +23,6 @@ public final class Generate {
 
 
     /**
-     * la base dans laquelle on est.
-     */
-    public static final int BASE=10;
-
-    /**
-     * Nombre de fichiers que l'on veut créer
-     */
-    public static final int NUMBER_OF_FILES = 10;
-
-    /**
-     * Nombre maximal d'étapes possibles
-     */
-    public static final int NB_MAX_ETAPES=15;
-
-    /**
-     * Nombre de jours d'intervalle maximal d'arrêt dans une ville étape,
-     *  ou pour le départ, ou pour l'arrivée
-     */
-    public static final int JOURS_D_INTERVALLE = 5;
-
-    /**
-     * Nombre maximal de jours du voyage
-     */
-    public static final int JOURS_VOYAGE=25;
-
-    /**
-     * Nombre d'heures dans une journée
-     */
-    public static final int NB_HOURS = 24;
-
-    /**
-     * Nombre de minutes dans une heure
-     */
-    public static final int NB_MIN = 60;
-
-    /**
-     * granularité en minutes
-     */
-    public static final int GRANULARITE = 5;
-
-    /**
-     * Nombre de grains dans une heure
-     */
-    public static final int GR_HOUR = (NB_MIN/GRANULARITE);
-
-    /**
-     * Nombre de grains dans une journée
-     */
-    public static final int GR_JOUR = NB_HOURS*GR_HOUR;
-
-    /**
-     * valeur entière par défaut
-     */
-    public static final int INTEGER_VALUE_DEFAULT=1;
-    
-    /**
-     * plage horaire par défaut
-     */
-    public static final String PLAGE_DEFAULT = "08:00,22:00";
-    
-    /**
-     * durée minimale plage horaire
-     */
-    public static final int PLAGE_MIN = 4*GR_HOUR;
-
-    /**
      * Constructeur privé vide
      */
     private Generate(){}
@@ -101,7 +35,7 @@ public final class Generate {
      */
     private static void createFiles(final Path myDir, final String nameFiles){
 
-        for (int i=0; i<NUMBER_OF_FILES; i++){
+        for (int i=0; i<ReaderConstants.NUMBER_OF_FILES; i++){
             //use the above Path instance as an anchor
             String nameFile = nameFiles +i+".txt";
             createFile(myDir, nameFile);
@@ -121,7 +55,7 @@ public final class Generate {
             final String plageAller, final String plageRetour,
             final int nbEtapes, final String nameFiles){
 
-        for (int i=0; i<NUMBER_OF_FILES; i++){
+        for (int i=0; i<ReaderConstants.NUMBER_OF_FILES; i++){
             //use the above Path instance as an anchor
             String nameFile = nameFiles +i+".txt";
             createFile(myDir, nameFile, plageAller, plageRetour, nbEtapes);
@@ -166,15 +100,15 @@ public final class Generate {
 
             alreadyTaken.add(departAirport);
 
-            br.write("CVO-01: "+getInterDateString(GR_JOUR)+"\n"); 
+            br.write("CVO-01: "+getInterDateString(ReaderConstants.GR_JOUR)+"\n"); 
             //on part du principe qu'on part toujours le 01 décembre
 
             br.write("CVO-02: "+plageAller+"\n");
 
             //int nbEtapes=(int) (Math.random()*NB_MAX_ETAPES);
             
-            int[] intArrivee = {nbJours*GR_JOUR,
-                    getRandomTime(JOURS_D_INTERVALLE*GR_JOUR)};
+            int[] intArrivee = {nbJours*ReaderConstants.GR_JOUR,
+                    getRandomTime(ReaderConstants.JOURS_D_INTERVALLE*ReaderConstants.GR_JOUR)};
 
             br.write("\n");
 
@@ -189,7 +123,7 @@ public final class Generate {
 
                 alreadyTaken.add(etapAirport);
 
-                br.write("CVE-01: "+INTEGER_VALUE_DEFAULT+"\n");
+                br.write("CVE-01: "+ReaderConstants.INTEGER_VALUE_DEFAULT+"\n");
 
                 int[] intEtape=getInterDateTime(intArrivee[0]);
 
@@ -198,9 +132,9 @@ public final class Generate {
 
                 int dmin= getRandomTime(intEtape[1]);
                 int dmax = getRandomTime(intEtape[1]-dmin)+dmin;
-                br.write("CVE-03: "+dmin/GR_HOUR+","+dmax/GR_HOUR+"\n");
+                br.write("CVE-03: "+dmin/ReaderConstants.GR_HOUR+","+dmax/ReaderConstants.GR_HOUR+"\n");
                 br.write("CVE-04: "+getPlageHoraire()+"\n");
-                br.write("CVE-05: "+INTEGER_VALUE_DEFAULT+"\n");
+                br.write("CVE-05: "+ReaderConstants.INTEGER_VALUE_DEFAULT+"\n");
                 br.write("\n");
             }
 
@@ -222,13 +156,13 @@ public final class Generate {
 
             br.write("\n");
             
-            int min=nbJours-JOURS_D_INTERVALLE;
+            int min=nbJours-ReaderConstants.JOURS_D_INTERVALLE;
             if(min<0) {min=0; }
-            int[] intervCG00 = getInterDateTime(min*GR_JOUR, 
-                    (nbJours+JOURS_D_INTERVALLE)*GR_JOUR);
+            int[] intervCG00 = getInterDateTime(min*ReaderConstants.GR_JOUR, 
+                    (nbJours+ReaderConstants.JOURS_D_INTERVALLE)*ReaderConstants.GR_JOUR);
             
-            br.write("CG-00: "+intervCG00[0]/GR_HOUR+","
-            +(intervCG00[1]/GR_HOUR+intervCG00[0]/GR_HOUR)+"\n");
+            br.write("CG-00: "+intervCG00[0]/ReaderConstants.GR_HOUR+","
+            +(intervCG00[1]/ReaderConstants.GR_HOUR+intervCG00[0]/ReaderConstants.GR_HOUR)+"\n");
             br.write("CG-01: non implemented\n");
 
             br.flush();
@@ -268,7 +202,7 @@ public final class Generate {
             final String plageAller, final String plageRetour){
 
         createFile(myDir, nameFile, getPlageHoraire(), 
-                getPlageHoraire(), (int) (Math.random()*NB_MAX_ETAPES));
+                getPlageHoraire(), (int) (Math.random()*ReaderConstants.NB_MAX_ETAPES));
 
     }
     
@@ -316,7 +250,7 @@ public final class Generate {
     private static int[] getInterDateTime(final int timeDebut,
             final int timeFin){
         int time1 = getRandomTime(timeFin-timeDebut);
-        int time2 = getRandomTime(JOURS_D_INTERVALLE*GR_JOUR);
+        int time2 = getRandomTime(ReaderConstants.JOURS_D_INTERVALLE*ReaderConstants.GR_JOUR);
         int[] toReturn ={time1+timeDebut, time2};
         return toReturn;
     }
@@ -359,11 +293,11 @@ public final class Generate {
      */
     private static String getPlageHoraire(){
 
-        int timeDepart1 = getRandomTime(GR_JOUR-PLAGE_MIN);
+        int timeDepart1 = getRandomTime(ReaderConstants.GR_JOUR-ReaderConstants.PLAGE_MIN);
         String sh1 = getHour(timeDepart1);
 
-        int timeDepart2 = (int) (Math.random()*(GR_JOUR-timeDepart1-PLAGE_MIN))
-                +timeDepart1+PLAGE_MIN;
+        int timeDepart2 = (int) (Math.random()*(ReaderConstants.GR_JOUR-timeDepart1-ReaderConstants.PLAGE_MIN))
+                +timeDepart1+ReaderConstants.PLAGE_MIN;
         String sh2=getHour(timeDepart2);
 
         return sh1+","+sh2;
@@ -377,11 +311,11 @@ public final class Generate {
      */
     private static  String getHour(final int time){
 
-        int timeDay=time%GR_JOUR;
+        int timeDay=time%ReaderConstants.GR_JOUR;
 
-        int min= (timeDay%(GR_HOUR))*GRANULARITE;
+        int min= (timeDay%(ReaderConstants.GR_HOUR))*ReaderConstants.GRANULARITE;
 
-        int hour=(timeDay/GR_HOUR);
+        int hour=(timeDay/ReaderConstants.GR_HOUR);
 
         return toStringwith0(hour)+":"+toStringwith0(min);
 
@@ -404,7 +338,7 @@ public final class Generate {
      * @return le jour du mois correspondant au temps
      */
     private static String getDay(final int time){
-        return  toStringwith0(time/GR_JOUR +1);
+        return  toStringwith0(time/ReaderConstants.GR_JOUR +1);
     }
 
     /**
@@ -413,7 +347,7 @@ public final class Generate {
      * @return entier transformé
      */
     private static String toStringwith0(final int n){
-        if(n<BASE){return "0"+n; }
+        if(n<ReaderConstants.BASE){return "0"+n; }
         return ""+n;
     }
 
