@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import solving.constraints.MustBeBetween;
 import solving.constraints.MustBeBetweenManager;
 
 import model.Flight;
@@ -13,7 +12,6 @@ import model.Trip;
 import static choco.Choco.*;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
-import choco.cp.solver.configure.RestartFactory;
 import choco.cp.solver.search.integer.valiterator.DecreasingDomain;
 import choco.cp.solver.search.integer.varselector.RandomIntVarSelector;
 import choco.kernel.common.logging.ChocoLogging;
@@ -28,6 +26,18 @@ import choco.kernel.model.variables.scheduling.TaskVariable;
  */
 public class SimpleComplexTripSolver implements ComplexTripSolver{
 
+    /**
+     * La granularité de l'échelle de temps, ici 5 minutes soit 300 000 ms.
+     */
+    static final int GRANULARITE = 300000;
+
+    /**
+     * Le nombre de miliseconds dans une heure.
+     */
+    static final int NB_MS_IN_ONE_HOUR = 3600000;
+    
+    static final int DUR_DAY = (NB_MS_IN_ONE_HOUR*24)/GRANULARITE;
+    
     /**
      * Le solveur Choco.
      */
@@ -230,9 +240,11 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                         indexes[1], task.end(), temp8));
                 
                 /* Contrainte sur les intervalle d'heure */
-                Object[] params = new Object[2];
+                Object[] params = new Object[3];
                 params[0] = cxtmodel.getStagesHours().get(i);
                 params[1] = cxtmodel.getNbTimes().get(i);
+                params[2] = (int) (cxtmodel.getEarliestDeparture().
+                        getTime()/GRANULARITE)%DUR_DAY;
                 cpmodel.addConstraint(
                         new ComponentConstraint(MustBeBetweenManager.class,
                                 params, new IntegerVariable[] 

@@ -99,11 +99,9 @@ public class CVE extends UserConstraint {
         }
         try {
             this.h1 = (int) (DateOperations.
-                    getDateFromPattern("HH:mm", hours[0]).getTime()
-                    + MS_IN_ONE_HOUR);
+                    getDateFromPattern("HH:mm", hours[0]).getTime());
             this.h2 = (int) (DateOperations.
-                    getDateFromPattern("HH:mm", hours[1]).getTime()
-                    + MS_IN_ONE_HOUR);
+                    getDateFromPattern("HH:mm", hours[1]).getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }

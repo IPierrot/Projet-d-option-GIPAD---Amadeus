@@ -21,6 +21,6 @@ public class MustBeBetweenManager extends IntConstraintManager{
         }
         Object[] params = (Object[]) parameters;
         return new MustBeBetween(vars[0], vars[1],
-                (int[]) params[0], (int) params[1]);
+                (int[]) params[0], (int) params[1], (int) params[2]);
     }
 }

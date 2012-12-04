@@ -67,7 +67,6 @@ public class MustBeBetween extends AbstractBinIntSConstraint{
         if (start.isInstantiated()) {
             int t0 = start.getVal();
             int hr = t0 % DUR_DAY + ref;
-            System.out.println("t0 : " + t0 + " - hr : " + hr);
             if (hr > hours[0]) {
                 durMin = hours[1] + DUR_DAY*nbTimes-hr;
             } else {
