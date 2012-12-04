@@ -16,46 +16,6 @@ import dao.DAO;
 public class DAOImplCSV implements DAO {
 	
     
-    /**
-     * Separator in csv file
-     */
-    static final String SEPARATOR = ";";
-    
-    /**
-     * Index of the destination in departure or arrival files
-     * (must be the same !)
-     */
-    static final int DESTINATION = 0;
-    
-    /**
-     * Index of the departure time in files
-     */
-    static final int DEP_TIME = 1;
-    
-    /**
-     * Index of the departure GMT in files
-     */
-    static final int DEP_GMT = 2;
-    
-    /**
-     * Index of the arrival time in files
-     */
-    static final int ARR_TIME = 3;
-    
-    /**
-     * Index of the arrival GMT in files
-     */
-    static final int ARR_GMT = 4;
-    
-    /**
-     * Index of the arrival day offset in files
-     */
-    static final int ARR_OFFSET = 5;
-    
-    /**
-     * Index of the flight ID in files
-     */
-    static final int ID = 6;
         
 	//////////////////////////////////
 	///////// FILE GENERATION ////////
@@ -68,7 +28,7 @@ public class DAOImplCSV implements DAO {
 		
 	    List<Flight> ret = new ArrayList<Flight>();
         try{
-            String folder = GenerationCSV.DEP_FOLDER;
+            String folder = DaoConstants.DEP_FOLDER;
             
             InputStream fstream = DAOImplCSV.class.getClassLoader().
                    getResourceAsStream(
@@ -80,14 +40,14 @@ public class DAOImplCSV implements DAO {
             
             //Line loop
             while((s = br.readLine()) != null){
-                line = s.split(SEPARATOR);
-                if(destinations.contains(Airport.valueOf(line[DESTINATION]))){
+                line = s.split(DaoConstants.SEPARATOR);
+                if(destinations.contains(Airport.valueOf(line[DaoConstants.DESTINATION]))){
                     
                     //Calcul dates extremes en fonction de l'horaire
                     Date depHoraire = DateOperations.generateHour(
-                            line[DEP_TIME], line[DEP_GMT]);
+                            line[DaoConstants.DEP_TIME], line[DaoConstants.DEP_GMT]);
                     Date arrHoraire = DateOperations.generateHour(
-                            line[ARR_TIME], line[ARR_GMT]);
+                            line[DaoConstants.ARR_TIME], line[DaoConstants.ARR_GMT]);
                     
                     Date currentDep = DateOperations.dateDep(
                       DateOperations.getDay(d1), depHoraire);
@@ -101,14 +61,14 @@ public class DAOImplCSV implements DAO {
                     while(!currentDep.after(dEnd)){
                         Date currentArr = DateOperations.dateDep(
                                 DateOperations.getDay(currentDep), arrHoraire);
-                        int dayOffset = Integer.parseInt(line[ARR_OFFSET]);
+                        int dayOffset = Integer.parseInt(line[DaoConstants.ARR_OFFSET]);
                         currentArr.setTime(currentArr.getTime()
                                 +dayOffset*DateOperations.MS_IN_ONE_DAY);
                         
                         Flight f = new Flight(origin, 
-                                Airport.valueOf(line[DESTINATION]), 
+                                Airport.valueOf(line[DaoConstants.DESTINATION]), 
                                 new Date(currentDep.getTime()), 
-                                new Date(currentArr.getTime()), line[ID]);
+                                new Date(currentArr.getTime()), line[DaoConstants.ID]);
                         if(!ret.contains(f)){
                             ret.add(f); 
                         }
@@ -133,7 +93,7 @@ public class DAOImplCSV implements DAO {
 	    
 	    List<Flight> ret = new ArrayList<Flight>();
         try{
-            String folder = GenerationCSV.ARR_FOLDER;
+            String folder = DaoConstants.ARR_FOLDER;
             
             InputStream fstream = DAOImplCSV.class.getClassLoader().
                     getResourceAsStream(
@@ -145,18 +105,18 @@ public class DAOImplCSV implements DAO {
             
             //Line loop
             while((s = br.readLine()) != null){
-                line = s.split(SEPARATOR);
-                if(origins.contains(Airport.valueOf(line[DESTINATION]))){
+                line = s.split(DaoConstants.SEPARATOR);
+                if(origins.contains(Airport.valueOf(line[DaoConstants.DESTINATION]))){
                     
                     //Calcul dates extremes en fonction de l'horaire
                     Date depHoraire = DateOperations.generateHour(
-                            line[DEP_TIME], line[DEP_GMT]);
+                            line[DaoConstants.DEP_TIME], line[DaoConstants.DEP_GMT]);
                     Date arrHoraire = DateOperations.generateHour(
-                            line[ARR_TIME], line[ARR_GMT]);
+                            line[DaoConstants.ARR_TIME], line[DaoConstants.ARR_GMT]);
                     
                     Date currentArr = DateOperations.dateDep(
                       DateOperations.getDay(d1), arrHoraire);
-                    int dayOffset = Integer.parseInt(line[ARR_OFFSET]);
+                    int dayOffset = Integer.parseInt(line[DaoConstants.ARR_OFFSET]);
                     currentArr.setTime(currentArr.getTime()
                             +dayOffset*DateOperations.MS_IN_ONE_DAY);
                     
@@ -176,9 +136,9 @@ public class DAOImplCSV implements DAO {
                         currentDep.setTime(currentDep.getTime()
                                 -dayOffset*DateOperations.MS_IN_ONE_DAY);
                         Flight f = new Flight(Airport.valueOf(
-                                line[DESTINATION]), destination, 
+                                line[DaoConstants.DESTINATION]), destination, 
                                 new Date(currentDep.getTime()),
-                                new Date(currentArr.getTime()), line[ID]);
+                                new Date(currentArr.getTime()), line[DaoConstants.ID]);
                         if(!ret.contains(f)){
                             ret.add(f); 
                         }

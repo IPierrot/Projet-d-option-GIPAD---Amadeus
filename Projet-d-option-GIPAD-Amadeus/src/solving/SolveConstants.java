@@ -1,9 +1,14 @@
 package solving;
 
+/**
+ * Constantes pour le package solving
+ * @author Marc
+ *
+ */
 public final class SolveConstants {
 
     /**
-     * L'option des Variable
+     * L'option des Variables
      */
     public static final String VARIABLES_OPTION = "cp:enum";
     

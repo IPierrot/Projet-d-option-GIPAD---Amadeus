@@ -20,20 +20,6 @@ public final class GenerationCSV {
     private GenerationCSV(){
     }
     
-    /**
-     * Initial csv file containing all data
-     */
-    public static final String INIT_FILE = "flight_data.csv";
-    
-    /**
-     * Name of folder where files per departure airport are copied
-     */
-    public static final String DEP_FOLDER = "departure";
-    
-    /**
-     * Name of folder where files per arrival airport are copied
-     */
-    public static final String ARR_FOLDER = "arrival";
     
     //---------------
     //File generation
@@ -45,7 +31,7 @@ public final class GenerationCSV {
      * genere tous les fichiers csv par ville de depart.
      */
     public static void generateDep(){
-        generate(DEP_FOLDER, 1, 2);
+        generate(DaoConstants.DEP_FOLDER, 1, 2);
     }
     
     /**
@@ -53,7 +39,7 @@ public final class GenerationCSV {
      * genere tous les fichiers csv par ville d'arrivee.
      */
     public static void generateArr(){
-        generate(ARR_FOLDER, 2, 1);
+        generate(DaoConstants.ARR_FOLDER, 2, 1);
     }
     
     /**
@@ -68,7 +54,7 @@ public final class GenerationCSV {
         final int length = 4;
         try{
             //open document
-            FileInputStream fstream = new FileInputStream(INIT_FILE);
+            FileInputStream fstream = new FileInputStream(DaoConstants.INIT_FILE);
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             
@@ -82,7 +68,7 @@ public final class GenerationCSV {
             //Lines loop
             while((line = br.readLine()) != null){
                 nline = true;
-                elements = line.split(DAOImplCSV.SEPARATOR, length);
+                elements = line.split(DaoConstants.SEPARATOR, length);
                 
                 //Writing if not the same airport for departure and arrival
                 if(!elements[1].equals(elements[2])){
@@ -96,7 +82,7 @@ public final class GenerationCSV {
                     if(nline){
                         bw.newLine();
                     }
-                    bw.write(elements[content]+DAOImplCSV.SEPARATOR
+                    bw.write(elements[content]+DaoConstants.SEPARATOR
                             +elements[length-1]);
             
                     bw.close();
