@@ -248,9 +248,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 cpmodel.addConstraint(
                         new ComponentConstraint(MustBeBetweenManager.class,
                                 params, new IntegerVariable[] 
-                                        {cxtmodel.getStartDeparture(),
-                                            task.start(),
-                                            task.duration()}));
+                                        {task.start(), task.duration()}));
 
                 
 //                int[] h = cxtmodel.getStagesHours().get(i);
@@ -347,7 +345,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 cxtModel.getEndIndex()).getVal();
         Flight arr = flights.get(j);
         vols.add(arr);
-
+        
         trip = new Trip(cxtModel.getStartAirport(), dep.getDeparture(),
                 cxtModel.getEndAirport(), arr.getArrival(), 
                 cxtModel.unmapDuration(solver.getVar(
