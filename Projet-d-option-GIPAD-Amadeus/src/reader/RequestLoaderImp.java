@@ -19,61 +19,6 @@ import context.userConstraints.cvo.CVO;
  */
 public class RequestLoaderImp implements RequestLoader {
 
-    /**
-     * double-point
-     */
-    public static final String DOUBLE_POINT = ":";
-    
-    /**
-     * caractère du commentaire
-     */
-    public static final String COMMENTAIRE = "#";
-    
-    /**
-     * caractère du séparateur de dates
-     */
-    public static final String SEPARATEUR = ",";
-    
-    /**
-     * String utilisée pour représenter une contrainte sur la ville de départ
-     */
-    public static final String CVO="CVO";
-    
-    /**
-     * String utilisée pour représenter une contrainte sur la ville d'arrivée
-     */
-    public static final String CVF="CVF";
-    
-    /**
-     * String utilisée pour représenter une contrainte sur une ville-étape
-     */
-    public static final String CVE="CVE";
-    
-    /**
-     * String utilisée pour représenter une contrainte générale 
-     * sur la durée max
-     */
-    public static final String CG00="CG-00";
-    
-    /**
-     * taille dans le fichier du nom simple des contraintes
-     */
-    public static final int TAILLE_CV=3;
-    
-    /**
-     * taille dans le fichier du nom des contraintes générales
-     */
-    public static final int TAILLE_CG=5;
-    
-    /**
-     * taille dans le fichier du nom complet des contraintes
-     */
-    public static final int TAILLE_CV_COMPLET=7;
-    
-    /**
-     * taille dans le fichier du nom complet des contraintes générales
-     */
-    public static final int TAILLE_CG_COMPLET=6;
     
     /**
      * Contraintes sur la ville d'origine
@@ -111,55 +56,55 @@ public class RequestLoaderImp implements RequestLoader {
             while(sc.hasNextLine()){
                 
                 s=sc.nextLine();
-                if(s.length()>0&&s.substring(0, TAILLE_CV).equals(CVO)){
-                    String CVO0 = getStringPropre(s, TAILLE_CV_COMPLET);
+                if(s.length()>0&&s.substring(0, ReaderConstants.TAILLE_CV).equals(ReaderConstants.CVO)){
+                    String CVO0 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET);
                     s=sc.nextLine();
-                    String[] CVO1 = getStringPropre(s, TAILLE_CV_COMPLET)
-                            .split(SEPARATEUR);
+                    String[] CVO1 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET)
+                            .split(ReaderConstants.SEPARATEUR);
                     s=sc.nextLine();
-                    String[] CVO2 = getStringPropre(s, TAILLE_CV_COMPLET)
-                            .split(SEPARATEUR);
+                    String[] CVO2 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET)
+                            .split(ReaderConstants.SEPARATEUR);
                     cvo= new CVO(CVO0, CVO1, CVO2);
                 }
                 
-                if(s.length()>0&&s.substring(0, TAILLE_CV).equals(CVE)){
+                if(s.length()>0&&s.substring(0, ReaderConstants.TAILLE_CV).equals(ReaderConstants.CVE)){
                     s=sc.nextLine();
-                    String CVE0 = getStringPropre(s, TAILLE_CV_COMPLET);
+                    String CVE0 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET);
                     s=sc.nextLine();
-                    String CVE1s = getStringPropre(s, TAILLE_CV_COMPLET);
+                    String CVE1s = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET);
                     boolean CVE1=true;
                     if(Integer.parseInt(CVE1s)==0){ CVE1=false; }
                     s=sc.nextLine();
-                    String[] CVE2 = getStringPropre(s, TAILLE_CV_COMPLET)
-                            .split(SEPARATEUR);
+                    String[] CVE2 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET)
+                            .split(ReaderConstants.SEPARATEUR);
                     s=sc.nextLine();
-                    String[] CVE3s = getStringPropre(s, TAILLE_CV_COMPLET)
-                            .split(SEPARATEUR);
+                    String[] CVE3s = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET)
+                            .split(ReaderConstants.SEPARATEUR);
                     int [] CVE3 = {Integer.parseInt(CVE3s[0]), 
                             Integer.parseInt(CVE3s[1])};
                     s=sc.nextLine();
-                    String[] CVE4 = getStringPropre(s, TAILLE_CV_COMPLET)
-                            .split(SEPARATEUR);
+                    String[] CVE4 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET)
+                            .split(ReaderConstants.SEPARATEUR);
                     s=sc.nextLine();
                     int CVE5 = Integer.parseInt(getStringPropre(s,
-                            TAILLE_CV_COMPLET));
+                            ReaderConstants.TAILLE_CV_COMPLET));
                     CVE cve= new CVE(CVE0, CVE1, CVE2, CVE3, CVE4, CVE5);
                     cves.add(cve);          
                 }
                 
-                if (s.length()>0&&s.substring(0, TAILLE_CV).equals(CVF)){
-                    String CVF0 = getStringPropre(s, TAILLE_CV_COMPLET);
+                if (s.length()>0&&s.substring(0, ReaderConstants.TAILLE_CV).equals(ReaderConstants.CVF)){
+                    String CVF0 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET);
                     s=sc.nextLine();
-                    String[] CVF1 = getStringPropre(s, TAILLE_CV_COMPLET)
-                            .split(SEPARATEUR);
+                    String[] CVF1 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET)
+                            .split(ReaderConstants.SEPARATEUR);
                     s=sc.nextLine();
-                    String[] CVF2 = getStringPropre(s, TAILLE_CV_COMPLET)
-                            .split(SEPARATEUR);
+                    String[] CVF2 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET)
+                            .split(ReaderConstants.SEPARATEUR);
                     cvf= new CVF(CVF0, CVF1, CVF2);
                 }
                 
-                if (s.length()>0&&s.substring(0, TAILLE_CG).equals(CG00)){
-                    String CG0s = getStringPropre(s, TAILLE_CG_COMPLET);
+                if (s.length()>0&&s.substring(0, ReaderConstants.TAILLE_CG).equals(ReaderConstants.CG00)){
+                    String CG0s = getStringPropre(s, ReaderConstants.TAILLE_CG_COMPLET);
                     String[] CG0 = CG0s.split(",");
                     if(CG0.length==2){
                         int CG0Min= Integer.parseInt(CG0[0].trim());
@@ -209,7 +154,7 @@ public class RequestLoaderImp implements RequestLoader {
      * @return la String modifiée
      */
     private String getStringPropre(final String s, final int nbCarInutiles){
-        return s.substring(nbCarInutiles).split(COMMENTAIRE)[0].trim();
+        return s.substring(nbCarInutiles).split(ReaderConstants.COMMENTAIRE)[0].trim();
     }
 
 }

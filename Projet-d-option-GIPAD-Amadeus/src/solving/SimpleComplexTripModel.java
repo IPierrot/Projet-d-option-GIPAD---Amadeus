@@ -18,21 +18,7 @@ import static choco.Choco.*;
  */
 public class SimpleComplexTripModel implements ComplexTripModel{
 	
-    /**
-     * L'option des Variable
-     */
-    public static final String VARIABLES_OPTION = "cp:enum";
     
-	/**
-	 * La granularité de l'échelle de temps, ici 5 minutes soit 300 000 ms.
-	 */
-	static final int GRANULARITE = 300000;
-
-	/**
-	 * Le nombre de miliseconds dans une heure.
-	 */
-	static final int NB_MS_IN_ONE_HOUR = 3600000;
-	
 	// VARIABLES D'INSTANCE - START
 	
 	/**
@@ -186,8 +172,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	    
 		this.start = startAirport;
 		this.startVar = constant(startAirport.getId());		
-		this.t0Earliest = (int) (earliest.getTime()/GRANULARITE);
-		this.t0Latest = (int) (latest.getTime()/GRANULARITE);
+		this.t0Earliest = (int) (earliest.getTime()/SolveConstants.GRANULARITE);
+		this.t0Latest = (int) (latest.getTime()/SolveConstants.GRANULARITE);
 		
 	}
 
@@ -202,8 +188,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
         
         this.end = endAirport;
         this.endVar = constant(endAirport.getId());
-        this.tmaxEarliest = (int) (earliest.getTime()/GRANULARITE);
-        this.tmaxLastest = (int) (latest.getTime()/GRANULARITE);
+        this.tmaxEarliest = (int) (earliest.getTime()/SolveConstants.GRANULARITE);
+        this.tmaxLastest = (int) (latest.getTime()/SolveConstants.GRANULARITE);
         
     }
 
@@ -220,17 +206,17 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	    // Ajout des informations (aeroport, intervalle de passage, durée).
 		this.stages.add(stage);
 		this.stagesIntervals.add(new int[] 
-		        {(int) (earliestArrival.getTime()/GRANULARITE),
-		            (int) (latestDeparture.getTime()/GRANULARITE)});
+		        {(int) (earliestArrival.getTime()/SolveConstants.GRANULARITE),
+		            (int) (latestDeparture.getTime()/SolveConstants.GRANULARITE)});
 		
-		int i = NB_MS_IN_ONE_HOUR/GRANULARITE;
+		int i = SolveConstants.NB_MS_IN_ONE_HOUR/SolveConstants.GRANULARITE;
 		
 		this.stagesDurations.add(
 		        new int[] {durMin*i, durMax*i});
 		
 		//Ajout de CVE04 et CVE05
-		int h1 = h[0]/GRANULARITE;
-		int h2 = h[1]/GRANULARITE;
+		int h1 = h[0]/SolveConstants.GRANULARITE;
+		int h2 = h[1]/SolveConstants.GRANULARITE;
 		this.stagesHours.add(new int[] {h1, h2});
 		this.nbTimes.add(nbFois);
 	}
@@ -283,7 +269,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	@Override
     public List<int[]> getStagesDurations(){
         List<int[]> retour = new ArrayList<int[]>();
-        int i = GRANULARITE/NB_MS_IN_ONE_HOUR;
+        int i = SolveConstants.GRANULARITE/SolveConstants.NB_MS_IN_ONE_HOUR;
         for(int[] t : this.stagesDurations){
             retour.add(new int[] {t[0]*i, t[1]*i});
         }
@@ -335,7 +321,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	
 	@Override
 	public Date unmapTime(final int t){
-	    long l = (long) (t+t0Earliest)*(long) GRANULARITE;
+	    long l = (long) (t+t0Earliest)*(long) SolveConstants.GRANULARITE;
 	    return new Date(l);
 	}
 
@@ -363,24 +349,24 @@ public class SimpleComplexTripModel implements ComplexTripModel{
             
           // Création de la variable de départ.
           this.startDepVar = makeIntVar("start", 0, t0Latest-t0Earliest,
-                  VARIABLES_OPTION);
+                  SolveConstants.VARIABLES_OPTION);
 
           // Création de la variable d'index de départ.
           this.startIndex = makeIntVar(
                   "indexDep", 0, this.getPossibleFlights().size()-1,
-                  VARIABLES_OPTION);
+                  SolveConstants.VARIABLES_OPTION);
 
           System.out.print("....");
           
           // Création de la variable d'arrivée.
           this.endArrVar = makeIntVar("end", tmaxEarliest-t0Earliest,
                   tmaxLastest-t0Earliest,
-                  VARIABLES_OPTION);
+                  SolveConstants.VARIABLES_OPTION);
           
           // Création de la variable d'index de l'arrivée.
           this.endIndex = makeIntVar(
                   "indexArr", 0, this.getPossibleFlights().size()-1,
-                  VARIABLES_OPTION);       
+                  SolveConstants.VARIABLES_OPTION);       
           
           System.out.print("....");
           
@@ -406,29 +392,29 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               // Création de la task Variable
               IntegerVariable st = makeIntVar(
                     "start " + i + "(" + a.name()+")", 
-                    tarr-t0Earliest, tdep-t0Earliest, VARIABLES_OPTION);
+                    tarr-t0Earliest, tdep-t0Earliest, SolveConstants.VARIABLES_OPTION);
               
               IntegerVariable en = makeIntVar(
                       "end " + i + "(" + a.name()+")", 
-                      tarr-t0Earliest, tdep-t0Earliest, VARIABLES_OPTION);
+                      tarr-t0Earliest, tdep-t0Earliest, SolveConstants.VARIABLES_OPTION);
               
               IntegerVariable dur = makeIntVar(
                       "duration " + i + "(" + a.name()+")",
-                      durmin, durmax, VARIABLES_OPTION);
+                      durmin, durmax, SolveConstants.VARIABLES_OPTION);
 
               TaskVariable task = makeTaskVar("stage " + i + "(" + a.name()+")",
-                      st, en, dur, VARIABLES_OPTION);
+                      st, en, dur, SolveConstants.VARIABLES_OPTION);
               
               this.stagesTaskVars[i] = task;
               
               // Création des variables d'index.
               IntegerVariable arr = makeIntVar(
                       "indexArr " + i + " - " + a.name(),
-                      0, this.getPossibleFlights().size()-1, VARIABLES_OPTION);
+                      0, this.getPossibleFlights().size()-1, SolveConstants.VARIABLES_OPTION);
               
               IntegerVariable dep = makeIntVar(
                       "indexDep " + i + " - " + a.name(),
-                      0, this.getPossibleFlights().size()-1, VARIABLES_OPTION);
+                      0, this.getPossibleFlights().size()-1, SolveConstants.VARIABLES_OPTION);
               
               this.stageIndexes[i] = new IntegerVariable[] {arr, dep};
               
@@ -459,12 +445,12 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 
     @Override
     public int mapTime(final Date d) {
-        return (int) (d.getTime()/GRANULARITE-t0Earliest);
+        return (int) (d.getTime()/SolveConstants.GRANULARITE-t0Earliest);
     }
 
     @Override
     public int unmapDuration(final int d) {
-        int duree = (d*GRANULARITE);
+        int duree = (d*SolveConstants.GRANULARITE);
 //        int i = (int) (duree*100);
 //        return i/100d;
         return duree;
@@ -473,8 +459,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
     @Override
     public void setTotalDuration(final int hmin, final int hmax) {
         totalInterval = new int[]{hmin, hmax};       
-        int min = totalInterval[0]*NB_MS_IN_ONE_HOUR/GRANULARITE;
-        int max = totalInterval[1]*NB_MS_IN_ONE_HOUR/GRANULARITE;
+        int min = totalInterval[0]*SolveConstants.NB_MS_IN_ONE_HOUR/SolveConstants.GRANULARITE;
+        int max = totalInterval[1]*SolveConstants.NB_MS_IN_ONE_HOUR/SolveConstants.GRANULARITE;
         
         IntegerVariable duration = makeIntVar("totalDuration", min, max);
         totalTrip = makeTaskVar("totalTrip", startDepVar, endArrVar, duration);
