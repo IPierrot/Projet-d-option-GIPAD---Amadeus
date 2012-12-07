@@ -4,8 +4,6 @@ import model.*;
 import utils.*;
 
 import java.io.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -72,8 +70,9 @@ public class DAOImplCSV implements DAO {
         try{
             String folder = GenerationCSV.DEP_FOLDER;
             
-            FileInputStream fstream = 
-                    new FileInputStream(folder+"/"+origin.toString()+".csv");
+            InputStream fstream = DAOImplCSV.class.getClassLoader().
+                   getResourceAsStream(
+                           "ressources/"+folder+"/"+origin.toString()+".csv");
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String[] line;
@@ -136,8 +135,9 @@ public class DAOImplCSV implements DAO {
         try{
             String folder = GenerationCSV.ARR_FOLDER;
             
-            FileInputStream fstream = 
-                 new FileInputStream(folder+"/"+destination.toString()+".csv");
+            InputStream fstream = DAOImplCSV.class.getClassLoader().
+                    getResourceAsStream(
+                        "ressources/"+folder+"/"+destination.toString()+".csv");
             DataInputStream in = new DataInputStream(fstream);
             BufferedReader br = new BufferedReader(new InputStreamReader(in));
             String[] line;

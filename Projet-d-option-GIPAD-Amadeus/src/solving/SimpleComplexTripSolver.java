@@ -10,12 +10,10 @@ import model.Trip;
 import static choco.Choco.*;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
+import choco.cp.solver.configure.RestartFactory;
 import choco.cp.solver.search.integer.valiterator.DecreasingDomain;
-import choco.cp.solver.search.integer.valiterator.IncreasingDomain;
-import choco.cp.solver.search.integer.valselector.RandomIntValSelector;
 import choco.cp.solver.search.integer.varselector.RandomIntVarSelector;
 import choco.kernel.common.logging.ChocoLogging;
-import choco.kernel.common.logging.Verbosity;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.scheduling.TaskVariable;
 
@@ -64,6 +62,11 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
     private boolean readyToSolve;
     
     /**
+     * True si on a déjà trouvé une solution.
+     */
+    private boolean solutionFound;
+    
+    /**
      * Le ComplexTripModel chargé, si il y en a un.
      */
     private ComplexTripModel cxtModel;
@@ -79,6 +82,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         this.airportsArr = new ArrayList<int[]>();
         this.flights = null;
         this.readyToSolve = false;
+        this.solutionFound = false;
         this.cxtModel = null;
     }
     
@@ -133,7 +137,6 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             /* Ville d'origine et finale de voyage non liées */
             cpmodel.addConstraint(
                     neq(cxtmodel.getStartIndex(), cxtmodel.getEndIndex()));
-            //TODO: cette contrainte prend-elle en compte le cas ou final==origin?
             
             /* Vols possible (feasible pairs) */
             List<int[]> temp1 = new ArrayList<int[]>();
@@ -275,66 +278,84 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
     @Override
     public Trip getFirstTripFound() {
         
-        List<Flight> vols = new ArrayList<Flight>();
         Trip trip = null;
-        
+
         if(this.readyToSolve){
         
             ChocoLogging.toSilent();
-            solver.setVarIntSelector(new RandomIntVarSelector(solver));
-            solver.setValIntIterator(new DecreasingDomain());
+//            solver.setVarIntSelector(new RandomIntVarSelector(solver));
+//            solver.setValIntIterator(new DecreasingDomain());
             
             System.out.println("\n" + "\n"  + "Résolution... " + "\n");
             
-            boolean b = this.solver.solve();
-            if(b){
-
-                Integer i = this.solver.getVar(
-                        cxtModel.getStartIndex()).getVal();
-                Flight dep = flights.get(i);
-                vols.add(dep);
-                
-                Integer j = this.solver.getVar(
-                        cxtModel.getEndIndex()).getVal();
-                Flight arr = flights.get(j);
-                vols.add(arr);
-
-                trip = new Trip(cxtModel.getStartAirport(), dep.getDeparture(),
-                        cxtModel.getEndAirport(), arr.getArrival(), 
-                        cxtModel.unmapDuration(solver.getVar(
-                                cxtModel.getTotalTrip().duration()).getVal()));
-                
-                for(IntegerVariable[] v : cxtModel.getStagesIndexes()){
-                    Integer k = this.solver.getVar(v[0]).getVal();
-                    Integer k2 = this.solver.getVar(v[1]).getVal();
-                    Flight f = flights.get(k);
-                    Flight f2 = flights.get(k2);
-                    
-                    if(!vols.contains(f)){
-                        vols.add(f);
-                    }
-                    if(!vols.contains(f2)){
-                        vols.add(f2);
-                    }
+            if (solutionFound) {
+                boolean b = this.solver.nextSolution();
+                if (b) {
+                    trip = this.getSolutionFound();
                 }
-                
-                for (int k = 0; 
-                        k < cxtModel.getStagesTaskVariables().length; k++) {
-                    TaskVariable tv = cxtModel.
-                            getStagesTaskVariables()[k];
-                    Date d1 = cxtModel.unmapTime(
-                            solver.getVar(tv.start()).getVal());
-                    Date d2 = cxtModel.unmapTime(
-                            solver.getVar(tv.end()).getVal());
-                    int dur = cxtModel.unmapDuration(
-                            solver.getVar(tv.duration()).getVal());
-
-                    trip.addStage(cxtModel.getStages().get(k),
-                            new Date[] {d1, d2}, dur);
-                }
-                trip.setFlights(vols);
+            } else {
+                boolean b = this.solver.solve();
+                if (b) {
+                    trip = this.getSolutionFound();
+                    solutionFound = true;
+                } 
             }
         }
+        return trip;
+    }
+    
+    /**
+     * @return Le trip correspondant à la solution trouvée par le solver
+     */
+    private Trip getSolutionFound() {
+        
+        List<Flight> vols = new ArrayList<Flight>();
+        Trip trip = null;
+        
+        Integer i = this.solver.getVar(
+                cxtModel.getStartIndex()).getVal();
+        Flight dep = flights.get(i);
+        vols.add(dep);
+        
+        Integer j = this.solver.getVar(
+                cxtModel.getEndIndex()).getVal();
+        Flight arr = flights.get(j);
+        vols.add(arr);
+
+        trip = new Trip(cxtModel.getStartAirport(), dep.getDeparture(),
+                cxtModel.getEndAirport(), arr.getArrival(), 
+                cxtModel.unmapDuration(solver.getVar(
+                        cxtModel.getTotalTrip().duration()).getVal()));
+        
+        for(IntegerVariable[] v : cxtModel.getStagesIndexes()){
+            Integer k = this.solver.getVar(v[0]).getVal();
+            Integer k2 = this.solver.getVar(v[1]).getVal();
+            Flight f = flights.get(k);
+            Flight f2 = flights.get(k2);
+            
+            if(!vols.contains(f)){
+                vols.add(f);
+            }
+            if(!vols.contains(f2)){
+                vols.add(f2);
+            }
+        }
+        
+        for (int k = 0; 
+                k < cxtModel.getStagesTaskVariables().length; k++) {
+            TaskVariable tv = cxtModel.
+                    getStagesTaskVariables()[k];
+            Date d1 = cxtModel.unmapTime(
+                    solver.getVar(tv.start()).getVal());
+            Date d2 = cxtModel.unmapTime(
+                    solver.getVar(tv.end()).getVal());
+            int dur = cxtModel.unmapDuration(
+                    solver.getVar(tv.duration()).getVal());
+
+            trip.addStage(cxtModel.getStages().get(k),
+                    new Date[] {d1, d2}, dur);
+        }
+        trip.setFlights(vols);
         return trip;
     }
 
