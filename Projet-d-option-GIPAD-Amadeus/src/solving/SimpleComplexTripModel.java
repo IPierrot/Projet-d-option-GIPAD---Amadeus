@@ -418,6 +418,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               
               this.stageIndexes[i] = new IntegerVariable[] {arr, dep};
               
+              totalTrip = makeTaskVar("totalTrip", startDepVar, endArrVar,
+                      makeIntVar("totalDur", 0,
+                              endArrVar.getUppB()-startDepVar.getLowB()));
+              cpmodel.addVariable(totalTrip);
+              
               System.out.print("....");
           }
 

@@ -122,15 +122,19 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         }
         
         if (retour) {
+            
+            String feasOption = "";
         
             // Initialisation des données
             for(int i=0; i<this.flights.size(); i++){
                 Flight f = this.flights.get(i);
                 this.departs.add(
-                        new int[] {i, f.getOrigin().getId(), cxtmodel.mapTime(f.getDeparture())});
+                        new int[] {i, f.getOrigin().getId(),
+                                cxtmodel.mapTime(f.getDeparture())});
                 
                 this.arrivees.add(
-                        new int[] {i, f.getDestination().getId(), cxtmodel.mapTime(f.getArrival())});
+                        new int[] {i, f.getDestination().getId(),
+                                cxtmodel.mapTime(f.getArrival())});
                 
 //                this.departs.add(
 //                        new int[] {i, cxtmodel.mapTime(f.getDeparture())});
@@ -149,6 +153,12 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             // Globales - Tasks disjonctives
             cpmodel.addConstraint(
                     disjunctive(cxtmodel.getStagesTaskVariables()));
+            
+            // Initialisation des dates pour le allDif
+            IntegerVariable[] dates = 
+                    new IntegerVariable[cxtmodel.getStages().size()*2+2];
+            dates[0] = cxtmodel.getStartDeparture();
+            dates[1] = cxtmodel.getEndArrival();
             
             System.out.print("....");
             
@@ -200,10 +210,12 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 //                    cxtmodel.getEndArrival(), temp4));
             
             // Version AC Tuples
-            cpmodel.addConstraint(feasTupleAC(temp1, cxtmodel.getStartIndex(),
+            cpmodel.addConstraint(feasTupleAC(feasOption,
+                    temp1, cxtmodel.getStartIndex(),
                     cxtmodel.getStartVariable(), cxtmodel.getStartDeparture()));
             
-            cpmodel.addConstraint(feasTupleAC(temp2, cxtmodel.getEndIndex(),
+            cpmodel.addConstraint(feasTupleAC(feasOption,
+                    temp2, cxtmodel.getEndIndex(),
                     cxtmodel.getEndVariable(),  cxtmodel.getEndArrival()));
 
          
@@ -212,10 +224,13 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             
             
             // Etapes
+
             for(int i = 0; i < cxtmodel.getStagesVariables().length; i++){
                 IntegerVariable[] indexes = cxtmodel.getStagesIndexes()[i];
                 TaskVariable task = cxtmodel.getStagesTaskVariables()[i];
                 IntegerVariable stage = cxtmodel.getStagesVariables()[i];
+                dates[(i+1)*2] = task.start();
+                dates[(i+1)*2+1] = task.end();
                 
                 /* On ne "survole" pas une étape :P */
                 cpmodel.addConstraint(neq(indexes[0], indexes[1]));
@@ -264,9 +279,9 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 //                        indexes[1], task.end(), temp8));
                 
                 // Version AC Tuples
-                cpmodel.addConstraint(feasTupleAC(
+                cpmodel.addConstraint(feasTupleAC(feasOption,
                         temp5, indexes[0], stage, task.start()));
-                cpmodel.addConstraint(feasTupleAC(
+                cpmodel.addConstraint(feasTupleAC(feasOption,
                         temp6, indexes[1], stage, task.end()));
 
                 
@@ -280,23 +295,11 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                         new ComponentConstraint(MustBeBetweenManager.class,
                                 params, new IntegerVariable[] 
                                         {task.start(), task.duration()}));
-
-                
-//                int[] h = cxtmodel.getStagesHours().get(i);
-//                int nbTimes = cxtmodel.getNbTimes().get(i);
-//                
-//                int durDay = SimpleComplexTripModel.NB_MS_IN_ONE_HOUR*24
-//                        /SimpleComplexTripModel.GRANULARITE;
-//                
-//                IntegerVariable hr = makeIntVar("hr");
-//                cpmodel.addConstraint(eq(hr, mod(task.start(), durDay)));
-//                cpmodel.addConstraint(ifThenElse(gt(hr, h[0]),
-//                        geq(task.duration(), minus(h[1]+durDay*nbTimes, hr)),
-//                        geq(task.duration(),
-//                                minus(h[1]+durDay*(nbTimes-1), hr))));
                 
                 System.out.print("....");
             }
+
+//            cpmodel.addConstraint(allDifferent(dates));
             
             int n = cxtmodel.getStagesVariables().length;
             IntegerVariable[] allIndexes = new IntegerVariable[2*n+2];
@@ -385,7 +388,6 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 cxtModel.getEndIndex()).getVal();
         Flight arr = flights.get(j);
         vols.add(arr);
-        
         trip = new Trip(cxtModel.getStartAirport(), dep.getDeparture(),
                 cxtModel.getEndAirport(), arr.getArrival(), 
                 cxtModel.unmapDuration(solver.getVar(
