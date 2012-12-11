@@ -415,7 +415,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               IntegerVariable dur = makeIntVar(
                       "duration " + i + "(" + a.name()+")",
                       durmin, durmax, VARIABLES_OPTION);
-              
+
               TaskVariable task = makeTaskVar("stage " + i + "(" + a.name()+")",
                       st, en, dur, VARIABLES_OPTION);
               

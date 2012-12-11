@@ -46,14 +46,22 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
     JScrollPane scroll;
     private JButton open, solve, clean;
     private JTextArea statut;
-    private ComplexTripGenerator ctg;
+    private static ComplexTripGenerator ctg;
+    
+    private static synchronized ComplexTripGenerator getCtg() {
+        return ctg;
+    }
+    
+    private static synchronized void setCtg(ComplexTripGenerator c) {
+        ctg = c;
+    }
     
     /**
      * Constructeur par défaut.
      */
     public SwingComplexTripGenerator() {
         super("Complex Trip Generator 0.1");
-        this.ctg = null;
+        setCtg(null);
       //Parametres de la fenêtre
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setLocation(50, 50);
@@ -164,22 +172,26 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
                 new Thread() {
                     public void run() {
                         solve.setEnabled(false);
-                        ctg = new ComplexTripGenerator(fc.getSelectedFile());
+                        setCtg(new ComplexTripGenerator(fc.getSelectedFile()));
                         solve.setEnabled(true);
                     }
                 }.start();
             }
             
         } else if (e.getSource() == solve) {
-            if (ctg != null) {
+            if (getCtg() != null) {
                 new Thread() {
                     public void run() {
                         open.setEnabled(false);
-                        Trip t = ctg.tryToSolve();
+                        solve.setEnabled(false);
+                        Trip t = getCtg().tryToSolve();
                         if (t != null) {
                             System.out.println(t);
+                        } else {
+                            System.out.println("Pas de solution trouvée");
                         }
                         open.setEnabled(true);
+                        solve.setEnabled(true);
                     }
                 }.start();
             }

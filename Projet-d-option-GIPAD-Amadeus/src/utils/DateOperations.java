@@ -17,6 +17,7 @@ public final class DateOperations {
      * Nombre de ms en un jour.
      */
     public static final long MS_IN_ONE_DAY = 1000*60*60*24;
+
     
 	/**
 	 * Constructeur privé vide.
@@ -63,7 +64,8 @@ public final class DateOperations {
 			final String date, final TimeZone tz) throws ParseException{
 	    DateFormat df = new SimpleDateFormat(pattern);
 		df.setTimeZone(tz);
-		Date d = df.parse(date);
+		Date d = df.parse(date);     
+		d.setTime(d.getTime());
 		return d;
 	}
 	

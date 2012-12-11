@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import solving.constraints.MustBeBetween;
+import solving.constraints.MustBeBetweenManager;
+
 import model.Flight;
 import model.Trip;
 
@@ -14,6 +17,7 @@ import choco.cp.solver.configure.RestartFactory;
 import choco.cp.solver.search.integer.valiterator.DecreasingDomain;
 import choco.cp.solver.search.integer.varselector.RandomIntVarSelector;
 import choco.kernel.common.logging.ChocoLogging;
+import choco.kernel.model.constraints.ComponentConstraint;
 import choco.kernel.model.variables.integer.IntegerVariable;
 import choco.kernel.model.variables.scheduling.TaskVariable;
 
@@ -226,6 +230,17 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                         indexes[1], task.end(), temp8));
                 
                 /* Contrainte sur les intervalle d'heure */
+                Object[] params = new Object[2];
+                params[0] = cxtmodel.getStagesHours().get(i);
+                params[1] = cxtmodel.getNbTimes().get(i);
+                cpmodel.addConstraint(
+                        new ComponentConstraint(MustBeBetweenManager.class,
+                                params, new IntegerVariable[] 
+                                        {cxtmodel.getStartDeparture(),
+                                            task.start(),
+                                            task.duration()}));
+
+                
 //                int[] h = cxtmodel.getStagesHours().get(i);
 //                int nbTimes = cxtmodel.getNbTimes().get(i);
 //                
@@ -233,7 +248,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 //                        /SimpleComplexTripModel.GRANULARITE;
 //                
 //                IntegerVariable hr = makeIntVar("hr");
-//                cpmodel.addConstraint(eq(hr, mod(durDay, task.start())));
+//                cpmodel.addConstraint(eq(hr, mod(task.start(), durDay)));
 //                cpmodel.addConstraint(ifThenElse(gt(hr, h[0]),
 //                        geq(task.duration(), minus(h[1]+durDay*nbTimes, hr)),
 //                        geq(task.duration(),
@@ -311,7 +326,6 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         
         List<Flight> vols = new ArrayList<Flight>();
         Trip trip = null;
-        
         Integer i = this.solver.getVar(
                 cxtModel.getStartIndex()).getVal();
         Flight dep = flights.get(i);

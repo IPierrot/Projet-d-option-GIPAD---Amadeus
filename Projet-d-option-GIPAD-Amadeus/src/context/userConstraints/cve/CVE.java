@@ -23,6 +23,8 @@ import dao.DAO;
  */
 public class CVE extends UserConstraint {
 
+    public static final long MS_IN_ONE_HOUR = 1000*60*60;
+    
     /**
      * La durée minimale en heures par défaut
      */
@@ -88,7 +90,7 @@ public class CVE extends UserConstraint {
                     + " fichier de requête (CVE)");
             e.printStackTrace();
         }
-        if (this.durMin <= 0 || this.durMax <= 0){
+        if (dur[0] <= 0 || dur[1] <= 0){
             this.durMin = DMIN_DEFAULT;
             this.durMax = DMAX_DEFAULT;
         } else {
@@ -96,10 +98,12 @@ public class CVE extends UserConstraint {
             this.durMax = dur[1];
         }
         try {
-            this.h1 = (int) DateOperations.
-                    getDateFromPattern("HH:mm", hours[0]).getTime();
-            this.h2 = (int) DateOperations.
-                    getDateFromPattern("HH:mm", hours[1]).getTime();
+            this.h1 = (int) (DateOperations.
+                    getDateFromPattern("HH:mm", hours[0]).getTime()
+                    + MS_IN_ONE_HOUR);
+            this.h2 = (int) (DateOperations.
+                    getDateFromPattern("HH:mm", hours[1]).getTime()
+                    + MS_IN_ONE_HOUR);
         } catch (ParseException e) {
             e.printStackTrace();
         }
