@@ -110,6 +110,12 @@ public final class ReaderConstants {
     public static final String CG00="CG-00";
     
     /**
+     * String utilisée pour représenter une contrainte générale 
+     * sur l'ordre
+     */
+    public static final String CG01="CG-01";
+    
+    /**
      * taille dans le fichier du nom simple des contraintes
      */
     public static final int TAILLE_CV=3;

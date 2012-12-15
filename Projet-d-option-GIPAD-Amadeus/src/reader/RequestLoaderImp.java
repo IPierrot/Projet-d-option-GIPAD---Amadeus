@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 import context.userConstraints.cg.CG;
 import context.userConstraints.cg.CG00;
+import context.userConstraints.cg.CG01;
 import context.userConstraints.cve.CVE;
 import context.userConstraints.cvf.CVF;
 import context.userConstraints.cvo.CVO;
@@ -68,6 +69,7 @@ public class RequestLoaderImp implements RequestLoader {
                 }
                 
                 if(s.length()>0&&s.substring(0, ReaderConstants.TAILLE_CV).equals(ReaderConstants.CVE)){
+                    String nomCVE = getStringPropre(s, 0);
                     s=sc.nextLine();
                     String CVE0 = getStringPropre(s, ReaderConstants.TAILLE_CV_COMPLET);
                     s=sc.nextLine();
@@ -88,7 +90,7 @@ public class RequestLoaderImp implements RequestLoader {
                     s=sc.nextLine();
                     int CVE5 = Integer.parseInt(getStringPropre(s,
                             ReaderConstants.TAILLE_CV_COMPLET));
-                    CVE cve= new CVE(CVE0, CVE1, CVE2, CVE3, CVE4, CVE5);
+                    CVE cve= new CVE(nomCVE, CVE0, CVE1, CVE2, CVE3, CVE4, CVE5);
                     cves.add(cve);          
                 }
                 
@@ -112,6 +114,16 @@ public class RequestLoaderImp implements RequestLoader {
                         cgs.add(new CG00(CG0Min, CG0Max));
                     }
                 }
+                
+                if (s.length()>0&&s.substring(0, ReaderConstants.TAILLE_CG).equals(ReaderConstants.CG01)){
+                    String CG1s = getStringPropre(s, ReaderConstants.TAILLE_CG_COMPLET);
+                    String[] CG1 = CG1s.split("<");
+                    if(CG1.length==2){
+                        String CG1Inf= CG1[0].trim();
+                        String CG1Sup= CG1[1].trim();
+                        cgs.add(new CG01(getCVENom(CG1Inf), getCVENom(CG1Sup)));
+                    }
+                }
             }
             sc.close();
             return (cvo != null && cvf != null)? true : false;
@@ -120,7 +132,19 @@ public class RequestLoaderImp implements RequestLoader {
             return false;
         }
         
+        
+        
+        
 
+    }
+    
+    public CVE getCVENom(final String nomCVE){
+        for(int i=0; i<cves.size();i++){
+            if(cves.get(i).getNom().equals(nomCVE)){
+                return cves.get(i);
+            }
+        }
+        return null;
     }
     
     

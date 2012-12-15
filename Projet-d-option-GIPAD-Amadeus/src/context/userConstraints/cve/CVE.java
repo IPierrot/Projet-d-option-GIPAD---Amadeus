@@ -34,6 +34,11 @@ public class CVE extends UserConstraint {
     private static final int DMAX_DEFAULT = 72;
     
     /**
+     * nom de la contrainte
+     */
+    private String nomCVE;
+    
+    /**
      * L'aeroport etape.
      */
     private Airport stage;
@@ -65,6 +70,7 @@ public class CVE extends UserConstraint {
     
     /**
      * Constructeur avec champs.
+     * @param nNomCVE le nom de l'étape
      * @param airport L'aeroport étape.
      * @param mandat True si l'étape est obligatoire.
      * @param passageInterval L'intervalle max du séjour,
@@ -73,9 +79,10 @@ public class CVE extends UserConstraint {
      * @param hours La borne inf de l'intervalle d'heures de passage.
      * @param nbtimes Le nombre de fois où on doit passer dans l'intervalle.
      */
-    public CVE(final String airport, final boolean mandat,
+    public CVE(final String nNomCVE, final String airport, final boolean mandat,
             final String[] passageInterval, final int[] dur,
             final String[] hours, final int nbtimes){
+        this.nomCVE=nNomCVE;
         this.stage = Airport.valueOf(airport);
         this.mandatory = mandat;
         try {
@@ -122,6 +129,12 @@ public class CVE extends UserConstraint {
 
         return b;
     }
+    
+    /**
+     * 
+     * @return nom de la contrainte
+     */
+    public String getNom(){return this.nomCVE; }
 
     @Override
     public void loadFlights(final Context context) {
