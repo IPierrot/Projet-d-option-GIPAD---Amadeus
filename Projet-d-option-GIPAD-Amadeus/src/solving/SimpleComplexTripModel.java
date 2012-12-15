@@ -501,7 +501,6 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 
     @Override
     public void setOrder(CVE ant, CVE post) {
-        // TODO Auto-generated method stub
-        
+        //TODO cpmodel.addConstraint(?);
     }
 }

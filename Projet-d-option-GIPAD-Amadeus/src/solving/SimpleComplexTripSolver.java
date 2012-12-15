@@ -27,18 +27,6 @@ import choco.kernel.model.variables.scheduling.TaskVariable;
 public class SimpleComplexTripSolver implements ComplexTripSolver{
 
     /**
-     * La granularité de l'échelle de temps, ici 5 minutes soit 300 000 ms.
-     */
-    static final int GRANULARITE = 300000;
-
-    /**
-     * Le nombre de miliseconds dans une heure.
-     */
-    static final int NB_MS_IN_ONE_HOUR = 3600000;
-    
-    static final int DUR_DAY = (NB_MS_IN_ONE_HOUR*24)/GRANULARITE;
-    
-    /**
      * Le solveur Choco.
      */
     private CPSolver solver;
@@ -294,7 +282,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 params[0] = cxtmodel.getStagesHours().get(i);
                 params[1] = cxtmodel.getNbTimes().get(i);
                 params[2] = (int) (cxtmodel.getEarliestDeparture().
-                        getTime()/GRANULARITE)%DUR_DAY;
+                        getTime()/SolveConstants.GRANULARITE)%SolveConstants.DUR_DAY;
                 cpmodel.addConstraint(
                         new ComponentConstraint(MustBeBetweenManager.class,
                                 params, new IntegerVariable[] 
