@@ -66,7 +66,7 @@ public interface ComplexTripModel {
 	 * dans l'intervalle [h1, h2].
 	 */
 	void addStage(Airport stage, Date earliestArrival, Date latestDeparture,
-			int minDuration, int maxDuration, int[] h, int nbTimes);
+			int minDuration, int maxDuration, int[] h, int nbTimes, boolean mandatory);
 	
 	/**
 	 * @return La date de début du voyage au plus tôt.

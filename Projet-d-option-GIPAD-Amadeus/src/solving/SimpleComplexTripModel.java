@@ -70,6 +70,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
      * La liste des intervalles durée des étapes.
      */
     private List<int[]> stagesDurations;
+    
+    /**
+     * La liste correspondant au information sur la facultativité des étapes.
+     */
+    private List<Boolean> mandatories;
 	
 	/**
 	 * La variable correspondant à l'aeroport de départ.
@@ -157,6 +162,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 		this.stagesDurations = new ArrayList<int[]>();
 		this.stagesHours = new ArrayList<int[]>();
 		this.nbTimes = new ArrayList<Integer>();
+		this.mandatories = new ArrayList<Boolean>();
 	}
 	
 	// CONSTRUCTEURS - END
@@ -201,7 +207,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 	@Override
 	public void addStage(final Airport stage, final Date earliestArrival,
 			final Date latestDeparture, final int durMin, final int durMax, 
-			final int[] h, final int nbFois) {
+			final int[] h, final int nbFois, boolean mandatory) {
 	    
 	    // Ajout des informations (aeroport, intervalle de passage, durée).
 		this.stages.add(stage);

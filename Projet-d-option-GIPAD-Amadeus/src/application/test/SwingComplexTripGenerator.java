@@ -41,10 +41,11 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
      */
     private static final long serialVersionUID = 1L;
     
+    private Thread solvingThread;
     private JFileChooser fc;
     private JTextArea textArea;
     JScrollPane scroll;
-    private JButton open, solve, clean;
+    private JButton open, solve, clean, stop;
     private JTextArea statut;
     private static ComplexTripGenerator ctg;
     
@@ -132,6 +133,10 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
         solve.addActionListener(this);
         clean = new JButton("clean");
         clean.addActionListener(this);
+        stop = new JButton("stop");
+        stop.addActionListener(this);
+        stop.setEnabled(false);
+
         JPanel buttonsPane = new JPanel(
                 new FlowLayout(FlowLayout.CENTER, 20, 30));
         JLabel label = new JLabel();
@@ -146,6 +151,7 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
         buttonsPane.add(open);
         buttonsPane.add(solve);
         buttonsPane.add(clean);
+        buttonsPane.add(stop);
         buttonsPane.setPreferredSize(new Dimension(550, 80));
         buttonsPane.setAlignmentY(CENTER_ALIGNMENT);
       
@@ -180,10 +186,11 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
             
         } else if (e.getSource() == solve) {
             if (getCtg() != null) {
-                new Thread() {
+                solvingThread = new Thread() {
                     public void run() {
                         open.setEnabled(false);
                         solve.setEnabled(false);
+                        stop.setEnabled(true);
                         Trip t = getCtg().tryToSolve();
                         if (t != null) {
                             System.out.println(t);
@@ -192,11 +199,19 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
                         }
                         open.setEnabled(true);
                         solve.setEnabled(true);
+                        stop.setEnabled(false);
                     }
-                }.start();
+                };
+                solvingThread.start();
             }
         } else if (e.getSource() == clean) {
             textArea.setText("");
+        } else if (e.getSource() == stop) {
+            solvingThread.interrupt();
+            System.out.println("Résolution interrompue, veuillez recharger une requête");
+            stop.setEnabled(false);
+            solve.setEnabled(false);
+            open.setEnabled(true);
         }
     }
     

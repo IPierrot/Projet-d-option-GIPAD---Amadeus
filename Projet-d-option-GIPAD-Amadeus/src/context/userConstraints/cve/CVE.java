@@ -22,8 +22,6 @@ import dao.DAO;
  * 
  */
 public class CVE extends UserConstraint {
-
-    public static final long MS_IN_ONE_HOUR = 1000*60*60;
     
     /**
      * La durée minimale en heures par défaut
@@ -113,7 +111,7 @@ public class CVE extends UserConstraint {
         context.getComplexTripModel().addStage(
                 stage, arr, dep,
                 durMin, durMax,
-                new int[] {h1, h2}, nbTimes);
+                new int[] {h1, h2}, nbTimes, mandatory);
     }
 
     @Override
