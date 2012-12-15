@@ -214,6 +214,7 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 		this.stagesIntervals.add(new int[] 
 		        {(int) (earliestArrival.getTime()/SolveConstants.GRANULARITE),
 		            (int) (latestDeparture.getTime()/SolveConstants.GRANULARITE)});
+		this.mandatories.add(mandatory);
 		
 		int i = SolveConstants.NB_MS_IN_ONE_HOUR/SolveConstants.GRANULARITE;
 		
@@ -414,13 +415,16 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               this.stagesTaskVars[i] = task;
               
               // Création des variables d'index.
+              int lowB = (this.mandatories.get(i)) ? 0 : -1;
               IntegerVariable arr = makeIntVar(
                       "indexArr " + i + " - " + a.name(),
-                      0, this.getPossibleFlights().size()-1, SolveConstants.VARIABLES_OPTION);
+                      lowB, this.getPossibleFlights().size()-1,
+                      SolveConstants.VARIABLES_OPTION);
               
               IntegerVariable dep = makeIntVar(
                       "indexDep " + i + " - " + a.name(),
-                      0, this.getPossibleFlights().size()-1, SolveConstants.VARIABLES_OPTION);
+                      lowB, this.getPossibleFlights().size()-1,
+                      SolveConstants.VARIABLES_OPTION);
               
               this.stageIndexes[i] = new IntegerVariable[] {arr, dep};
               

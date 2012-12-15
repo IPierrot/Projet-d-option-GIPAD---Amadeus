@@ -126,6 +126,8 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             String feasOption = "";
         
             // Initialisation des données
+            this.departs.add(new int[] {-1, -1, -1});
+            this.arrivees.add(new int[] {-1, -1, -1});
             for(int i=0; i<this.flights.size(); i++){
                 Flight f = this.flights.get(i);
                 this.departs.add(
@@ -241,8 +243,9 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 List<int[]> temp7 = new ArrayList<int[]>();
                 List<int[]> temp8 = new ArrayList<int[]>();
                 for(int j = 0; j < airportsArr.size(); j++){
-                    if(airportsArr.get(j)[1]
+                    if((airportsArr.get(j)[1]
                             == cxtmodel.getStages().get(i).getId()
+                            || airportsArr.get(j)[1] == -1)
                             && arrivees.get(j)[2] 
                                 >= task.start().getLowB()
                             && arrivees.get(j)[2] 
@@ -251,8 +254,9 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 //                        temp6.add(arrivees.get(j));
                         temp5.add(arrivees.get(j));
                     }
-                    if(airportsDep.get(j)[1]
+                    if((airportsDep.get(j)[1]
                             == cxtmodel.getStages().get(i).getId()
+                            || airportsDep.get(j)[1] == -1)
                             && departs.get(j)[2] 
                                 >= task.start().getLowB()
                             && departs.get(j)[2] 
@@ -299,7 +303,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 System.out.print("....");
             }
 
-//            cpmodel.addConstraint(allDifferent(dates));
+            cpmodel.addConstraint(allDifferent(dates));
             
             int n = cxtmodel.getStagesVariables().length;
             IntegerVariable[] allIndexes = new IntegerVariable[2*n+2];
