@@ -3,6 +3,8 @@ package solving;
 import java.util.Date;
 import java.util.List;
 
+import context.userConstraints.cve.CVE;
+
 import model.Airport;
 import model.Flight;
 
@@ -230,4 +232,11 @@ public interface ComplexTripModel {
      * @return La TaskVariable correspondant au voyage complet.
      */
     TaskVariable getTotalTrip();
+
+    /**
+     * Crée la contrainte d'ordre d'étape
+     * @param ant l'étape à visiter d'abord
+     * @param post l'étape à visiter après ant
+     */
+    void setOrder(CVE ant, CVE post);
 }

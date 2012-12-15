@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import context.userConstraints.cve.CVE;
+
 import model.Airport;
 import model.Flight;
 import choco.cp.model.CPModel;
@@ -495,5 +497,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
     @Override
     public TaskVariable getTotalTrip() {
         return totalTrip;
+    }
+
+    @Override
+    public void setOrder(CVE ant, CVE post) {
+        // TODO Auto-generated method stub
+        
     }
 }
