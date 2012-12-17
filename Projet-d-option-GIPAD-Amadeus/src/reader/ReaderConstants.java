@@ -62,12 +62,12 @@ public final class ReaderConstants {
      * valeur entière par défaut
      */
     public static final int INTEGER_VALUE_DEFAULT=1;
-    
+
     /**
      * plage horaire par défaut
      */
     public static final String PLAGE_DEFAULT = "08:00,22:00";
-    
+
     /**
      * durée minimale plage horaire
      */
@@ -77,56 +77,63 @@ public final class ReaderConstants {
      * double-point
      */
     public static final String DOUBLE_POINT = ":";
-    
+
     /**
      * caractère du commentaire
      */
     public static final String COMMENTAIRE = "#";
-    
+
     /**
      * caractère du séparateur de dates
      */
     public static final String SEPARATEUR = ",";
-    
+
     /**
      * String utilisée pour représenter une contrainte sur la ville de départ
      */
     public static final String CVO="CVO";
-    
+
     /**
      * String utilisée pour représenter une contrainte sur la ville d'arrivée
      */
     public static final String CVF="CVF";
-    
+
     /**
      * String utilisée pour représenter une contrainte sur une ville-étape
      */
     public static final String CVE="CVE";
-    
+
     /**
      * String utilisée pour représenter une contrainte générale 
      * sur la durée max
      */
     public static final String CG00="CG-00";
-    
+
+    /**
+     * String utilisée pour représenter une contrainte générale 
+     * sur l'ordre
+     */
+    public static final String CG01="CG-01";
+
+
     /**
      * taille dans le fichier du nom simple des contraintes
      */
     public static final int TAILLE_CV=3;
-    
+
     /**
      * taille dans le fichier du nom des contraintes générales
      */
     public static final int TAILLE_CG=5;
-    
+
     /**
      * taille dans le fichier du nom complet des contraintes
      */
     public static final int TAILLE_CV_COMPLET=7;
-    
+
     /**
      * taille dans le fichier du nom complet des contraintes générales
      */
     public static final int TAILLE_CG_COMPLET=6;
-    
+
 }
