@@ -6,6 +6,7 @@ import java.util.List;
 
 import solving.constraints.MustBeBetweenManager;
 
+import model.Airport;
 import model.Flight;
 import model.Trip;
 
@@ -13,6 +14,8 @@ import static choco.Choco.*;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
 import choco.cp.solver.search.integer.valiterator.DecreasingDomain;
+import choco.cp.solver.search.integer.valiterator.IncreasingDomain;
+import choco.cp.solver.search.integer.valselector.RandomIntValSelector;
 import choco.cp.solver.search.integer.varselector.RandomIntVarSelector;
 import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.model.constraints.ComponentConstraint;
@@ -128,6 +131,8 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             // Initialisation des données
             this.departs.add(new int[] {-1, -1, -1});
             this.arrivees.add(new int[] {-1, -1, -1});
+            this.airportsDep.add(new int[] {-1, 0});
+            this.airportsArr.add(new int[] {-1, 0});
             for(int i=0; i<this.flights.size(); i++){
                 Flight f = this.flights.get(i);
                 this.departs.add(
@@ -177,7 +182,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
             List<int[]> temp3 = new ArrayList<int[]>();
             List<int[]> temp4 = new ArrayList<int[]>();
             for(int j = 0; j < departs.size(); j++){
-                if(airportsDep.get(j)[1] == cxtmodel.getStartAirport().getId()
+                if(departs.get(j)[1] == cxtmodel.getStartAirport().getId()
                         && departs.get(j)[2] 
                                 >= cxtmodel.getStartDeparture().getLowB()
                         && departs.get(j)[2] 
@@ -186,7 +191,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 //                    temp2.add(departs.get(j));
                     temp1.add(departs.get(j));
                 }
-                if(airportsArr.get(j)[1] == cxtmodel.getEndAirport().getId() 
+                if(arrivees.get(j)[1] == cxtmodel.getEndAirport().getId() 
                         && arrivees.get(j)[2] 
                                 >= cxtmodel.getEndArrival().getLowB()
                         && arrivees.get(j)[2] 
@@ -232,20 +237,27 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 TaskVariable task = cxtmodel.getStagesTaskVariables()[i];
                 IntegerVariable stage = cxtmodel.getStagesVariables()[i];
                 dates[(i+1)*2] = task.start();
-                dates[(i+1)*2+1] = task.end();
+                dates[(i+1)*2+1] = task.end();                
                 
-                /* On ne "survole" pas une étape :P */
-                cpmodel.addConstraint(neq(indexes[0], indexes[1]));
+                /* Ville facultative */
+                cpmodel.addConstraint(ifThenElse(
+                        eq(-1, indexes[0]),
+                        eq(-1, indexes[1]),
+                        ifThenElse(
+                                eq(-1, indexes[1]),
+                                eq(-1, indexes[0]),
+                                and(neq(task.start(), task.end())))));
                 
+
                 /* Vols possible (feasible pairs) */
                 List<int[]> temp5 = new ArrayList<int[]>();
                 List<int[]> temp6 = new ArrayList<int[]>();
                 List<int[]> temp7 = new ArrayList<int[]>();
                 List<int[]> temp8 = new ArrayList<int[]>();
-                for(int j = 0; j < airportsArr.size(); j++){
-                    if((airportsArr.get(j)[1]
+                for(int j = 0; j < arrivees.size(); j++){
+                    if((arrivees.get(j)[1]
                             == cxtmodel.getStages().get(i).getId()
-                            || airportsArr.get(j)[1] == -1)
+                            || arrivees.get(j)[1] == -1)
                             && arrivees.get(j)[2] 
                                 >= task.start().getLowB()
                             && arrivees.get(j)[2] 
@@ -254,9 +266,9 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
 //                        temp6.add(arrivees.get(j));
                         temp5.add(arrivees.get(j));
                     }
-                    if((airportsDep.get(j)[1]
+                    if((departs.get(j)[1]
                             == cxtmodel.getStages().get(i).getId()
-                            || airportsDep.get(j)[1] == -1)
+                            || departs.get(j)[1] == -1)
                             && departs.get(j)[2] 
                                 >= task.start().getLowB()
                             && departs.get(j)[2] 
@@ -295,6 +307,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 params[1] = cxtmodel.getNbTimes().get(i);
                 params[2] = (int) (cxtmodel.getEarliestDeparture().
                         getTime()/GRANULARITE)%DUR_DAY;
+
                 cpmodel.addConstraint(
                         new ComponentConstraint(MustBeBetweenManager.class,
                                 params, new IntegerVariable[] 
@@ -303,7 +316,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 System.out.print("....");
             }
 
-            cpmodel.addConstraint(allDifferent(dates));
+//            cpmodel.addConstraint(allDifferent(dates));
             
             int n = cxtmodel.getStagesVariables().length;
             IntegerVariable[] allIndexes = new IntegerVariable[2*n+2];
@@ -322,7 +335,7 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 cpmodel.addConstraint(occurrence(
                         v, allIndexes, i));
             }
-            
+                        
 //            IntegerVariable[] v = makeIntVarArray(
 //                    "occ-", flights.size(), new int[] {0, 2},
 //                    SolveConstants.VARIABLES_OPTION);
@@ -355,8 +368,8 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
         if(this.readyToSolve){
         
             ChocoLogging.toSilent();
-//            solver.setVarIntSelector(new RandomIntVarSelector(solver));
-//            solver.setValIntIterator(new DecreasingDomain());
+            solver.setVarIntSelector(new RandomIntVarSelector(solver));
+//            solver.setValIntSelector(new RandomIntValSelector());
             
             System.out.println("\n" + "\n"  + "Résolution... " + "\n");
             
@@ -397,34 +410,36 @@ public class SimpleComplexTripSolver implements ComplexTripSolver{
                 cxtModel.unmapDuration(solver.getVar(
                         cxtModel.getTotalTrip().duration()).getVal()));
         
-        for(IntegerVariable[] v : cxtModel.getStagesIndexes()){
+        for (int s = 0; 
+                s < cxtModel.getStagesTaskVariables().length; s++) {
+            IntegerVariable[] v = cxtModel.getStagesIndexes()[s];
             Integer k = this.solver.getVar(v[0]).getVal();
-            Integer k2 = this.solver.getVar(v[1]).getVal();
-            Flight f = flights.get(k);
-            Flight f2 = flights.get(k2);
-            
-            if(!vols.contains(f)){
-                vols.add(f);
-            }
-            if(!vols.contains(f2)){
-                vols.add(f2);
-            }
-        }
-        
-        for (int k = 0; 
-                k < cxtModel.getStagesTaskVariables().length; k++) {
-            TaskVariable tv = cxtModel.
-                    getStagesTaskVariables()[k];
-            Date d1 = cxtModel.unmapTime(
-                    solver.getVar(tv.start()).getVal());
-            Date d2 = cxtModel.unmapTime(
-                    solver.getVar(tv.end()).getVal());
-            int dur = cxtModel.unmapDuration(
-                    solver.getVar(tv.duration()).getVal());
+            if (k >= 0) {
+                Integer k2 = this.solver.getVar(v[1]).getVal();
+                Flight f = flights.get(k);
+                Flight f2 = flights.get(k2);
+                
+                if(!vols.contains(f)){
+                    vols.add(f);
+                }
+                if(!vols.contains(f2)){
+                    vols.add(f2);
+                }
+                
+                TaskVariable tv = cxtModel.
+                        getStagesTaskVariables()[s];
+                Date d1 = cxtModel.unmapTime(
+                        solver.getVar(tv.start()).getVal());
+                Date d2 = cxtModel.unmapTime(
+                        solver.getVar(tv.end()).getVal());
+                int dur = cxtModel.unmapDuration(
+                        solver.getVar(tv.duration()).getVal());
 
-            trip.addStage(cxtModel.getStages().get(k),
-                    new Date[] {d1, d2}, dur);
+                trip.addStage(cxtModel.getStages().get(s),
+                        new Date[] {d1, d2}, dur);
+            }        
         }
+
         trip.setFlights(vols);
         return trip;
     }

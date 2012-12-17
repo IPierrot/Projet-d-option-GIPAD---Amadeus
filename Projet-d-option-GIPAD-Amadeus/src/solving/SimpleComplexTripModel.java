@@ -393,21 +393,49 @@ public class SimpleComplexTripModel implements ComplexTripModel{
               int durmax = this.stagesDurations.get(i)[1];
               
               // Création de la variable d'aeroport
-              IntegerVariable airport = constant(a.getId());
+              int[] aDomain;
+              if (this.mandatories.get(i)) {
+                  aDomain = new int[] {a.getId()};
+              } else {
+                  aDomain = new int[] {-1, a.getId()};
+              }
+              IntegerVariable airport = makeIntVar(
+                      "airport", aDomain, SolveConstants.VARIABLES_OPTION);
               this.stagesVars[i] = airport;
               
               // Création de la task Variable
+              int[] domainDates = new int[this.mandatories.get(i) 
+                                     ? tdep-tarr+1 : tdep-tarr+2];
+              int[] domainDuration = new int[this.mandatories.get(i) 
+                                          ? durmax-durmin+1 : durmax-durmin+2];
+              if (!this.mandatories.get(i)) {
+                  domainDates[0] = -1;
+                  for (int j = tarr-t0Earliest; j <= tdep-t0Earliest; j++) {
+                      domainDates[j-(tarr-t0Earliest)+1] = j;
+                  }
+                  domainDuration[0] = 0;
+                  for (int j = durmin; j <= durmax; j++) {
+                      domainDuration[j-durmin+1] = j;
+                  }
+              } else {
+                  for (int j = tarr-t0Earliest; j <= tdep-t0Earliest; j++) {
+                      domainDates[j-(tarr-t0Earliest)] = j;
+                  }
+                  for (int j = durmin; j <= durmax; j++) {
+                      domainDuration[j-durmin] = j;
+                  }
+              }
               IntegerVariable st = makeIntVar(
                     "start " + i + "(" + a.name()+")", 
-                    tarr-t0Earliest, tdep-t0Earliest, SolveConstants.VARIABLES_OPTION);
+                    domainDates, SolveConstants.VARIABLES_OPTION);
               
               IntegerVariable en = makeIntVar(
                       "end " + i + "(" + a.name()+")", 
-                      tarr-t0Earliest, tdep-t0Earliest, SolveConstants.VARIABLES_OPTION);
+                      domainDates, SolveConstants.VARIABLES_OPTION);
               
               IntegerVariable dur = makeIntVar(
                       "duration " + i + "(" + a.name()+")",
-                      durmin, durmax, SolveConstants.VARIABLES_OPTION);
+                      domainDuration, SolveConstants.VARIABLES_OPTION);
 
               TaskVariable task = makeTaskVar("stage " + i + "(" + a.name()+")",
                       st, en, dur, SolveConstants.VARIABLES_OPTION);
@@ -420,7 +448,6 @@ public class SimpleComplexTripModel implements ComplexTripModel{
                       "indexArr " + i + " - " + a.name(),
                       lowB, this.getPossibleFlights().size()-1,
                       SolveConstants.VARIABLES_OPTION);
-              
               IntegerVariable dep = makeIntVar(
                       "indexDep " + i + " - " + a.name(),
                       lowB, this.getPossibleFlights().size()-1,

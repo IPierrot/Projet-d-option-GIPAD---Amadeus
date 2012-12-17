@@ -62,33 +62,35 @@ public class MustBeBetween extends AbstractBinIntSConstraint{
 
     @Override
     public void propagate() throws ContradictionException {
-        int durMin;
-        // Cas start instancié
-        if (start.isInstantiated()) {
-            int t0 = start.getVal();
-            int hr = t0 % DUR_DAY + ref;
-            if (hr > hours[0]) {
-                durMin = hours[1] + DUR_DAY*nbTimes-hr;
+        if (start.getSup() != -1) {    
+            int durMin;
+            // Cas start instancié
+            if (start.isInstantiated()) {
+                int t0 = start.getVal();
+                int hr = t0 % DUR_DAY + ref;
+                if (hr > hours[0]) {
+                    durMin = hours[1] + DUR_DAY*nbTimes-hr;
+                } else {
+                    durMin = hours[1] + DUR_DAY*(nbTimes-1)-hr;
+                }
             } else {
-                durMin = hours[1] + DUR_DAY*(nbTimes-1)-hr;
+                // Cas où start n'est pas instancié : on essaye quand même de
+                // supprimer des valeurs.
+                durMin = hours[1] + DUR_DAY*(nbTimes-1)-hours[0];
             }
-        } else {
-            // Cas où start n'est pas instancié : on essaye quand même de
-            // supprimer des valeurs.
-            durMin = hours[1] + DUR_DAY*(nbTimes-1)-hours[0];
-        }
-        int durSup = duration.getSup();
-        // On s'assure que la contrainte est satisfaisable (avec la
-        // borne sup).
-        if (durSup < durMin) {
-            fail();
-        } else {
-            int durInf = duration.getInf();
-            // Si la contrainte est réalisable on met à jour 
-            //la borne inf (à moins que ca ne soit pas nécéssaire.
-            if (durInf < durMin) {
-                durInf = durMin;
+            int durSup = duration.getSup();
+            // On s'assure que la contrainte est satisfaisable (avec la
+            // borne sup).
+            if (durSup < durMin) {
+                fail();
+            } else {
+                int durInf = duration.getInf();
+                // Si la contrainte est réalisable on met à jour 
+                //la borne inf (à moins que ca ne soit pas nécéssaire.
+                if (durInf < durMin) {
+                    durInf = durMin;
+                }
             }
-        }
+        }    
     }
 }
