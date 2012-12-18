@@ -14,7 +14,7 @@ public class CG01 extends CG {
     private int ant;
     private int post;
     
-    public CG01(int a, int p){
+    public CG01(final int a, final int p){
         this.ant = a;
         this.post = p;
     }
