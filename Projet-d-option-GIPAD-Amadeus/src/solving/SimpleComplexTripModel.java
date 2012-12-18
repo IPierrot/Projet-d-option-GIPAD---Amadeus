@@ -526,7 +526,8 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 
     @Override
     public void setOrder(final int ant, final int pos) {
-        this.cpmodel.addConstraint(
-                gt(this.stagesTaskVars[ant].end(), this.stagesTaskVars[pos].start()));
+        this.cpmodel.addConstraint(endsBeforeBegin(
+                this.stagesTaskVars[ant],
+                this.stagesTaskVars[pos]));
     }
 }
