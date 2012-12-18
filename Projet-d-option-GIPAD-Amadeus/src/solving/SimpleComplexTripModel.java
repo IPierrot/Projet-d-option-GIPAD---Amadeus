@@ -501,8 +501,10 @@ public class SimpleComplexTripModel implements ComplexTripModel{
     @Override
     public void setTotalDuration(final int hmin, final int hmax) {
         totalInterval = new int[]{hmin, hmax};       
-        int min = totalInterval[0]*SolveConstants.NB_MS_IN_ONE_HOUR/SolveConstants.GRANULARITE;
-        int max = totalInterval[1]*SolveConstants.NB_MS_IN_ONE_HOUR/SolveConstants.GRANULARITE;
+        int min = totalInterval[0]*SolveConstants.NB_MS_IN_ONE_HOUR
+                /SolveConstants.GRANULARITE;
+        int max = totalInterval[1]*SolveConstants.NB_MS_IN_ONE_HOUR
+                /SolveConstants.GRANULARITE;
         
         IntegerVariable duration = makeIntVar("totalDuration", min, max);
         totalTrip = makeTaskVar("totalTrip", startDepVar, endArrVar, duration);
@@ -526,8 +528,11 @@ public class SimpleComplexTripModel implements ComplexTripModel{
 
     @Override
     public void setOrder(final int ant, final int pos) {
-        this.cpmodel.addConstraint(endsBeforeBegin(
-                this.stagesTaskVars[ant],
-                this.stagesTaskVars[pos]));
+        this.cpmodel.addConstraint(implies(
+                and(neq(-1, getStagesVariables()[ant]),
+                        neq(-1, getStagesVariables()[pos])),
+                endsBeforeBegin(
+                        this.stagesTaskVars[ant],
+                        this.stagesTaskVars[pos])));
     }
 }
