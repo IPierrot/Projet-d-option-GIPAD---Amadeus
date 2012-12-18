@@ -523,4 +523,10 @@ public class SimpleComplexTripModel implements ComplexTripModel{
     public TaskVariable getTotalTrip() {
         return totalTrip;
     }
+
+    @Override
+    public void setOrder(int ant, int pos) {
+        this.cpmodel.addConstraint(
+                gt(this.stagesTaskVars[ant].end(), this.stagesTaskVars[pos].start()));
+    }
 }

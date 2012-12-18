@@ -2,14 +2,19 @@ package context.userConstraints.cg;
 
 import model.Flight;
 import context.Context;
-import context.userConstraints.cve.CVE;
 
+
+//Changements totaux CG01:
+//CG01
+//CTM --> setOrder
+//SCTM --> implémentation setOrder + méthode readIndex
+//Question: quand appeler explicitement CG01?
 public class CG01 extends CG {
     
-    private CVE ant;
-    private CVE post;
+    private int ant;
+    private int post;
     
-    public CG01(CVE a, CVE p){
+    public CG01(int a, int p){
         this.ant = a;
         this.post = p;
     }
@@ -27,7 +32,6 @@ public class CG01 extends CG {
     @Override
     public void loadFlights(Context context) {
         // TODO Auto-generated method stub
-
     }
 
 }

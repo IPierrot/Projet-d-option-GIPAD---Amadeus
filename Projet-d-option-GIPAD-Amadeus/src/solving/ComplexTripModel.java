@@ -230,4 +230,11 @@ public interface ComplexTripModel {
      * @return La TaskVariable correspondant au voyage complet.
      */
     TaskVariable getTotalTrip();
+    
+    /**
+     * Impose la CG01 sur les étapes d'index ant et pos
+     * @param ant la première étape
+     * @param pos l'étape postérieure à ant
+     */
+    void setOrder(int ant, int pos);
 }
