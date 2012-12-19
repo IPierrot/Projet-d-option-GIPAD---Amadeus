@@ -118,9 +118,9 @@ public class RequestLoaderImp implements RequestLoader {
                 if (s.length()>0&&s.substring(0, ReaderConstants.TAILLE_CG).equals(ReaderConstants.CG01)){
                     String CG1s = getStringPropre(s, ReaderConstants.TAILLE_CG_COMPLET);
                     String[] CG1 = CG1s.split("<");
-                    String CVEInf = CG1[0];
-                    String CVESup = CG1[1];
                     if(CG1.length==2){
+                        String CVEInf = CG1[0];
+                        String CVESup = CG1[1];
                         cgs.add(new CG01(getCVEIndex(CVEInf), getCVEIndex(CVESup)));//TODO index ou index-1?
                     }
                 }
@@ -142,7 +142,7 @@ public class RequestLoaderImp implements RequestLoader {
      * @return la CVE
      */
     public int getCVEIndex(final String nomCVE){
-        for(int i=0; i<cves.size();i++){
+        for(int i=0; i<cves.size(); i++){
             if(cves.get(i).getNom().equals(nomCVE)){
                 return i;
             }

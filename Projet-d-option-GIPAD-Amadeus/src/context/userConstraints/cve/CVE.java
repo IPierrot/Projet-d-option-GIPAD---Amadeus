@@ -72,6 +72,7 @@ public class CVE extends UserConstraint {
     
     /**
      * Constructeur avec champs.
+     * @param nNomCVE nom de la contrainte
      * @param airport L'aeroport étape.
      * @param mandat True si l'étape est obligatoire.
      * @param passageInterval L'intervalle max du séjour,
