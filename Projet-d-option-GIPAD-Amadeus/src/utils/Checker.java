@@ -4,20 +4,33 @@ import static utils.DateOperations.getDateFromPattern;
 
 import java.io.File;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.TimeZone;
 
-import com.sun.xml.internal.ws.policy.spi.AssertionCreationException;
-
 import junit.framework.TestCase;
 
 import model.Trip;
 
+/**
+ * classe vérifiant si la solution proposée est juste
+ * @author Pierre Chouin
+ *
+ */
 public class Checker extends TestCase{
 
+    
+    /**
+     * nombre d'heures par jour
+     */
+    public static final int HOURS_PER_DAY=24;
+    
+    /**
+     * le nombre de millisecondes par heure
+     */
+    public static final int MILLIS_PER_H=1000*60*60;
+    
     /**
      * double-point
      */
@@ -81,6 +94,12 @@ public class Checker extends TestCase{
      */
     public static final int TAILLE_CG_COMPLET=6;
 
+    /**
+     * méthode vérifiant la solution
+     * @param sol la solution que l'on veut vérifier
+     * @param path le fichier de requêtes original
+     * @return si c'est vérifié, ou nan
+     */
     public static boolean checkSolution(final Trip sol, final String path){
 
         HashMap<String, Integer> etapesRang = new HashMap<String, Integer>();
@@ -99,11 +118,15 @@ public class Checker extends TestCase{
                     s=sc.nextLine();
                     String[] CVO1 = getStringPropre(s, TAILLE_CV_COMPLET)
                             .split(SEPARATEUR);
-                    assertIntDate(CVO1[0], CVO1[1], sol.getStart().getTimeZone(), sol.getStartDeparture());
+                    assertIntDate(CVO1[0], CVO1[1], 
+                            sol.getStart().getTimeZone(), 
+                            sol.getStartDeparture());
                     s=sc.nextLine();
                     String[] CVO2 = getStringPropre(s, TAILLE_CV_COMPLET)
                             .split(SEPARATEUR);
-                    assertIntHour(CVO2[0], CVO2[1], sol.getStart().getTimeZone(), sol.getStartDeparture());
+                    assertIntHour(CVO2[0], CVO2[1], 
+                            sol.getStart().getTimeZone(), 
+                            sol.getStartDeparture());
                 }
 
                 if(s.length()>0&&s.substring(0, TAILLE_CV).equals(CVE)){
@@ -112,7 +135,9 @@ public class Checker extends TestCase{
                     String CVE0 = getStringPropre(s, TAILLE_CV_COMPLET);
                     int id=-1;
                     for(int i=0; i<sol.getStages().size(); i++){
-                        if(sol.getStages().get(i).name().equals(CVE0)) {id=i; break; }
+                        if(sol.getStages().get(i).name().equals(CVE0)) {
+                            id=i; break; 
+                            }
                     }
                     etapesRang.put(nomCVE, id);
                     s=sc.nextLine();
@@ -126,8 +151,12 @@ public class Checker extends TestCase{
                     String[] CVE2 = getStringPropre(s, TAILLE_CV_COMPLET)
                             .split(SEPARATEUR);
                     if(id!=-1){
-                        assertIntDate(CVE2[0], CVE2[1], sol.getStages().get(id).getTimeZone(), sol.getFlights().get(id).getArrival());
-                        assertIntDate(CVE2[0], CVE2[1], sol.getStages().get(id).getTimeZone(), sol.getFlights().get(id+1).getDeparture());
+                        assertIntDate(CVE2[0], CVE2[1], 
+                                sol.getStages().get(id).getTimeZone(), 
+                                sol.getFlights().get(id).getArrival());
+                        assertIntDate(CVE2[0], CVE2[1], 
+                                sol.getStages().get(id).getTimeZone(), 
+                                sol.getFlights().get(id+1).getDeparture());
                     }
                     s=sc.nextLine();
                     String[] CVE3s = getStringPropre(s, TAILLE_CV_COMPLET)
@@ -135,7 +164,9 @@ public class Checker extends TestCase{
                     int [] CVE3 = {Integer.parseInt(CVE3s[0]), 
                             Integer.parseInt(CVE3s[1])};
                     if(id!=-1){
-                        assertDurInt(CVE3[0], CVE3[1], sol.getFlights().get(id).getArrival(), sol.getFlights().get(id+1).getDeparture());
+                        assertDurInt(CVE3[0], CVE3[1], 
+                                sol.getFlights().get(id).getArrival(), 
+                                sol.getFlights().get(id+1).getDeparture());
                     }
                     s=sc.nextLine();
                     String[] CVE4 = getStringPropre(s, TAILLE_CV_COMPLET)
@@ -144,7 +175,9 @@ public class Checker extends TestCase{
                     int CVE5 = Integer.parseInt(getStringPropre(s,
                             TAILLE_CV_COMPLET));
                     if(id!=-1){
-                        assertPresInt(CVE4[0], CVE4[1], CVE5, sol.getFlights().get(id).getArrival(), sol.getFlights().get(id+1).getDeparture());
+                        assertPresInt(CVE4[0], CVE4[1], CVE5, 
+                                sol.getFlights().get(id).getArrival(), 
+                                sol.getFlights().get(id+1).getDeparture());
                     }
                 }
 
@@ -154,11 +187,13 @@ public class Checker extends TestCase{
                     s=sc.nextLine();
                     String[] CVF1 = getStringPropre(s, TAILLE_CV_COMPLET)
                             .split(SEPARATEUR);
-                    assertIntDate(CVF1[0], CVF1[1], sol.getEnd().getTimeZone(), sol.getEndArrival());
+                    assertIntDate(CVF1[0], CVF1[1], 
+                            sol.getEnd().getTimeZone(), sol.getEndArrival());
                     s=sc.nextLine();
                     String[] CVF2 = getStringPropre(s, TAILLE_CV_COMPLET)
                             .split(SEPARATEUR);
-                    assertIntHour(CVF2[0], CVF2[1], sol.getEnd().getTimeZone(), sol.getEndArrival());
+                    assertIntHour(CVF2[0], CVF2[1], 
+                            sol.getEnd().getTimeZone(), sol.getEndArrival());
                 }
 
                 if (s.length()>0&&s.substring(0, TAILLE_CG).equals(CG00)){
@@ -167,7 +202,8 @@ public class Checker extends TestCase{
                     if(CG0.length==2){
                         int CG0Min= Integer.parseInt(CG0[0].trim());
                         int CG0Max= Integer.parseInt(CG0[1].trim());
-                        assertDurInt(CG0Min, CG0Max, sol.getStartDeparture(), sol.getEndArrival());
+                        assertDurInt(CG0Min, CG0Max, 
+                                sol.getStartDeparture(), sol.getEndArrival());
                     }
                 }
 
@@ -175,7 +211,8 @@ public class Checker extends TestCase{
                     String CG1s = getStringPropre(s, TAILLE_CG_COMPLET);
                     String[] CG1 = CG1s.split("<");
                     if(CG1.length==2){
-                        assertInfStr(etapesRang.get(CG1[0]), etapesRang.get(CG1[1]));
+                        assertInfStr(etapesRang.get(CG1[0]),
+                                etapesRang.get(CG1[1]));
                     }
                 }
 
@@ -200,16 +237,28 @@ public class Checker extends TestCase{
      * au début de la chaîne de caractères
      * @return la String modifiée
      */
-    private static String getStringPropre(final String s, final int nbCarInutiles){
+    private static String getStringPropre(final String s, 
+            final int nbCarInutiles){
         return s.substring(nbCarInutiles).split(COMMENTAIRE)[0].trim();
     }
 
-    private static void assertIntDate(String dateDeb, String dateFin, TimeZone tz, Date actual){
+    /**
+     * Vérifie si la date actual est bien située entre dateDeb et dateFin
+     * @param dateDeb date de début
+     * @param dateFin date de fin
+     * @param tz la time zone
+     * @param actual la date que l'on vérifie
+     */
+    private static void assertIntDate(final String dateDeb, 
+            final String dateFin, final TimeZone tz, final Date actual){
         String pattern = "yyyy/MM/dd-HH:mm";
         try {
             Date deb = getDateFromPattern(pattern, dateDeb, tz);
             Date fin = getDateFromPattern(pattern, dateFin, tz);
-            if(!actual.after(deb)||!actual.before(fin)){ throw new AssertionError("Erreur au niveau des intervalles de dates");}
+            if(!actual.after(deb)||!actual.before(fin)){ 
+                throw new AssertionError("Erreur au niveau des "
+                		+ "intervalles de dates");
+                }
         } catch (ParseException e) {
             System.out.println("Erreur dans la lecture des dates du"
                     + " fichier de requête (CVF)");
@@ -217,13 +266,26 @@ public class Checker extends TestCase{
         }
     }
 
-    private static void assertIntHour(String hourDeb, String hourFin, TimeZone tz, Date actual){
+    /**
+     * Vérifie si l'heure de la date actual est entre hourDeb et hourFin
+     * @param hourDeb heure de début
+     * @param hourFin heure de fin
+     * @param tz la time zone
+     * @param actual la date que l'on veut vérifier
+     */
+    private static void assertIntHour(final String hourDeb, 
+            final String hourFin, final TimeZone tz, final Date actual){
         String pattern = "yyyy/MM/dd-HH:mm";
         try {
-            long deb = getDateFromPattern(pattern, "2012/01/01-"+hourDeb, tz).getTime()%(1000*60*60*24);
-            long fin = getDateFromPattern(pattern, "2012/01/01-"+hourFin, tz).getTime()%(1000*60*60*24);
-            long newActual = actual.getTime()%(1000*60*60*24);
-            if(!(deb<=newActual)||!(newActual<=fin)){ throw new AssertionError("Erreur au niveau des heures de départ, ou d'arrivée");}
+            long deb = getDateFromPattern(pattern, "2012/01/01-"+hourDeb, tz)
+                    .getTime()%(MILLIS_PER_H*HOURS_PER_DAY);
+            long fin = getDateFromPattern(pattern, "2012/01/01-"+hourFin, tz)
+                    .getTime()%(MILLIS_PER_H*HOURS_PER_DAY);
+            long newActual = actual.getTime()%(MILLIS_PER_H*HOURS_PER_DAY);
+            if(!(deb<=newActual)||!(newActual<=fin)){
+                throw new AssertionError("Erreur au niveau des heures de"
+                		+ " départ, ou d'arrivée");
+                }
         } catch (ParseException e) {
             System.out.println("Erreur dans la lecture des dates du"
                     + " fichier de requête (CVF)");
@@ -233,17 +295,46 @@ public class Checker extends TestCase{
 
     }
 
-    private static void assertDurInt(int minHour, int maxHour, Date deb, Date fin){
-        int actual = (int) (fin.getTime()-deb.getTime())/(1000*60*60);
-        if(!(minHour<=actual)||!(actual<=maxHour)){ throw new AssertionError("Erreur au niveau des durées");}
+    /**
+     * Vérifie si la durée entre la date deb et la date fin est comprise
+     *  entre minHour et maxHour
+     * @param minHour durée minimum
+     * @param maxHour durée maximum
+     * @param deb date de début
+     * @param fin date de fin
+     */
+    private static void assertDurInt(final int minHour, final int maxHour,
+            final Date deb, final Date fin){
+        int actual = (int) (fin.getTime()-deb.getTime())/(MILLIS_PER_H);
+        if(!(minHour<=actual)||!(actual<=maxHour)){ 
+            throw new AssertionError("Erreur au niveau des durées");
+            }
     }
 
-    private static void assertPresInt(String hourDeb, String hourFin, int nbTimes, Date deb, Date fin){
+    /**
+     * vérifie que entre la date deb et la date fin il existe au minimum 
+     * nbTimes fois l'intervalle [hourDeb,hourFin]
+     * @param hourDeb heure de début de l'intervalle
+     * @param hourFin heure de fin de l'intervalle
+     * @param nbTimes le nombre de fois
+     * @param deb date de début
+     * @param fin date de fin
+     */
+    private static void assertPresInt(final String hourDeb, 
+            final String hourFin, final int nbTimes, 
+            final Date deb, final Date fin){
         //TODO mais c'est difficile !
     }
 
-    private static void assertInfStr(int a, int b){
-        if(a>=b) {throw new AssertionError("Erreur sur une contrainte d'ordre"); }
+    /**
+     * vérifie que a est strictement inférieur à b
+     * @param a 
+     * @param b 
+     */
+    private static void assertInfStr(final int a, final int b){
+        if(a>=b) {
+            throw new AssertionError("Erreur sur une contrainte d'ordre"); 
+            }
     }
 
 }
