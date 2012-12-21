@@ -32,6 +32,11 @@ public class Checker extends TestCase{
     public static final int MILLIS_PER_H=1000*60*60;
     
     /**
+     * l'erreur que l'on permet sur les dates
+     */
+    public static final int ERREUR=5*60*1000;
+    
+    /**
      * double-point
      */
     public static final String DOUBLE_POINT = ":";
@@ -175,7 +180,8 @@ public class Checker extends TestCase{
                     int CVE5 = Integer.parseInt(getStringPropre(s,
                             TAILLE_CV_COMPLET));
                     if(id!=-1){
-                        assertPresInt(CVE4[0], CVE4[1], CVE5, 
+                        assertPresInt(CVE4[0], CVE4[1], CVE5,  
+                                sol.getStages().get(id).getTimeZone(),
                                 sol.getFlights().get(id).getArrival(), 
                                 sol.getFlights().get(id+1).getDeparture());
                     }
@@ -253,9 +259,12 @@ public class Checker extends TestCase{
             final String dateFin, final TimeZone tz, final Date actual){
         String pattern = "yyyy/MM/dd-HH:mm";
         try {
-            Date deb = getDateFromPattern(pattern, dateDeb, tz);
-            Date fin = getDateFromPattern(pattern, dateFin, tz);
-            if(!actual.after(deb)||!actual.before(fin)){ 
+            long deb = getDateFromPattern(pattern, dateDeb, tz).getTime()
+                    -ERREUR;
+            long fin = getDateFromPattern(pattern, dateFin, tz).getTime()
+                    +ERREUR;
+            long actualLg= actual.getTime();
+            if(actualLg<deb||actualLg>fin){ 
                 throw new AssertionError("Erreur au niveau des "
                 		+ "intervalles de dates");
                 }
@@ -278,9 +287,9 @@ public class Checker extends TestCase{
         String pattern = "yyyy/MM/dd-HH:mm";
         try {
             long deb = getDateFromPattern(pattern, "2012/01/01-"+hourDeb, tz)
-                    .getTime()%(MILLIS_PER_H*HOURS_PER_DAY);
+                    .getTime()%(MILLIS_PER_H*HOURS_PER_DAY)-ERREUR;
             long fin = getDateFromPattern(pattern, "2012/01/01-"+hourFin, tz)
-                    .getTime()%(MILLIS_PER_H*HOURS_PER_DAY);
+                    .getTime()%(MILLIS_PER_H*HOURS_PER_DAY)+ERREUR;
             long newActual = actual.getTime()%(MILLIS_PER_H*HOURS_PER_DAY);
             if(!(deb<=newActual)||!(newActual<=fin)){
                 throw new AssertionError("Erreur au niveau des heures de"
@@ -317,13 +326,43 @@ public class Checker extends TestCase{
      * @param hourDeb heure de début de l'intervalle
      * @param hourFin heure de fin de l'intervalle
      * @param nbTimes le nombre de fois
-     * @param deb date de début
-     * @param fin date de fin
+     * @param tz la timezone
+     * @param actualDeb date de début
+     * @param actualFin date de fin
      */
     private static void assertPresInt(final String hourDeb, 
-            final String hourFin, final int nbTimes, 
-            final Date deb, final Date fin){
-        //TODO mais c'est difficile !
+            final String hourFin, final int nbTimes, final TimeZone tz, 
+            final Date actualDeb, final Date actualFin){
+        
+        String pattern = "yyyy/MM/dd-HH:mm";
+        try {
+        long expectedDeb = getDateFromPattern(pattern, "2012/01/01-"+hourDeb)
+                .getTime()%(MILLIS_PER_H*HOURS_PER_DAY)-ERREUR;
+        long expectedFin = getDateFromPattern(pattern, "2012/01/01-"+hourFin)
+                .getTime()%(MILLIS_PER_H*HOURS_PER_DAY)+ERREUR;
+        long newActualDeb=(actualDeb.getTime()-tz.getRawOffset()*MILLIS_PER_H)
+                %(MILLIS_PER_H*HOURS_PER_DAY);
+        long newActualFin=(actualFin.getTime()-tz.getRawOffset()*MILLIS_PER_H)
+                %(MILLIS_PER_H*HOURS_PER_DAY);
+        
+        int dayPres = (int) (actualFin.getTime()/(MILLIS_PER_H*HOURS_PER_DAY)
+                -actualDeb.getTime()/(MILLIS_PER_H*HOURS_PER_DAY))+1;
+        
+        if(newActualDeb>expectedDeb) {dayPres--; }
+        if(newActualFin<expectedFin) {dayPres--; }
+        
+        if(dayPres<nbTimes){
+            throw new AssertionError("Erreur au niveau des jours "
+            		+"et des heures de présence");
+            }
+        
+        } catch (ParseException e) {
+            System.out.println("Erreur dans la lecture des dates du"
+                    + " fichier de requête (CVF)");
+            e.printStackTrace();
+        }
+
+        
     }
 
     /**

@@ -42,7 +42,7 @@ public final class Generate {
         }
 
     }
-    
+
     /**
      * faire un panel de fichier
      * @param myDir dossier où seront les fichiers
@@ -62,7 +62,7 @@ public final class Generate {
         }
 
     }
-    
+
     /**
      * Créer un fichier de requête
      * @param myDir : Path du dossier dans lequel on veut créer le fichier
@@ -77,10 +77,12 @@ public final class Generate {
             final int nbEtapes, final int nbJours){
 
         Path createFile = myDir.resolve(nameFile);
-        
-        
-        
+
+
+
         List<Airport> alreadyTaken= new ArrayList<Airport>();
+
+        List<String> nameSteps = new ArrayList<String>();
 
 
         try {
@@ -106,16 +108,17 @@ public final class Generate {
             br.write("CVO-02: "+plageAller+"\n");
 
             //int nbEtapes=(int) (Math.random()*NB_MAX_ETAPES);
-            
+
             int[] intArrivee = {nbJours*ReaderConstants.GR_JOUR,
                     getRandomTime(ReaderConstants.JOURS_D_INTERVALLE*ReaderConstants.GR_JOUR)};
 
             br.write("\n");
 
-           
+
 
             for(int j=0; j<nbEtapes; j++){
                 br.write("CVE"+j+"\n");
+                nameSteps.add("CVE"+j);
 
                 Airport etapAirport=pickAirport(alreadyTaken);
 
@@ -134,7 +137,9 @@ public final class Generate {
                 int dmax = getRandomTime(intEtape[1]-dmin)+dmin;
                 br.write("CVE-03: "+dmin/ReaderConstants.GR_HOUR+","+dmax/ReaderConstants.GR_HOUR+"\n");
                 br.write("CVE-04: "+getPlageHoraire()+"\n");
-                br.write("CVE-05: "+ReaderConstants.INTEGER_VALUE_DEFAULT+"\n");
+                int nbJoursSurPlace= ((int) (dmax*Math.random()))
+                        /ReaderConstants.GR_JOUR;
+                br.write("CVE-05: "+nbJoursSurPlace+"\n");
                 br.write("\n");
             }
 
@@ -155,15 +160,40 @@ public final class Generate {
 
 
             br.write("\n");
-            
+
             int min=nbJours-ReaderConstants.JOURS_D_INTERVALLE;
             if(min<0) {min=0; }
             int[] intervCG00 = getInterDateTime(min*ReaderConstants.GR_JOUR, 
                     (nbJours+ReaderConstants.JOURS_D_INTERVALLE)*ReaderConstants.GR_JOUR);
-            
+
             br.write("CG-00: "+intervCG00[0]/ReaderConstants.GR_HOUR+","
-            +(intervCG00[1]/ReaderConstants.GR_HOUR+intervCG00[0]/ReaderConstants.GR_HOUR)+"\n");
-            br.write("CG-01: non implemented\n");
+                    +(intervCG00[1]/ReaderConstants.GR_HOUR+intervCG00[0]/ReaderConstants.GR_HOUR)+"\n");
+
+            int n= nbEtapes-1;
+            int k=0;
+            while(n>0) {
+                k+=n; 
+                n--;
+            }
+
+            int nbIneq = (int) ((k+1)*Math.random());
+
+            List<String> ineq = new ArrayList<String>();
+
+            k=0;
+            while(k<nbIneq){
+                int a = (int) ((nbEtapes-1)*Math.random());
+                int b= a+1+(int)((nbEtapes-a-1)*Math.random());
+                String s = nameSteps.get(a)+"<"+nameSteps.get(b);
+                if(!ineq.contains(s)){
+                    br.write("CG-01: "+s+"\n");
+                    ineq.add(s);
+                    k++;
+                }
+
+            }
+
+
 
             br.flush();
             br.close();
@@ -190,7 +220,7 @@ public final class Generate {
                 getPlageHoraire(), nbEtapes, nbEtapes*2);
 
     }
-    
+
     /**
      * Créer un fichier de requête
      * @param myDir : Path du dossier dans lequel on veut créer le fichier
@@ -205,9 +235,9 @@ public final class Generate {
                 getPlageHoraire(), (int) (Math.random()*ReaderConstants.NB_MAX_ETAPES));
 
     }
-    
-    
-    
+
+
+
     /**
      * Créer un fichier de requête
      * @param myDir : Path du dossier dans lequel on veut créer le fichier
@@ -217,8 +247,8 @@ public final class Generate {
 
         createFile(myDir, nameFile, getPlageHoraire(), 
                 getPlageHoraire());
-        
-       
+
+
 
     }
 
@@ -235,7 +265,7 @@ public final class Generate {
     private static int[] getInterDateTime(final int time){
         return getInterDateTime(0, time);
     }
-    
+
     /**
      * obtenir un intervalle dont le début est supérieur 
      * au temps passé en paramètre 1, et inférieur à celui en paramètre 2
@@ -378,14 +408,14 @@ public final class Generate {
      * @param args paramètre d'un main
      */
     public static void main(final String[] args) {
-        Path myDir = Paths.get("res/requests");
+        Path myDir = Paths.get("res/requests/avecOrdre");
 
-//        createFiles(myDir, 1, PLAGE_DEFAULT, PLAGE_DEFAULT, nameFiles);
+        //        createFiles(myDir, 1, PLAGE_DEFAULT, PLAGE_DEFAULT, nameFiles);
 
-//        createFiles(myDir, nameFiles);
-//        
-//        createFile(myDir, "Etapes5", PLAGE_DEFAULT, PLAGE_DEFAULT, 5);
-        
+        //        createFiles(myDir, nameFiles);
+        //        
+        //        createFile(myDir, "Etapes5", PLAGE_DEFAULT, PLAGE_DEFAULT, 5);
+
         for(int i = 0; i < 100; i++){
             createFile(myDir, "request " + i + ".txt");
         }    
