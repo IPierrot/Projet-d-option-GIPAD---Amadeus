@@ -21,7 +21,7 @@ public class CG01 extends CG {
 
     @Override
     public void apply(Context context) {
-        context.getComplexTripModel().setOrder(ant, post);
+        context.getComplexTripSolver().setOrder(ant, post);
     }
 
     @Override

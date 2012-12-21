@@ -1,4 +1,6 @@
-package reader;
+package utils;
+
+import io.reader.ReaderConstants;
 
 import java.io.BufferedWriter;
 import java.io.File;

@@ -1,4 +1,4 @@
-package reader;
+package io.reader;
 
 import java.io.File;
 import java.util.ArrayList;

@@ -1,11 +1,13 @@
 package context.userConstraints.cve;
 
+import io.dao.DAO;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import solving.ComplexTripModel;
+import solving.IComplexTripSolver;
 import utils.DateOperations;
 
 import static utils.DateOperations.*;
@@ -13,7 +15,6 @@ import model.Airport;
 import model.Flight;
 import context.Context;
 import context.userConstraints.UserConstraint;
-import dao.DAO;
 
 /**
  * Représente une contrainte liée à une étape
@@ -123,7 +124,7 @@ public class CVE extends UserConstraint {
     
     @Override
     public void apply(final Context context) {
-        context.getComplexTripModel().addStage(
+        context.getComplexTripSolver().addStage(
                 stage, arr, dep,
                 durMin, durMax,
                 new int[] {h1, h2}, nbTimes, mandatory);
@@ -140,7 +141,7 @@ public class CVE extends UserConstraint {
 
     @Override
     public void loadFlights(final Context context) {
-        ComplexTripModel cxtm = context.getComplexTripModel();
+        IComplexTripSolver cxtm = context.getComplexTripSolver();
         DAO dao = context.getDao();
 
         // Ajout des vols
