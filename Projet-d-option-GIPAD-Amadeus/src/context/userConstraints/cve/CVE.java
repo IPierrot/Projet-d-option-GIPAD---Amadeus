@@ -126,7 +126,7 @@ public class CVE extends UserConstraint {
     public void apply(final Context context) {
         context.getComplexTripSolver().addStage(
                 stage, arr, dep,
-                durMin, durMax,
+                new int[] {durMin, durMax},
                 new int[] {h1, h2}, nbTimes, mandatory);
     }
 

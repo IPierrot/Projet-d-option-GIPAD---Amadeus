@@ -6,10 +6,6 @@ import java.util.List;
 import model.Airport;
 import model.Flight;
 import model.Trip;
-import choco.cp.model.CPModel;
-import choco.cp.solver.CPSolver;
-import choco.kernel.model.variables.integer.IntegerVariable;
-import choco.kernel.model.variables.scheduling.TaskVariable;
 
 /**
  * 
@@ -58,14 +54,14 @@ public interface IComplexTripSolver {
      * @param stage l'étape.
      * @param earliestArrival L'arrivé dans l'étape au plus tôt.
      * @param latestDeparture Le départ au plus tard de l'étape.
-     * @param minDuration Durée min du séjour.
-     * @param maxDuration Durée max du séjour.
+     * @param duration Durée min et max et du séjour.
      * @param h intervalle horaire du séjour.
-     * @param nbTimes le nombre de fois où on doit rester 
+     * @param nbTimes le nombre de fois où on doit rester.
+     * @param mandatory true si l'étape est obligatoire. 
      * dans l'intervalle [h1, h2].
      */
     void addStage(Airport stage, Date earliestArrival, Date latestDeparture,
-            int minDuration, int maxDuration, int[] h, int nbTimes, boolean mandatory);
+            int[] duration, int[] h, int nbTimes, boolean mandatory);
     
     /**
      * @return La date de début du voyage au plus tôt.
@@ -172,8 +168,11 @@ public interface IComplexTripSolver {
     
     /**
      * La méthode build doit avoir été appellée avant.
+     * @param objective L'objectif : 
+     * "obj:stages" Pour maximiser le temps passé dans les étapes.
+     * "obj:flight" Pour minimiser le temps passé en avion.
      * @return La liste des vols composant la première solution trouvée.
      */
-    Trip getFirstTripFound();
+    Trip getFirstTripFound(String objective);
 
 }

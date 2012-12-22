@@ -12,6 +12,7 @@ import static solving.SolveConstants.*;
 import model.Airport;
 import model.Flight;
 import model.Trip;
+import choco.Options;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
 import choco.kernel.common.logging.ChocoLogging;
@@ -179,6 +180,12 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
     private boolean solutionFound;
     
     /**
+     * Variable objectif correspondant à la durée totale passée dans les 
+     * étapes.
+     */
+    private IntegerVariable totalStagesTime;
+    
+    /**
      * constructeur par défaut - initialise le CPModel et les listes
      */
     public ChocoComplexTripSolver(){
@@ -199,7 +206,7 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
 
     @Override
     public void addStage(final Airport stage, final Date earliestArrival,
-            final Date latestDeparture, final int durMin, final int durMax, 
+            final Date latestDeparture, final int[] duration, 
             final int[] h, final int nbFois, final boolean mandatory) {
         
         // Ajout des informations (aeroport, intervalle de passage, durée).
@@ -212,7 +219,7 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
         int i = SolveConstants.NB_MS_IN_ONE_HOUR/SolveConstants.GRANULARITE;
         
         this.stagesDurations.add(
-                new int[] {durMin*i, durMax*i});
+                new int[] {duration[0]*i, duration[1]*i});
         
         //Ajout de CVE04 et CVE05
         int h1 = h[0]/SolveConstants.GRANULARITE;
@@ -356,6 +363,7 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
         }
         if (retour) {
             String feasOption = "";
+            
             // Initialisation des données
             this.departs.add(new int[] {-1, -1, -1});
             this.arrivees.add(new int[] {-1, -1, -1});
@@ -369,15 +377,18 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
                                     mapTime(f.getArrival())});
             }
             System.out.print("....");
+            
             // Ajout des contraintes
             // Globales - Tasks disjonctives
             cpmodel.addConstraint(
                     disjunctive(stagesTaskVars));
             System.out.print("....");
+            
             // Depart et arrivée
             /* Ville d'origine et finale de voyage non liées */
             cpmodel.addConstraint(
                     neq(startIndex, endIndex));
+            
             /* Vols possible */
             List<int[]> temp1 = new ArrayList<int[]>();
             List<int[]> temp2 = new ArrayList<int[]>();
@@ -393,16 +404,21 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
                     temp2.add(arrivees.get(j));
                 }
             }
+            
             // Version AC Tuples
             cpmodel.addConstraint(feasTupleAC(feasOption, temp1,
                         startIndex, startVar, startDepVar));
             cpmodel.addConstraint(feasTupleAC(feasOption,
                     temp2, endIndex, endVar,  endArrVar));
             System.out.print("...."); 
+            
             // Etapes
+            IntegerVariable[] tripDurations = 
+                    new IntegerVariable[stagesTaskVars.length];
             for(int i = 0; i < stagesTaskVars.length; i++){
                 IntegerVariable[] indexes = stageIndexes[i];
                 TaskVariable task = stagesTaskVars[i];
+                tripDurations[i] = task.duration();
                 IntegerVariable stage = stagesVars[i];
                 /* Ville facultative */
                 cpmodel.addConstraint(ifThenElse(
@@ -412,6 +428,7 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
                                 eq(-1, indexes[1]),
                                 eq(-1, indexes[0]),
                                 neq(indexes[0], indexes[1]))));
+                
                 /* Vols possible (feasible pairs) */
                 List<int[]> temp3 = new ArrayList<int[]>();
                 List<int[]> temp4 = new ArrayList<int[]>();
@@ -433,11 +450,13 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
                         temp4.add(departs.get(j));
                     }
                 }
+                
                 // Version AC Tuples
                 cpmodel.addConstraint(feasTupleAC(feasOption,
                         temp3, indexes[0], stage, task.start()));
                 cpmodel.addConstraint(feasTupleAC(feasOption,
                         temp4, indexes[1], stage, task.end()));
+                
                 /* Contrainte sur les intervalle d'heure */
                 Object[] params = new Object[3];
                 params[0] = stagesHours.get(i);
@@ -480,6 +499,12 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
             }
             cpmodel.addConstraint(globalCardinality(allIndexes, values, v));
             
+            // Variable correspondant au temps total passé dans les étapes.
+//            totalStagesTime =
+//                makeIntVar("Total trip time", totalTrip.duration().getLowB(),
+//                        totalTrip.duration().getUppB());
+//            cpmodel.addConstraint(eq(totalStagesTime, sum(tripDurations)));
+            
             System.out.print("....");
             
             this.solver.read(cpmodel);
@@ -496,7 +521,7 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
     }
 
     @Override
-    public Trip getFirstTripFound() {
+    public Trip getFirstTripFound(final String objective) {
         
         Trip trip = null;
 
@@ -514,9 +539,14 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
                     trip = this.getSolutionFound();
                 }
             } else {
-                boolean b = this.solver.solve();
+                boolean b;
+                if (objective == SolveConstants.MAXIMIZE_TRIP_DURATION) {
+                    b = solver.maximize(solver.getVar(totalStagesTime), true);
+                } else {
+                    b = solver.solve();
+                }    
                 if (b) {
-                    trip = this.getSolutionFound();
+                    trip = getSolutionFound();
                     solutionFound = true;
                 } 
             }

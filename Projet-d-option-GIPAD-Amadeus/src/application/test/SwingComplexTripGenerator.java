@@ -7,7 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -17,6 +16,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -26,6 +26,12 @@ import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.border.EtchedBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import solving.SolveConstants;
+
+import application.ComplexTripGenerator;
 
 import model.Trip;
 
@@ -44,8 +50,9 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
     private Thread solvingThread;
     private JFileChooser fc;
     private JTextArea textArea;
-    JScrollPane scroll;
+    private JScrollPane scroll;
     private JButton open, solve, clean, stop;
+    private JCheckBox maximizeStages;
     private JTextArea statut;
     private static ComplexTripGenerator ctg;
     
@@ -136,6 +143,8 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
         stop = new JButton("stop");
         stop.addActionListener(this);
         stop.setEnabled(false);
+        maximizeStages = new JCheckBox("Maximize stages durations");
+
 
         JPanel buttonsPane = new JPanel(
                 new FlowLayout(FlowLayout.CENTER, 20, 30));
@@ -152,13 +161,14 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
         buttonsPane.add(solve);
         buttonsPane.add(clean);
         buttonsPane.add(stop);
-        buttonsPane.setPreferredSize(new Dimension(550, 80));
+//        buttonsPane.add(maximizeStages);
+        buttonsPane.setPreferredSize(new Dimension(600, 80));
         buttonsPane.setAlignmentY(CENTER_ALIGNMENT);
       
         JPanel pane = new JPanel(new FlowLayout());
         pane.add(labPane);
         pane.add(buttonsPane);
-        
+                
         panel.add(pane, BorderLayout.NORTH);
         panel.add(log, BorderLayout.CENTER);
         
@@ -188,10 +198,15 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
             if (getCtg() != null) {
                 solvingThread = new Thread() {
                     public void run() {
+                        maximizeStages.setEnabled(false);
                         open.setEnabled(false);
                         solve.setEnabled(false);
                         stop.setEnabled(true);
-                        Trip t = getCtg().tryToSolve();
+                        String obj = "";
+                        if (maximizeStages.isSelected()) {
+                            obj = SolveConstants.MAXIMIZE_TRIP_DURATION;
+                        }
+                        Trip t = getCtg().tryToSolve(obj);
                         if (t != null) {
                             System.out.println(t);
                         } else {
@@ -200,6 +215,7 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
                         open.setEnabled(true);
                         solve.setEnabled(true);
                         stop.setEnabled(false);
+                        maximizeStages.setEnabled(true);
                     }
                 };
                 solvingThread.start();
@@ -212,6 +228,7 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
             stop.setEnabled(false);
             solve.setEnabled(false);
             open.setEnabled(true);
+            maximizeStages.setEnabled(true);
         }
     }
     

@@ -10,9 +10,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import application.ComplexTripGenerator;
+
 import model.Trip;
 
-import context.Client;
 import context.Context;
 import solving.ChocoComplexTripSolver;
 import solving.IComplexTripSolver;
@@ -113,14 +114,15 @@ public final class Test {
         Context context = new Context(solver, dao);
 
         RequestLoader rloader = new RequestLoaderImp();
-        Client client = new Client(context, rloader);
+        ComplexTripGenerator client = 
+                new ComplexTripGenerator(context, rloader);
 
         boolean b = client.loadRequest(request);
 
         if (b) {
             solver.constraint();
             long c = System.currentTimeMillis();
-            Trip trip = solver.getFirstTripFound();
+            Trip trip = solver.getFirstTripFound("");
             chocoTime = System.currentTimeMillis()-c;
             
             totalTime = System.currentTimeMillis() - t;

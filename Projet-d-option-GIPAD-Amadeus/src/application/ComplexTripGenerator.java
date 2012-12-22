@@ -1,12 +1,21 @@
-package context;
+package application;
 
+import io.dao.DAO;
+import io.dao.csv.DAOImplCSV;
 import io.reader.RequestLoader;
+import io.reader.RequestLoaderImp;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.Trip;
 
+import solving.ChocoComplexTripSolver;
+import solving.IComplexTripSolver;
+
+
+import context.Context;
 import context.userConstraints.UserConstraint;
 import context.userConstraints.cg.CG;
 import context.userConstraints.cve.CVE;
@@ -14,13 +23,39 @@ import context.userConstraints.cvf.CVF;
 import context.userConstraints.cvo.CVO;
 
 /**
- * Représente un client du générateur de voyages complexe.
+ * Représente le générateur de voyages complexe.
  * Est le point de liaison entre la lecture de requête, le
  * moteur de contraintes et la couche d'accès au données.
  * @author Dim
  *
  */
-public class Client {
+public class ComplexTripGenerator {
+    
+    /**
+     * Le temps de chargement de la derniere requete 
+     * (ie toutes les étapes précédent la résolution).
+     */
+    private long loadTime;
+    
+    /**
+     * Le temps passé dans Choco lors de la derniere requete.
+     */
+    private long chocoTime;
+    
+    /**
+     * Le solveur.
+     */
+    private IComplexTripSolver solver;
+    
+    /**
+     * La requête à traiter.
+     */
+    private File request;
+    
+    /**
+     * True si la requête chargée est valide.
+     */
+    private boolean requestValid;
 
 	/**
 	 * Le contexte donnant accès à la dao et au moteur de contraintes.
@@ -62,13 +97,43 @@ public class Client {
 	 * @param ctx Le context.
 	 * @param rLoader Le loader de requêtes.
 	 */
-	public Client(final Context ctx, final RequestLoader rLoader){
+	public ComplexTripGenerator(final Context ctx, final RequestLoader rLoader){
 		this.context = ctx;
 		this.requestLoader = rLoader;
-		this.userConstraints = new ArrayList<UserConstraint>();
 	}
 	
-	
+	/**
+     * Constructeur.
+     * @param req La requête.
+     */
+    public ComplexTripGenerator(final File req) {
+        long t = System.currentTimeMillis();
+        
+        System.out.println("--------------------------------------------------"
+                + "-----------------------------------------------------------"
+                + "-----------------------------------------------------------"
+                + "---------" + "\n");
+        System.out.println("                                                  "
+                + "                     COMPLEX TRIP GENERATOR V 0.1 " + "\n");
+        System.out.println("--------------------------------------------------"
+                + "-----------------------------------------------------------"
+                + "-----------------------------------------------------------"
+                + "---------" + "\n" + "\n");
+        
+        this.userConstraints = new ArrayList<UserConstraint>();
+        request = req;
+        solver = new ChocoComplexTripSolver();
+        DAO dao = new DAOImplCSV();
+        this.context = new Context(solver, dao);
+        this.requestLoader = new RequestLoaderImp();
+        requestValid = loadRequest(request);
+        solver.constraint();
+        
+        loadTime = System.currentTimeMillis() - t;
+        
+        System.out.println("\n" + "\n" + "Chargement effectué en " + loadTime 
+                + "ms" + "\n");
+    }
 	
 	/**
      * Charge une requète dans le client.
@@ -84,7 +149,6 @@ public class Client {
 	 * @return true si le chargement a réussi.
 	 */
 	public boolean loadRequest(final File file){
-		
 	    System.out.println("- CHARGEMENT DE LA REQUETE - ");
 	    long t = System.currentTimeMillis();
 		// Lecture du fichier de requête.
@@ -142,11 +206,30 @@ public class Client {
 	}
 	
 	/**
+     * Essaye de résoudre la requête.
+     * @param obj L'objectif.
+     * @return Le Trip trouvé, ou null si il n'y a pas de solution.
+     */
+    public Trip tryToSolve(final String obj) {
+        if (requestValid) {
+            long t = System.currentTimeMillis();
+            Trip trip = solver.getFirstTripFound(obj);
+            chocoTime = System.currentTimeMillis() - t;
+            System.out.println("Solution trouvée en " + chocoTime 
+                    + "ms");
+            return trip;
+        } else {
+            System.out.println("Echec lors du chargement du fichier "
+                    + "de requête - Format invalide");
+            return null;
+        }
+    }
+	
+	/**
 	 * Charge les vols possibles susceptibles de satisfaire les contraintes
 	 * du problème.
 	 */
 	private void loadPossibleFlights(){
-			    
         int i = 1;
         for(UserConstraint c : this.userConstraints){
             c.loadFlights(context);
