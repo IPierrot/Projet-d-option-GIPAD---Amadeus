@@ -1,5 +1,10 @@
 package application.test;
 
+import io.dao.DAO;
+import io.dao.csv.DAOImplCSV;
+import io.reader.RequestLoader;
+import io.reader.RequestLoaderImp;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -9,14 +14,8 @@ import model.Trip;
 
 import context.Client;
 import context.Context;
-import dao.DAO;
-import dao.csv.DAOImplCSV;
-import reader.RequestLoader;
-import reader.RequestLoaderImp;
-import solving.ComplexTripModel;
-import solving.ComplexTripSolver;
-import solving.SimpleComplexTripModel;
-import solving.SimpleComplexTripSolver;
+import solving.ChocoComplexTripSolver;
+import solving.IComplexTripSolver;
 
 /**
  * Classe de tests.
@@ -108,10 +107,10 @@ public final class Test {
         
         long t = System.currentTimeMillis();
 
-        ComplexTripModel model = new SimpleComplexTripModel();
+        IComplexTripSolver solver = new ChocoComplexTripSolver();
         DAO dao = new DAOImplCSV();
 
-        Context context = new Context(model, dao);
+        Context context = new Context(solver, dao);
 
         RequestLoader rloader = new RequestLoaderImp();
         Client client = new Client(context, rloader);
@@ -119,12 +118,12 @@ public final class Test {
         boolean b = client.loadRequest(request);
 
         if (b) {
-            ComplexTripSolver solver = new SimpleComplexTripSolver();
-            solver.read(model);
+            solver.constraint();
+            long c = System.currentTimeMillis();
             Trip trip = solver.getFirstTripFound();
-    
+            chocoTime = System.currentTimeMillis()-c;
+            
             totalTime = System.currentTimeMillis() - t;
-            chocoTime = solver.getCPSolver().getTimeCount();
             loadTime = totalTime - chocoTime;            
             
             System.out.println("Solution trouvée en " + totalTime + "ms");

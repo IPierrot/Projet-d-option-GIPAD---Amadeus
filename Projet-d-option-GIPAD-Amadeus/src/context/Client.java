@@ -1,5 +1,7 @@
 package context;
 
+import io.reader.RequestLoader;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +12,6 @@ import context.userConstraints.cg.CG;
 import context.userConstraints.cve.CVE;
 import context.userConstraints.cvf.CVF;
 import context.userConstraints.cvo.CVO;
-import reader.RequestLoader;
 
 /**
  * Représente un client du générateur de voyages complexe.
@@ -66,6 +67,8 @@ public class Client {
 		this.requestLoader = rLoader;
 		this.userConstraints = new ArrayList<UserConstraint>();
 	}
+	
+	
 	
 	/**
      * Charge une requète dans le client.
@@ -127,7 +130,7 @@ public class Client {
     		System.out.println("\n" + "\n"  + "- CONSTRUCTION DU MODELE -");
     		
     		// Initialisation du complex trip model
-    		this.context.getComplexTripModel().build();
+    		this.context.getComplexTripSolver().build();
     		
     	      // Application des contraintes générales
             for (CG cg : cgs) {
@@ -150,7 +153,7 @@ public class Client {
             
             System.out.println("Nombre de vols après chargement " + i 
               + "(" + c.getClass().getSimpleName() + ") : " 
-              + context.getComplexTripModel().getPossibleFlights().size());
+              + context.getComplexTripSolver().getPossibleFlights().size());
             
             i++;
         }

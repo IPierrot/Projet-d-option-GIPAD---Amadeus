@@ -45,7 +45,7 @@ public class CG00 extends CG {
     
     @Override
     public void apply(final Context context) {
-        context.getComplexTripModel().setTotalDuration(hmin, hmax);
+        context.getComplexTripSolver().setTotalDuration(hmin, hmax);
     }
 
     @Override

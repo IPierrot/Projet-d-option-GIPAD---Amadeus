@@ -1,7 +1,7 @@
 package context;
 
-import dao.DAO;
-import solving.ComplexTripModel;
+import io.dao.DAO;
+import solving.IComplexTripSolver;
 
 /**
  * Représente un contexte qui regroupe les services de la DAO
@@ -14,7 +14,7 @@ public class Context {
 	/**
 	 * Le ComplexTripModel.
 	 */
-	private ComplexTripModel cxtModel;
+	private IComplexTripSolver cxtSolver;
 	
 	/**
 	 * La DAO.
@@ -23,19 +23,19 @@ public class Context {
 	
 	/**
 	 * Constructeur avec paramètres.
-	 * @param cxtripModel Le ComplexTripModel.
+	 * @param cxtripSolver Le ComplexTripSolver.
 	 * @param daoObject La DAO.
 	 */
-	public Context(final ComplexTripModel cxtripModel, final DAO daoObject){
-		this.cxtModel = cxtripModel;
+	public Context(final IComplexTripSolver cxtripSolver, final DAO daoObject){
+		this.cxtSolver = cxtripSolver;
 		this.dao = daoObject;
 	}
 	
 	/**
 	 * @return Le ComplexTripModel du contexte.
 	 */
-	public ComplexTripModel getComplexTripModel(){
-		return this.cxtModel;
+	public IComplexTripSolver getComplexTripSolver(){
+		return this.cxtSolver;
 	}
 	
 	/**

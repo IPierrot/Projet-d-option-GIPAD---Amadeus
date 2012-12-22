@@ -1,19 +1,18 @@
 package application.test;
 
+import io.dao.DAO;
+import io.dao.csv.DAOImplCSV;
+import io.reader.RequestLoader;
+import io.reader.RequestLoaderImp;
+
 import java.io.File;
 
 import model.Trip;
 import context.Client;
 import context.Context;
-import dao.DAO;
-import dao.csv.DAOImplCSV;
 
-import reader.RequestLoader;
-import reader.RequestLoaderImp;
-import solving.ComplexTripModel;
-import solving.ComplexTripSolver;
-import solving.SimpleComplexTripModel;
-import solving.SimpleComplexTripSolver;
+import solving.ChocoComplexTripSolver;
+import solving.IComplexTripSolver;
 
 /**
  * Générateur de voyages complexes.
@@ -41,12 +40,7 @@ public class ComplexTripGenerator {
     /**
      * Le modele.
      */
-    private ComplexTripModel model;
-    
-    /**
-     * Le solveur.
-     */
-    private ComplexTripSolver solver;
+    private IComplexTripSolver solver;
     
     /**
      * La requête à traiter.
@@ -82,16 +76,15 @@ public class ComplexTripGenerator {
                 + "---------" + "\n" + "\n");
         
         request = req;
-        solver = new SimpleComplexTripSolver();
-        model = new SimpleComplexTripModel();
+        solver = new ChocoComplexTripSolver();
         DAO dao = new DAOImplCSV();
 
-        Context context = new Context(model, dao);
+        Context context = new Context(solver, dao);
 
         RequestLoader rloader = new RequestLoaderImp();
         client = new Client(context, rloader);
         requestValid = client.loadRequest(request);
-        solver.read(model);
+        solver.constraint();
         
         loadTime = System.currentTimeMillis() - t;
         

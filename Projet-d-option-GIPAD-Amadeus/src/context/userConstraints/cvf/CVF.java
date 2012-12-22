@@ -3,19 +3,20 @@ package context.userConstraints.cvf;
 import static utils.DateOperations.getDateFromPattern;
 import static utils.DateOperations.isBetweenHours;
 
+import io.dao.DAO;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import solving.ComplexTripModel;
+import solving.IComplexTripSolver;
 
 import model.Airport;
 import model.Flight;
 import context.Context;
 import context.userConstraints.UserConstraint;
-import dao.DAO;
 
 /**
  * Représente une contrainte sur la ville finale du voyage
@@ -65,7 +66,7 @@ public class CVF extends UserConstraint {
     
 	@Override
 	public void apply(final Context context) {
-	    context.getComplexTripModel().setEnd(end, arr1, arr2);
+	    context.getComplexTripSolver().setEnd(end, arr1, arr2);
 	}
 
 	@Override
@@ -84,7 +85,7 @@ public class CVF extends UserConstraint {
 
     @Override
     public void loadFlights(final Context context) {
-        ComplexTripModel cxtm = context.getComplexTripModel();
+        IComplexTripSolver cxtm = context.getComplexTripSolver();
         DAO dao = context.getDao();
         
         // Récupération des dates entre lesquel on va récupérer des vols.

@@ -22,5 +22,7 @@ public final class SolveConstants {
      */
     static final int NB_MS_IN_ONE_HOUR = 3600000;
     
+    static final int DUR_DAY = (NB_MS_IN_ONE_HOUR*24)/GRANULARITE;
+    
     
 }
