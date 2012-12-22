@@ -68,7 +68,7 @@ public class SwingComplexTripGenerator extends JFrame implements ActionListener{
      * Constructeur par défaut.
      */
     public SwingComplexTripGenerator() {
-        super("Complex Trip Generator 0.1");
+        super("Complex Trip Generator 0.3");
         setCtg(null);
       //Parametres de la fenêtre
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
