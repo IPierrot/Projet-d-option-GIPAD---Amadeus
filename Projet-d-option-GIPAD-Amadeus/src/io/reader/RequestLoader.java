@@ -1,0 +1,54 @@
+package io.reader;
+
+import java.io.File;
+import java.util.List;
+
+import context.userConstraints.cg.CG;
+import context.userConstraints.cve.CVE;
+import context.userConstraints.cvf.CVF;
+import context.userConstraints.cvo.CVO;
+
+/**
+ * Chargeur de requêtes
+ * @author Dimitri, Marc et Pierre
+ *
+ */
+public interface RequestLoader {
+
+	/**
+	 * Charge la requête présente à l'adresse donnée.
+	 * @param dir Le chemin de la requête à charger.
+	 * @return true si le chargement a réussi.
+	 */
+	boolean loadRequest(String dir);
+	
+	/**
+     * Charge la requête présente à l'adresse donnée.
+     * @param file La requête à charger sous forme de fichier.
+     * @return true si le chargement a réussi.
+     */
+    boolean loadRequest(File file);
+
+	/**
+	 * @return La contrainte CVO chargée (si requête chargée, null sinon).
+	 */
+	CVO getCVO();
+
+	/**
+	 * @return La contrainte CVF chargée (si requête chargée, null sinon).
+	 */
+	CVF getCVF();
+
+	/**
+	 * @return La liste de contraintes CVE chargées (si requête chargée,
+	 *  null sinon).
+	 */
+	List<CVE> getCVEs();
+
+	/**
+	 * @return La liste des contraintes CVF chargées (si requête chargée,
+	 *  null sinon).
+	 */
+	List<CG> getCGs();
+
+}
