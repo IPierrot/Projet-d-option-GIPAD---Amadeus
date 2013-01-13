@@ -15,6 +15,7 @@ import model.Trip;
 import choco.Options;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
+import choco.cp.solver.search.integer.varselector.RandomIntVarSelector;
 import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.model.constraints.ComponentConstraint;
 import choco.kernel.model.variables.integer.IntegerVariable;
@@ -184,6 +185,8 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
      * étapes.
      */
     private IntegerVariable totalStagesTime;
+    
+    IntegerVariable[] allIndexes;
     
     /**
      * constructeur par défaut - initialise le CPModel et les listes
@@ -362,7 +365,7 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
             retour = false;
         }
         if (retour) {
-            String feasOption = "";
+            String feasOption = Options.C_EXT_AC3;
             
             // Initialisation des données
             this.departs.add(new int[] {-1, -1, -1});
@@ -382,6 +385,7 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
             // Globales - Tasks disjonctives
             cpmodel.addConstraint(
                     disjunctive(stagesTaskVars));
+            // todo add options 
             System.out.print("....");
             
             // Depart et arrivée
@@ -410,6 +414,10 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
                         startIndex, startVar, startDepVar));
             cpmodel.addConstraint(feasTupleAC(feasOption,
                     temp2, endIndex, endVar,  endArrVar));
+//            cpmodel.addConstraint(feasTupleFC( temp1,
+//                    startIndex, startVar, startDepVar));
+//            cpmodel.addConstraint(feasTupleFC( temp2,
+//                    endIndex, endVar,  endArrVar));
             System.out.print("...."); 
             
             // Etapes
@@ -456,6 +464,10 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
                         temp3, indexes[0], stage, task.start()));
                 cpmodel.addConstraint(feasTupleAC(feasOption,
                         temp4, indexes[1], stage, task.end()));
+//                cpmodel.addConstraint(feasTupleFC(
+//                        temp3, indexes[0], stage, task.start()));
+//                cpmodel.addConstraint(feasTupleFC(
+//                        temp4, indexes[1], stage, task.end()));
                 
                 /* Contrainte sur les intervalle d'heure */
                 Object[] params = new Object[3];
@@ -473,7 +485,7 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
             }
             
             int n = stagesVars.length;
-            IntegerVariable[] allIndexes = new IntegerVariable[2*n+2];
+            allIndexes = new IntegerVariable[2*n+2];
             
             allIndexes[0] = startIndex;
             allIndexes[1] = endIndex;
@@ -490,14 +502,14 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
                         v, allIndexes, i));
             }
                         
-            IntegerVariable[] v = makeIntVarArray(
-                    "occ-", possibleFlights.size(), new int[] {0, 2},
-                    SolveConstants.VARIABLES_OPTION);
-            int[] values = new int[possibleFlights.size()];
-            for(int i=0; i<possibleFlights.size(); i++){
-                values[i] = i;
-            }
-            cpmodel.addConstraint(globalCardinality(allIndexes, values, v));
+//            IntegerVariable[] v = makeIntVarArray(
+//                    "occ-", possibleFlights.size(), new int[] {0, 2},
+//                    SolveConstants.VARIABLES_OPTION);
+//            int[] values = new int[possibleFlights.size()];
+//            for(int i=0; i<possibleFlights.size(); i++){
+//                values[i] = i;
+//            }
+//            cpmodel.addConstraint(globalCardinality(allIndexes, values, v));
             
             // Variable correspondant au temps total passé dans les étapes.
 //            totalStagesTime =
@@ -527,11 +539,14 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
 
         if(this.readyToSolve){
         
-            ChocoLogging.toSilent();
-//            solver.setVarIntSelector(new RandomIntVarSelector(solver));
+            ChocoLogging.toSolution();
+            solver.setVarIntSelector(new RandomIntVarSelector(solver, solver.getVar(allIndexes) ,0));
 //            solver.setValIntSelector(new RandomIntValSelector());
             
             System.out.println("\n" + "\n"  + "Résolution... " + "\n");
+            
+            solver.setRestart(true);
+            solver.setGeometricRestart(100, 1.5);
             
             if (solutionFound) {
                 boolean b = this.solver.nextSolution();
