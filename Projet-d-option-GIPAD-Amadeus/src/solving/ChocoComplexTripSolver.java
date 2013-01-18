@@ -15,6 +15,10 @@ import model.Trip;
 import choco.Options;
 import choco.cp.model.CPModel;
 import choco.cp.solver.CPSolver;
+import choco.cp.solver.search.integer.branching.domwdeg.DomOverWDegBinBranchingNew;
+import choco.cp.solver.search.integer.branching.domwdeg.DomOverWDegBranchingNew;
+import choco.cp.solver.search.integer.valiterator.IncreasingDomain;
+import choco.cp.solver.search.integer.valselector.RandomIntValSelector;
 import choco.cp.solver.search.integer.varselector.RandomIntVarSelector;
 import choco.kernel.common.logging.ChocoLogging;
 import choco.kernel.model.constraints.ComponentConstraint;
@@ -539,9 +543,10 @@ public class ChocoComplexTripSolver implements IComplexTripSolver{
 
         if(this.readyToSolve){
         
-            ChocoLogging.toSolution();
-            solver.setVarIntSelector(new RandomIntVarSelector(solver, solver.getVar(allIndexes) ,0));
-//            solver.setValIntSelector(new RandomIntValSelector());
+            ChocoLogging.toQuiet();
+            solver.addGoal(new DomOverWDegBinBranchingNew(solver,
+                    solver.getVar(allIndexes),
+                    new RandomIntValSelector(), 0));
             
             System.out.println("\n" + "\n"  + "Résolution... " + "\n");
             

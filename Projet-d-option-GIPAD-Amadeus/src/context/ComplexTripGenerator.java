@@ -1,4 +1,4 @@
-package application;
+package context;
 
 import io.dao.DAO;
 import io.dao.csv.DAOImplCSV;
@@ -15,7 +15,6 @@ import solving.ChocoComplexTripSolver;
 import solving.IComplexTripSolver;
 
 
-import context.Context;
 import context.userConstraints.UserConstraint;
 import context.userConstraints.cg.CG;
 import context.userConstraints.cve.CVE;

@@ -1,4 +1,4 @@
-package application.test;
+package application;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -29,9 +29,10 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import context.ComplexTripGenerator;
+
 import solving.SolveConstants;
 
-import application.ComplexTripGenerator;
 
 import model.Trip;
 

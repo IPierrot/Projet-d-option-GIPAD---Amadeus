@@ -1,4 +1,4 @@
-package application.test;
+package application;
 
 import io.dao.DAO;
 import io.dao.csv.DAOImplCSV;
@@ -10,10 +10,10 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-import application.ComplexTripGenerator;
 
 import model.Trip;
 
+import context.ComplexTripGenerator;
 import context.Context;
 import solving.ChocoComplexTripSolver;
 import solving.IComplexTripSolver;
